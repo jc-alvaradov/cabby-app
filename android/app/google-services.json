@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "950919118661",
+    "project_id": "taxi-native-1500327148374"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:950919118661:android:2cb697d3aef0c148",
+        "android_client_info": {
+          "package_name": "com.taxinativeclient"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "950919118661-4tkkao6dlidv79j5mq239ial1avhbgi5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.taxinativeclient",
+            "certificate_hash": "fb890a4f7dd3b912585ee604aa2826a3505c7204"
+          }
+        },
+        {
+          "client_id": "950919118661-f4ieq6njpq2tirhhs4t3ugjlesg0kvqr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcmLAsOObdMivuBBViYMXMWUkc3zO1bRA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

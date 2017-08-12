@@ -5,6 +5,12 @@ import Confirmation from './Confirmation';
 
 export default class Login extends Component {
 	render() {
-		return (<Main />);	
+		// muestra el main primero, donde se puede seleccionar 
+		// una cuenta de facebook o google para seguir
+		// despues muestra el confirmation que es un formulario 
+		// donde se rellenan los datos que falten
+
+
+		return (<Confirmation />);	
 	}
 }
