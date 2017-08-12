@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
+import Styles from './styles';
+
 //import FacebookLogin from '../../components/fbButton';
 //import GoogleLogin from '../../components/googleButton';
 
@@ -7,52 +9,23 @@ import { StyleSheet, Text, View } from 'react-native';
 "react-native-vector-icons"
 "react-native fbsdk, react-native-google-signin"
 
-        			<FacebookLogin />
-        			<GoogleLogin />
+              <FacebookLogin />
+              <GoogleLogin />
 */
 
 export default class Main extends Component {
-	constructor(props){
-		super(props);
-	}
+  constructor(props){
+    super(props);
+  }
 
-	render() {
-		return (
-      	<View style={styles.container}>
-        		<Text style={styles.title}>Taxi Native</Text>
-        		<View style={styles.login}>
-          		<Text style={styles.text}>Please login to continue</Text>
-        		</View>
-      	</View>
-    	);
-  	}
+  render() {
+    return (
+      <View style={Styles.mainContainer}>
+        <Text style={Styles.title}>Taxi Native</Text>
+        <View style={Styles.login}>
+          <Text style={Styles.headText}>Please login to continue</Text>
+        </View>
+      </View>
+    );
+  }
 }
-
-const styles = StyleSheet.create({
-	container: {
-    	backgroundColor: '#1ca68a',
-    	flex: 1,
-    	justifyContent: 'flex-start',
-    	alignItems: 'center'
-  	},
-  	login: {
-    	backgroundColor: 'white', 
-    	borderRadius: 10,
-    	width: 'auto',
-    	height: 'auto',
-    	padding: 20
- 	},
-  	title: {
-    	fontFamily: 'Allan-Bold',
-    	color: 'white',
-    	fontSize: 55,
-    	marginTop: 100,
-    	marginBottom: 50 
-  	},
-  	text: {
-  		fontSize: 16,
-  		fontWeight: 'bold',
-  		textAlign: 'center',
-  		marginBottom: 10
-  	}
-});
