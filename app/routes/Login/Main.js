@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { Text, View } from 'react-native';
-import Styles from './styles';
+import React, { Component } from "react";
+import { Text, View } from "react-native";
+import Styles from "./styles";
 
 //import FacebookLogin from '../../components/fbButton';
 //import GoogleLogin from '../../components/googleButton';
@@ -14,7 +14,7 @@ import Styles from './styles';
 */
 
 export default class Main extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
   }
 

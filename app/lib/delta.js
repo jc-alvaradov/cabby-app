@@ -3,7 +3,7 @@ export function getRegionForCoordinates(points) {
   let minX, maxX, minY, maxY;
 
   // init first point
-  ((point) => {
+  (point => {
     minX = point.latitude;
     maxX = point.latitude;
     minY = point.longitude;
@@ -11,7 +11,7 @@ export function getRegionForCoordinates(points) {
   })(points[0]);
 
   // calculate rect
-  points.map((point) => {
+  points.map(point => {
     minX = Math.min(minX, point.latitude);
     maxX = Math.max(maxX, point.latitude);
     minY = Math.min(minY, point.longitude);
@@ -20,8 +20,8 @@ export function getRegionForCoordinates(points) {
 
   const midX = (minX + maxX) / 2;
   const midY = (minY + maxY) / 2;
-  const deltaX = (maxX - minX);
-  const deltaY = (maxY - minY);
+  const deltaX = maxX - minX;
+  const deltaY = maxY - minY;
 
   return {
     latitude: midX,
