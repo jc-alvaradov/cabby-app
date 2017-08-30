@@ -8,6 +8,7 @@ const Map = ({ position }) => {
     <MapView
       style={styles.map}
       initialRegion={getRegionForCoordinates([position])}
+      showsCompass={false}
     >
       <MapView.Marker coordinate={position} />
     </MapView>

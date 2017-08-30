@@ -1,34 +1,44 @@
 import React, { Component } from "react";
-import {
-  DrawerNavigator,
-  StackNavigator,
-  TabNavigator
-} from "react-navigation";
+import { DrawerNavigator, StackNavigator } from "react-navigation";
 import Icon from "react-native-vector-icons/Ionicons";
-import Login from "./routes/Login";
+import Login from "./routes/Login/Main";
+import Confirmation from "./routes/Login/Confirmation";
 import Home from "./routes/Home";
 import Settings from "./routes/Settings";
 
-class TaxiNativeClient extends Component {
-  /**
+/**
  * dependiendo de si es la primera vez abriendo la app o no 
  * se mostrara la pagina de login o el home.
  */
 
-  render() {
-    // FIXME: Debiera poderse ingresar a la app
-    //const loggedIn = false;
-    //(!loggedIn) ? content = <Login /> : content = <Home />;
-    return <Home />;
-  }
-}
+const logged = true;
+const initialRoute = logged ? "Home" : "Login";
 
-export default DrawerNavigator(
+const MainTab = DrawerNavigator(
   {
     Home: {
-      screen: Home,
+      screen: Home
+    }
+  },
+  {
+    headerMode: "none",
+    contentComponent: props => <Settings {...props} />
+  }
+);
+
+export default StackNavigator(
+  {
+    Login: {
+      screen: Login,
       navigationOptions: {
-        tabBarLabel: "Home",
+        header: null
+      }
+    },
+    Confirmation: {
+      screen: Confirmation,
+      navigationOptions: {
+        title: "Confirmation",
+        tabBarLabel: "Confirmation",
         tabBarIcon: ({ tintColor, focused }) =>
           <Icon
             name={focused ? "ios-home" : "ios-home-outline"}
@@ -36,10 +46,17 @@ export default DrawerNavigator(
             style={{ color: tintColor }}
           />
       }
+    },
+    Home: {
+      screen: MainTab,
+      navigationOptions: {
+        header: null,
+        headerMode: "none"
+      }
     }
   },
   {
-    // Register custom drawer component
-    contentComponent: props => <Settings {...props} />
+    headerMode: "screen",
+    initialRouteName: initialRoute
   }
 );

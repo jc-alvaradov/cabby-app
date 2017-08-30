@@ -18,9 +18,10 @@ export default class HeaderButton extends Component {
       <View style={styles.container}>
         <Icon.Button
           name={this.props.icon}
-          size={26}
-          color="#4F8EF7"
-          backgroundColor="#FFF"
+          size={50}
+          color="#000000"
+          backgroundColor="transparent"
+          underlayColor="transparent"
           onPress={this.props.onPress}
         />
       </View>
@@ -32,6 +33,10 @@ const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
     top: 0,
-    left: 0
+    left: 0,
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "flex-start"
   }
 });

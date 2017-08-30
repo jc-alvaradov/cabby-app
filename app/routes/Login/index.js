@@ -10,6 +10,6 @@ export default class Login extends Component {
  * donde se rellenan los datos que falten
  */
   render() {
-    return <Confirmation />;
+    return <Main />;
   }
 }

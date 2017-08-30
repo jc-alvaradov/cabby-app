@@ -5,6 +5,7 @@ import Styles from "./styles";
 
 export default class Confirmation extends Component {
   render() {
+    const { navigate } = this.props.navigation;
     return (
       <View style={Styles.container}>
         <View style={Styles.form}>
@@ -23,7 +24,7 @@ export default class Confirmation extends Component {
           <PhoneInput
             ref="phone"
             textStyle={{ fontSize: 15 }}
-            flagStyle={{ width: 50, height: 30, borderWidth: 0 }}
+            initialCountry="cl"
           />
           <Text style={Styles.header}>Payment Method</Text>
           <Picker selectedValue="Cash">
@@ -32,7 +33,7 @@ export default class Confirmation extends Component {
           </Picker>
         </View>
         <TouchableOpacity
-          onPress={() => console.log("Continuar")}
+          onPress={() => navigate("Home")}
           style={Styles.button}
         >
           <Text style={Styles.text}>Continue</Text>
