@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { StyleSheet, View } from "react-native";
 import PropTypes from "prop-types";
-import Icon from "react-native-vector-icons/Ionicons";
+import Icon from "react-native-vector-icons/Foundation";
 
 export default class HeaderButton extends Component {
   static propTypes = {
@@ -10,7 +10,7 @@ export default class HeaderButton extends Component {
   };
 
   static defaultProps = {
-    icon: "md-menu"
+    icon: "list"
   };
 
   render() {
@@ -18,8 +18,8 @@ export default class HeaderButton extends Component {
       <View style={styles.container}>
         <Icon.Button
           name={this.props.icon}
-          size={50}
-          color="#000000"
+          size={44}
+          color="#444444"
           backgroundColor="transparent"
           underlayColor="transparent"
           onPress={this.props.onPress}

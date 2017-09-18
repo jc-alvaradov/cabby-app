@@ -3,12 +3,13 @@ import { StyleSheet } from "react-native";
 const Styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "flex-start",
     alignItems: "center",
-    backgroundColor: "white"
+    backgroundColor: "white",
   },
   form: {
-    width: 300
+    width: 280,
+    marginTop: 30
   },
   button: {
     alignItems: "center",
@@ -17,22 +18,40 @@ const Styles = StyleSheet.create({
     height: 55,
     borderRadius: 50,
     backgroundColor: "#1ca68a",
+    marginTop: 20,
     elevation: 3
   },
   input: {
     marginBottom: 10,
-    borderWidth: 1,
-    borderColor: "#bdbdbd",
+    padding: 10,
+    fontSize: 16,
     backgroundColor: "white",
-    height: 40,
-    elevation: 0.8
+    height: 50,
+    elevation: 2
+  },
+  picker: {
+    marginBottom: 10,
+    padding: 10,
+    backgroundColor: "white",
+    height: 50,
+    elevation: 2
+  },
+  phone: {
+    marginBottom: 10,
+    padding: 10,
+    paddingTop: 14,
+    backgroundColor: "white",
+    height: 50,
+    elevation: 2
   },
   text: {
     color: "white",
     fontSize: 18
   },
   header: {
-    fontSize: 16,
+    fontSize: 18,
+    color: "#444444",
+    marginTop: 5,
     marginBottom: 5
   },
   mainContainer: {
@@ -42,11 +61,13 @@ const Styles = StyleSheet.create({
     alignItems: "center"
   },
   login: {
+    flex: 1,
+    justifyContent: "space-between",
     backgroundColor: "white",
     borderRadius: 10,
-    width: "auto",
-    height: "auto",
-    padding: 20
+    width: 260,
+    maxHeight: 180,
+    padding: 20,
   },
   title: {
     fontFamily: "Allan-Bold",
