@@ -1,5 +1,13 @@
 import React, { Component } from "react";
-import { StyleSheet, Text, View, TextInput, Button } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableHighlight,
+  Button
+} from "react-native";
+import { connect } from "react-redux";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import NavIcon from "react-native-vector-icons/Ionicons";
@@ -67,6 +75,8 @@ class Home extends Component {
   }
 
   render() {
+    // SOlo se debiera poder hacer click una vez en el router
+
     return (
       <View style={styles.container}>
         <Map
@@ -78,6 +88,79 @@ class Home extends Component {
           onPress={() => this.props.navigation.navigate("DrawerOpen")}
         />
         <View style={styles.searchView}>
+          <TouchableHighlight
+            style={styles.searchInput}
+            underlayColor="#f0f0f0"
+            onPress={() => this.props.navigation.navigate("Router")}
+          >
+            <Text>Where do you want to go?</Text>
+          </TouchableHighlight>
+        </View>
+        <Text>{this.props.store.ciudad}</Text>
+      </View>
+    );
+  }
+}
+
+function mapStateToProps(state) {
+  return {
+    store: state
+  };
+}
+
+export default connect(mapStateToProps)(Home);
+
+const styles = StyleSheet.create({
+  container: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: "flex-end",
+    alignItems: "center"
+  },
+  searchView: {
+    top: 60,
+    flex: 1
+  },
+  searchInput: {
+    backgroundColor: "white",
+    width: 300,
+    height: 50,
+    elevation: 3
+  },
+  input: {
+    marginTop: -24,
+    marginLeft: 14,
+    fontSize: 18,
+    width: 250,
+    textAlign: "center",
+    color: "#444444"
+  },
+  icon: {
+    marginTop: 12,
+    marginLeft: 10,
+    color: "#444444",
+    fontSize: 20
+  }
+});
+
+/*
+
+        <Button
+          title="CARGAR ROUTER"
+          onPress={() => this.props.navigation.navigate("Router")}
+        />
+
+
+            <Icon style={styles.icon} name="search" />
+            <TextInput
+              style={styles.input}
+              underlineColorAndroid="rgba(0,0,0,0)"
+              defaultValue="Where do you want to go?"
+            />
+
+*/
+
+/*
+
           <GooglePlacesAutocomplete
             placeholder="Where do you want to go?"
             minLength={2} // minimum length of text to search
@@ -151,58 +234,5 @@ class Home extends Component {
             ]} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
             debounce={0} // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
           />
-        </View>
-      </View>
-    );
-  }
-}
-
-export default Home;
-
-const styles = StyleSheet.create({
-  container: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: "flex-end",
-    alignItems: "center"
-  },
-  searchView: {
-    top: 60
-  },
-  searchInput: {
-    backgroundColor: "white",
-    width: 300,
-    height: 50,
-    elevation: 3
-  },
-  input: {
-    marginTop: -24,
-    marginLeft: 14,
-    fontSize: 18,
-    width: 250,
-    textAlign: "center",
-    color: "#444444"
-  },
-  icon: {
-    marginTop: 12,
-    marginLeft: 10,
-    color: "#444444",
-    fontSize: 20
-  }
-});
-
-/*
-
-        <Button
-          title="CARGAR ROUTER"
-          onPress={() => this.props.navigation.navigate("Router")}
-        />
-
-
-            <Icon style={styles.icon} name="search" />
-            <TextInput
-              style={styles.input}
-              underlineColorAndroid="rgba(0,0,0,0)"
-              defaultValue="Where do you want to go?"
-            />
 
 */

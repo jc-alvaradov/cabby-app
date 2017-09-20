@@ -22,7 +22,7 @@ export default class Checker extends Component {
           index: 0,
           actions: [
             NavigationActions.navigate({
-              routeName: "Home"
+              routeName: "App"
             })
           ]
         });

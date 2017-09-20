@@ -7,10 +7,11 @@ import {
   StyleSheet,
   AsyncStorage
 } from "react-native";
+import { connect } from "react-redux";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { NavigationActions } from "react-navigation";
 
-export default class Settings extends Component {
+class Settings extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -84,6 +85,7 @@ export default class Settings extends Component {
             <Text> Log out</Text>
           </Text>
         </TouchableOpacity>
+        <Text>{this.props.store.ciudad}</Text>
       </View>
     );
   }
@@ -121,3 +123,11 @@ const styles = StyleSheet.create({
     paddingLeft: 40
   }
 });
+
+function mapStateToProps(state) {
+  return {
+    store: state
+  };
+}
+
+export default connect(mapStateToProps)(Settings);
