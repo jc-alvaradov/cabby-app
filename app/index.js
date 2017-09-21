@@ -1,25 +1,127 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Text, View } from "react-native";
-import AppNav from "./navigators/app_navigator";
-import LoginNav from "./navigators/login_navigator";
+import { DrawerNavigator, StackNavigator } from "react-navigation";
+import Icon from "react-native-vector-icons/Ionicons";
+import Checker from "./checker";
+import Login from "./routes/Login/Main";
+import Confirmation from "./routes/Login/Confirmation";
+import Home from "./routes/Home";
+import Settings from "./routes/Settings";
+import Router from "./routes/Router";
+import Rides from "./routes/Rides";
+import Ratings from "./routes/Ratings";
 
-class MainClient extends Component {
-  constructor(props) {
-    super(props);
+const fullEnd = StackNavigator(
+  {
+    Home: {
+      screen: Home,
+      navigationOptions: {
+        header: null,
+        headerLeft: null
+      }
+    },
+    Router: {
+      screen: Router,
+      navigationOptions: {
+        title: "Router",
+        headerTitle: "Router",
+        tabBarLabel: "Router",
+        tabBarIcon: ({ tintColor, focused }) => (
+          <Icon
+            name={focused ? "ios-home" : "ios-home-outline"}
+            size={26}
+            style={{ color: tintColor }}
+          />
+        )
+      }
+    }
+  },
+  {
+    headerMode: "screen",
+    initialRouteName: "Home"
   }
+);
 
-  render() {
-    console.log("APP: " + AppNav);
-
-    return <View />;
+const HomeNav = DrawerNavigator(
+  {
+    MainScreen: {
+      screen: fullEnd,
+      navigationOptions: {
+        header: null,
+        headerLeft: null
+      }
+    },
+    Rides: {
+      screen: Rides
+    },
+    Ratings: {
+      screen: Ratings
+    }
+  },
+  {
+    initialRouteName: "MainScreen",
+    headerMode: "screen",
+    contentComponent: props => <Settings {...props} />
   }
-}
+);
 
-function mapStateToProps(state) {
-  return {
-    store: state
-  };
-}
+const LoginNav = StackNavigator(
+  {
+    Login: {
+      screen: Login,
+      navigationOptions: {
+        header: null,
+        headerLeft: null
+      }
+    },
+    Confirmation: {
+      screen: Confirmation,
+      navigationOptions: {
+        title: "Confirmation",
+        tabBarLabel: "Confirmation",
+        tabBarIcon: ({ tintColor, focused }) => (
+          <Icon
+            name={focused ? "ios-home" : "ios-home-outline"}
+            size={26}
+            style={{ color: tintColor }}
+          />
+        )
+      }
+    }
+  },
+  {
+    headerMode: "screen",
+    initialRouteName: "Login"
+  }
+);
 
-export default connect(mapStateToProps)(MainClient);
+const NativeNav = StackNavigator(
+  {
+    Login: {
+      screen: LoginNav,
+      navigationOptions: {
+        header: null,
+        headerLeft: null
+      }
+    },
+    App: {
+      screen: HomeNav,
+      navigationOptions: {
+        header: null,
+        headerLeft: null
+      }
+    },
+    Checker: {
+      screen: Checker,
+      navigationOptions: {
+        header: null,
+        headerLeft: null
+      }
+    }
+  },
+  {
+    headerMode: "screen",
+    initialRouteName: "Checker"
+  }
+);
+
+export default NativeNav;
