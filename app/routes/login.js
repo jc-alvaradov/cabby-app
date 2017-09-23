@@ -4,7 +4,7 @@ import { NavigationActions } from "react-navigation";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Styles from "./styles";
 
-export default class Main extends Component {
+export default class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -89,7 +89,6 @@ export default class Main extends Component {
   }
 
   render() {
-    const { navigate } = this.props.navigation;
     return (
       <View style={Styles.mainContainer}>
         <Text style={Styles.title}>Taxi Native</Text>
@@ -116,6 +115,10 @@ export default class Main extends Component {
     );
   }
 }
+
+Login.navigationOptions = {
+  header: null
+};
 
 const iconStyles = {
   borderRadius: 1,

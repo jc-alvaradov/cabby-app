@@ -11,7 +11,7 @@ import { NavigationActions } from "react-navigation";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import { cambiarCiudad } from "../../actions/cambiar_ciudad";
+import { cambiarCiudad } from "../actions/cambiar_ciudad";
 
 class Router extends Component {
   constructor(props) {

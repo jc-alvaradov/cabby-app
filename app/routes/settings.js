@@ -8,59 +8,36 @@ import {
   AsyncStorage
 } from "react-native";
 import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { NavigationActions } from "react-navigation";
+import { logOut } from "../actions/load_screens";
 
 class Settings extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      user: {
-        name: "Default name",
-        avatar:
-          "https://scontent.flim5-4.fna.fbcdn.net/v/t1.0-9/14915587_1607787762860110_7545303131173262469_n.jpg?oh=49abfb0e8f9abbeab44842ce519a2e96&oe=59FF610C"
-      }
-    };
     this.closeSession = this.closeSession.bind(this);
-    this.loadUser = this.loadUser.bind(this);
   }
 
   async closeSession() {
     try {
-      await AsyncStorage.removeItem("@TNStore:login");
-      const gotoMain = NavigationActions.reset({
-        index: 0,
-        actions: [NavigationActions.navigate({ routeName: "Checker" })]
-      });
-      setTimeout(this.props.navigation.dispatch.bind(null, gotoMain), 500);
+      await AsyncStorage.removeItem("@TNStore:user");
+      this.props.logOut();
     } catch (error) {
       // Error saving data
     }
   }
 
-  async loadUser() {
-    return await AsyncStorage.getItem("@TNStore:login");
-  }
-
-  componentDidMount() {
-    // revisar si this.loadUser retorna null y cerrar la sesión si es que es asi
-    this.loadUser().then(user => {
-      this.setState({
-        user: JSON.parse(user)
-      });
-    });
-  }
-
   render() {
     const { navigate } = this.props.navigation;
+    const user = this.props.store.user;
     return (
       <View style={styles.container}>
         <Text style={styles.header}>Settings</Text>
         <Image
           style={{ width: 90, height: 90, borderRadius: 45 }}
-          source={{ uri: this.state.user.avatar }}
+          source={{ uri: user.avatar }}
         />
-        <Text style={styles.userName}>{this.state.user.name}</Text>
+        <Text style={styles.userName}>{user.name}</Text>
         <TouchableOpacity
           onPress={() => navigate("Rides")}
           style={styles.button}
@@ -130,4 +107,8 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(Settings);
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ logOut: logOut }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Settings);

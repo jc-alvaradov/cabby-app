@@ -7,11 +7,13 @@ import {
   Picker,
   TouchableOpacity
 } from "react-native";
-import { NavigationActions } from "react-navigation";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import PhoneInput from "react-native-phone-input";
+import { loadHomeScreen } from "../actions/load_screens";
 import Styles from "./styles";
 
-export default class Confirmation extends Component {
+class Confirmation extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -25,33 +27,17 @@ export default class Confirmation extends Component {
     // datos correctos, continuamos al home
     // enviamos los datos del cliente al home con un param
     if (!this.state.pressed) {
-      this.setState(
-        {
-          pressed: true
-        },
-        () => {
-          this.saveData(
-            JSON.stringify(this.props.navigation.state.params.user)
-          ).then(() => {
-            this.setState({ pressed: false }, () => {
-              const gotoChecker = NavigationActions.reset({
-                index: 0,
-                actions: [NavigationActions.navigate({ routeName: "Checker" })]
-              });
-              setTimeout(
-                this.props.navigation.dispatch.bind(null, gotoChecker),
-                500
-              );
-            });
-          });
-        }
-      );
+      const user = this.props.navigation.state.params.user;
+      user.loggedIn = true;
+      this.saveData(JSON.stringify(user)).then(() => {
+        this.props.loadHomeScreen(user);
+      });
     }
   }
 
   async saveData(user) {
     try {
-      return await AsyncStorage.setItem("@TNStore:login", user);
+      return await AsyncStorage.setItem("@TNStore:user", user);
     } catch (error) {
       // Error saving data
       console.log("Error saving data");
@@ -96,3 +82,13 @@ export default class Confirmation extends Component {
     );
   }
 }
+
+Confirmation.navigationOptions = {
+  title: "Confirmation"
+};
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ loadHomeScreen: loadHomeScreen }, dispatch);
+}
+
+export default connect(null, mapDispatchToProps)(Confirmation);

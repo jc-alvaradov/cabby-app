@@ -1,5 +1,16 @@
 import React from "react";
 import { AppRegistry } from "react-native";
-import TaxiNativeClient from "./app/index";
+import { Provider } from "react-redux";
+import { createStore } from "redux";
+import reducers from "./app/reducers";
+import TaxiNativeClient from "./app/navigators/AppNavigator";
 
-AppRegistry.registerComponent("TaxiNativeClient", () => TaxiNativeClient);
+const store = createStore(reducers);
+
+const app = () => (
+  <Provider store={store}>
+    <TaxiNativeClient />
+  </Provider>
+);
+
+AppRegistry.registerComponent("TaxiNativeClient", () => app);

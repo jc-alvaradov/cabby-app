@@ -1,4 +1,4 @@
-export default function(state = "", action) {
+export default function ciudadReducer(state = "", action) {
   switch (action.type) {
     case "CAMBIAR_CIUDAD":
       return action.payload;

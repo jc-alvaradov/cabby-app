@@ -108,6 +108,10 @@ function mapStateToProps(state) {
   };
 }
 
+Home.navigationOptions = {
+  header: null
+};
+
 export default connect(mapStateToProps)(Home);
 
 const styles = StyleSheet.create({
