@@ -74,20 +74,16 @@ export const AppNavigator = StackNavigator(
 );
 
 class AppWithNavigationState extends React.Component {
+  constructor(props) {
+    super(props);
+    this.onBackPress = this.onBackPress.bind(this);
+  }
   componentDidMount() {
     BackHandler.addEventListener("hardwareBackPress", this.onBackPress);
   }
   componentWillUnmount() {
     BackHandler.removeEventListener("hardwareBackPress", this.onBackPress);
   }
-  onBackPress = () => {
-    const { dispatch, nav } = this.props;
-    if (nav.index === 0) {
-      return false;
-    }
-    dispatch(NavigationActions.back());
-    return true;
-  };
   render() {
     const { dispatch, nav } = this.props;
     return (
@@ -96,13 +92,28 @@ class AppWithNavigationState extends React.Component {
       />
     );
   }
-}
 
-/*
-const AppWithNavigationState = ({ dispatch, nav }) => (
-  <AppNavigator navigation={addNavigationHelpers({ dispatch, state: nav })} />
-);
-*/
+  onBackPress() {
+    const { dispatch, nav } = this.props;
+    // el primer caso evita que se cierre la app cuando se esta en un navegador anidado
+    // y vuelve al screen anterior (anidado)
+    if (
+      nav.routes[0].hasOwnProperty("routes") &&
+      nav.routes[0].routes[0].routes[0].index === 1
+    ) {
+      dispatch(NavigationActions.back());
+      return true;
+    }
+    // cierra la app si es que esta en el root navigator
+    if (nav.index === 0) {
+      return false;
+    } else {
+      // en cualquier otro caso solo se devuelve al screen anterior
+      dispatch(NavigationActions.back());
+      return true;
+    }
+  }
+}
 
 const mapStateToProps = state => ({
   nav: state.nav

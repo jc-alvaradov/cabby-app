@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View, Button, Platform, Linking, WebView } from "react-native";
+import { Text, View, Button, Platform, Linking } from "react-native";
 import { NavigationActions } from "react-navigation";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Styles from "./styles";
@@ -16,41 +16,21 @@ export default class Login extends Component {
   }
 
   componentDidMount() {
-    // Add event listener to handle OAuthLogin:// URLs
-    // Launched from an external URL
-    if (Platform.OS === "ios") {
-      Linking.addEventListener("url", this.handleOpenURL);
-    } else {
-      Linking.getInitialURL().then(url => {
-        if (url) {
-          console.log("Recibi la url inicial: " + url);
-          this.handleOpenURL({ url });
-        }
-      });
-    }
+    Linking.addEventListener("url", this.handleOpenURL);
   }
 
   componentWillUnmount() {
     // Remove event listener
-    console.log("Voy a remover el listener");
     Linking.removeEventListener("url", this.handleOpenURL);
   }
 
   handleOpenURL({ url }) {
-    console.log("Handle Open URL was called");
     // Extract stringified user string out of the URL
     const [, user_string] = url.match(/user=([^#]+)/);
     if (Platform.OS === "ios") {
       SafariView.dismiss();
     }
-    console.log("Handle Open URL recibio este link: " + decodeURI(user_string));
 
-    // El problema es que se abre cuando sea que se llame, tiene que haber una condicion
-    // de en que ventana me encuentro para abrir o no
-    // si volvemos legitimamente pasaremos un parametro que se checkeara aqui
-    console.log("Voy a llamar al confirmation");
-
-    Linking.removeEventListener("url", this.handleOpenURL);
     this.props.navigation.navigate("Confirmation", {
       user: JSON.parse(decodeURI(user_string))
     });
@@ -58,7 +38,6 @@ export default class Login extends Component {
   }
 
   loginWithFacebook() {
-    //console.log("Vas a iniciar sesion con facebook");
     if (!this.state.selected) {
       this.openURL("http://45.7.229.110:3000/auth/facebook");
       this.setState({ selected: true });
@@ -66,14 +45,12 @@ export default class Login extends Component {
   }
 
   loginWithGoogle() {
-    //console.log("Vas a iniciar sesion con google");
     if (!this.state.selected) {
       this.openURL("http://45.7.229.110:3000/auth/google");
       this.setState({ selected: true });
     }
   }
 
-  // Open URL in a browser
   openURL(url) {
     // Use SafariView on iOS
     if (Platform.OS === "ios") {
@@ -83,7 +60,6 @@ export default class Login extends Component {
       });
     } else {
       // Or Linking.openURL on Android
-      console.log("Soy openURL y me dijeron q abra esta url: " + url);
       Linking.openURL(url);
     }
   }

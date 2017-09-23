@@ -39,7 +39,6 @@ class Confirmation extends Component {
     try {
       return await AsyncStorage.setItem("@TNStore:user", user);
     } catch (error) {
-      // Error saving data
       console.log("Error saving data");
     }
   }

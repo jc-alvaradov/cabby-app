@@ -7,6 +7,7 @@ const initialNavState = AppNavigator.router.getStateForAction(
 
 export default function navReducer(state = initialNavState, action) {
   let nextState;
+
   switch (action.type) {
     case "LOAD_START_SCREEN":
       nextState = AppNavigator.router.getStateForAction(
@@ -21,6 +22,7 @@ export default function navReducer(state = initialNavState, action) {
       nextState = AppNavigator.router.getStateForAction(
         NavigationActions.reset({
           index: 0,
+          key: null,
           actions: [NavigationActions.navigate({ routeName: "Home" })]
         }),
         state
