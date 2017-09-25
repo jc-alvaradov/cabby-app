@@ -10,7 +10,7 @@ import { connect } from "react-redux";
 import Loader from "../routes/loader";
 import Login from "../routes/login";
 import Confirmation from "../routes/confirmation";
-import MapScreen from "../routes/Home";
+import MapScreen from "../routes/Home/HomeContainer";
 import Settings from "../routes/settings";
 import Router from "../routes/router";
 import Rides from "../routes/rides";

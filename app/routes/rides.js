@@ -24,6 +24,10 @@ export default class Rides extends Component {
   }
 }
 
+Rides.navigationOptions = {
+  title: "Rides"
+};
+
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,

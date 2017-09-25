@@ -5,21 +5,11 @@ const Styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-start",
     alignItems: "center",
-    backgroundColor: "white",
+    backgroundColor: "white"
   },
   form: {
     width: 280,
     marginTop: 30
-  },
-  button: {
-    alignItems: "center",
-    justifyContent: "center",
-    width: 180,
-    height: 55,
-    borderRadius: 50,
-    backgroundColor: "#1ca68a",
-    marginTop: 20,
-    elevation: 3
   },
   input: {
     marginBottom: 10,
@@ -44,10 +34,6 @@ const Styles = StyleSheet.create({
     height: 50,
     elevation: 2
   },
-  text: {
-    color: "white",
-    fontSize: 18
-  },
   header: {
     fontSize: 18,
     color: "#444444",
@@ -67,7 +53,7 @@ const Styles = StyleSheet.create({
     borderRadius: 10,
     width: 260,
     maxHeight: 180,
-    padding: 20,
+    padding: 20
   },
   title: {
     fontFamily: "Allan-Bold",
@@ -81,6 +67,42 @@ const Styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 10
+  },
+  driverId: {
+    backgroundColor: "#ffffff",
+    width: 300,
+    height: 180,
+    borderRadius: 5,
+    padding: 10
+  },
+  container: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: "flex-end",
+    alignItems: "center"
+  },
+  searchView: {
+    top: 60,
+    flex: 1
+  },
+  searchInput: {
+    backgroundColor: "white",
+    width: 300,
+    height: 50,
+    elevation: 3
+  },
+  input: {
+    marginTop: -24,
+    marginLeft: 14,
+    fontSize: 18,
+    width: 250,
+    textAlign: "center",
+    color: "#444444"
+  },
+  icon: {
+    marginTop: 12,
+    marginLeft: 10,
+    color: "#444444",
+    fontSize: 20
   }
 });
 

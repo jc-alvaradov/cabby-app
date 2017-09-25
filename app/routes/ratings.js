@@ -24,6 +24,10 @@ export default class Ratings extends Component {
   }
 }
 
+Ratings.navigationOptions = {
+  title: "Ratings"
+};
+
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,

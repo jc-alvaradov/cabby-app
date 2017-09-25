@@ -1,19 +1,13 @@
-import React, { Component } from "react";
-import {
-  Text,
-  View,
-  AsyncStorage,
-  TextInput,
-  Picker,
-  TouchableOpacity
-} from "react-native";
+import React from "react";
+import { Text, View, AsyncStorage, TextInput, Picker } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import PhoneInput from "react-native-phone-input";
 import { loadHomeScreen } from "../actions/load_screens";
+import Button from "../components/basicButton";
 import Styles from "./styles";
 
-class Confirmation extends Component {
+class Confirmation extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -74,9 +68,7 @@ class Confirmation extends Component {
             <Picker.Item label="Paypal" value="paypal" />
           </Picker>
         </View>
-        <TouchableOpacity onPress={this.continue} style={Styles.button}>
-          <Text style={Styles.text}>Continue</Text>
-        </TouchableOpacity>
+        <Button onTouch={this.continue} text="Continue" btnStyle="default" />
       </View>
     );
   }
