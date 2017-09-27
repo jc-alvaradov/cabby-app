@@ -1,6 +1,13 @@
 import React from "react";
-import { Text, View, Image, TextInput, TouchableHighlight } from "react-native";
+import { Text, View, Image, TextInput, StyleSheet } from "react-native";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { hideRideNav } from "../actions/hide_ride_nav";
+import { cleanStart, cleanFinish } from "../actions/ride_position";
+import { showIcons } from "../actions/show_icons";
+import { cleanPolyCoords } from "../actions/clean_poly_coords";
 import Button from "../components/basicButton";
+import Loading from "../components/loading";
 import styles from "./styles";
 
 const DriverId = ({ name, avatar }) => {
@@ -16,33 +23,121 @@ const DriverId = ({ name, avatar }) => {
   );
 };
 
-const RideSelect = () => {
-  return (
-    <View>
-      <Button text="Request Taxi" />
-      <Button text="Cancel" />
-    </View>
-  );
-};
-
-const RideNav = ({ state, user }) => {
-  let rideNav;
-  switch (state) {
-    case "searching_driver":
-      break;
-    case "ride_select":
-      rideNav = <RideSelect />;
-      break;
-    case "driver_id":
-      rideNav = <DriverId name={user.name} avatar={user.avatar} />;
-      break;
-    case "hidden":
-      rideNav = null;
-      break;
-    default:
-      rideNav = null;
+class RideNav extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      distance: 0,
+      price: 0,
+      time: ""
+    };
+    this.closeRideSelect = this.closeRideSelect.bind(this);
   }
-  return rideNav;
-};
 
-export default RideNav;
+  closeRideSelect() {
+    this.props.hideRideNav("hidden");
+    this.props.showIcons(true);
+    this.props.cleanStart();
+    this.props.cleanFinish();
+    this.props.cleanPolyCoords();
+  }
+
+  closePosSelect() {
+    //navegar hasta el router y pasarle por params los valores
+  }
+
+  async calqDistance() {
+    if (this.props.rideStart != null && this.props.rideFinish != null) {
+      const rideStart = this.props.rideStart;
+      const rideFinish = this.props.rideFinish;
+      const query = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${rideStart.latitude},${rideStart.longitude}&destinations=${rideFinish.latitude},${rideFinish.longitude}&key=AIzaSyAJTjCs9OddMqnuyL6qXowI8SYQTwU5vjQ`;
+      let resp = await fetch(query);
+      let respJson = await resp.json();
+
+      if (!respJson.hasOwnProperty("error_message")) {
+        const ride = respJson.rows[0].elements[0];
+        // asegurarse de que no sea cero al dividir
+        this.setState({
+          distance: ride.distance.text,
+          time: ride.duration.text,
+          price: ride.distance.value / 1000 * 500
+        });
+      } else {
+        console.log(
+          "Hubo un error en la peticion a la api de google: " +
+            respJson.error_message
+        );
+      }
+    }
+  }
+
+  render() {
+    let rideNav;
+    switch (this.props.state) {
+      case "start_pos_select":
+        rideNav = (
+          <View>
+            <Button
+              text="Cancel"
+              onTouch={this.closePosSelect}
+              btnStyle="small"
+            />
+          </View>
+        );
+        break;
+      case "finish_pos_select":
+        break;
+      case "ride_select":
+        this.calqDistance();
+        rideNav = (
+          <View style={styles.rideSelectContainer}>
+            <Text>{this.state.distance}</Text>
+            <Text>${this.state.price}</Text>
+            <Text>{this.state.time}</Text>
+            <View style={styles.btnContainer}>
+              <Button
+                text="Cancel"
+                onTouch={this.closeRideSelect}
+                btnStyle="small"
+              />
+              <Button text="Request Taxi" btnStyle="small" />
+            </View>
+          </View>
+        );
+        break;
+      case "searching_driver":
+        rideNav = <Loading />;
+        break;
+      case "driver_id":
+        rideNav = (
+          <DriverId
+            name={this.props.user.name}
+            avatar={this.props.user.avatar}
+          />
+        );
+        break;
+      case "hidden":
+        rideNav = null;
+        break;
+      default:
+        rideNav = null;
+    }
+    return rideNav;
+  }
+}
+
+function mapStateToProps(state) {
+  return {
+    rideStart: state.rideStart,
+    rideFinish: state.rideFinish
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    { hideRideNav, showIcons, cleanStart, cleanFinish, cleanPolyCoords },
+    dispatch
+  );
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(RideNav);

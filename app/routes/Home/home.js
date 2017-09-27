@@ -8,6 +8,7 @@ import {
   TouchableHighlight
 } from "react-native";
 import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import Icon from "react-native-vector-icons/FontAwesome";
 import styles from "../styles";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
@@ -15,15 +16,13 @@ import Geocoder from "react-native-geocoder";
 import Polyline from "@mapbox/polyline";
 import HeaderButton from "../../components/headerButton";
 import AutoCompleteInput from "../../components/autoCompleteInput";
+import { setPolyCoords } from "../../actions/set_polyCoords";
 import RideNav from "../rideNav";
 import Map from "./map";
 
 class Home extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      polyCoords: []
-    };
     this.routerNav = this.routerNav.bind(this);
     this.getDirections = this.getDirections.bind(this);
   }
@@ -41,10 +40,21 @@ class Home extends Component {
     });
   }
 
-  async getDirections() {
-    const startLoc = this.props.store.rideStart;
-    const destinationLoc = this.props.store.rideFinish;
+  componentWillReceiveProps(nextProps) {
+    if (
+      nextProps.rideNav === "ride_select" &&
+      nextProps.rideStart != null &&
+      nextProps.rideFinish != null
+    ) {
+      const startLoc =
+        nextProps.rideStart.latitude + "," + nextProps.rideStart.longitude;
+      const destinationLoc =
+        nextProps.rideFinish.latitude + "," + nextProps.rideFinish.longitude;
+      this.getDirections(startLoc, destinationLoc);
+    }
+  }
 
+  async getDirections(startLoc, destinationLoc) {
     try {
       let resp = await fetch(
         `https://maps.googleapis.com/maps/api/directions/json?origin=${startLoc}&destination=${destinationLoc}&key=AIzaSyAJTjCs9OddMqnuyL6qXowI8SYQTwU5vjQ`
@@ -57,49 +67,29 @@ class Home extends Component {
           longitude: point[1]
         };
       });
-      this.setState({ polyCoords: coords });
-      //return coords;
+      this.props.setPolyCoords(coords);
+      return coords;
     } catch (error) {
       return error;
     }
   }
 
-  componentDidMount() {
-    this.getDirections();
-    /*this.makeDirections(this.props.position, {
-      latitude: -33.047238,
-      longitude: -71.61268849999999
-    });*/
-  }
-
   render() {
-    // Solo se debiera poder hacer click una vez en el router
-
-    if (this.props.store.rideNav == "ride_select") {
-      console.log("Hay un ride select!");
-      this.getDirections();
-    }
-
     return (
       <View style={styles.container}>
-        <Map
-          position={this.props.position}
-          cars={this.props.cars}
-          clientImg={this.props.clientImg}
-          polyCoords={this.state.polyCoords}
-        />
+        <Map position={this.props.position} cars={this.props.cars} />
         <HeaderButton
           onPress={() => this.props.navigation.navigate("DrawerOpen")}
-          show={this.props.store.showIcons}
+          show={this.props.showIcons}
         />
         <View style={styles.searchView}>
           <AutoCompleteInput
             defaultValue="Where do you want to go?"
             callBack={this.routerNav}
-            show={this.props.store.showIcons}
+            show={this.props.showIcons}
           />
         </View>
-        <RideNav state={this.props.store.rideNav} />
+        <RideNav state={this.props.rideNav} />
       </View>
     );
   }
@@ -111,11 +101,18 @@ Home.navigationOptions = {
 
 function mapStateToProps(state) {
   return {
-    store: state
+    showIcons: state.showIcons,
+    rideNav: state.rideNav,
+    rideStart: state.rideStart,
+    rideFinish: state.rideFinish
   };
 }
 
-export default connect(mapStateToProps)(Home);
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ setPolyCoords }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
 
 /*
 

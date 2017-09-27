@@ -7,6 +7,7 @@ import iconsReducer from "./icons_reducer";
 import ridenavReducer from "./ridenav_reducer";
 import rideStartReducer from "./ride_start_reducer";
 import rideFinishReducer from "./ride_finish_reducer";
+import polyCoordsReducer from "./poly_coords_reducer";
 import navReducer from "./nav_reducer";
 
 export default combineReducers({
@@ -17,6 +18,7 @@ export default combineReducers({
   rideNav: ridenavReducer,
   rideStart: rideStartReducer,
   rideFinish: rideFinishReducer,
+  polyCoords: polyCoordsReducer,
   user: userReducer,
   nav: navReducer
 });

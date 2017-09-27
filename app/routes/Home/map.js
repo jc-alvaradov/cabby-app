@@ -10,24 +10,28 @@ class Map extends React.Component {
     this.mapRef = null;
   }
 
-  componentDidMount() {
-    console.log("Se monto el mapa");
-    if (this.props.store.rideNav === "ride_select") {
-      this.setTimeout(() => {
-        this.mapRef.fitToSuppliedMarkers(
-          ["rideStartKeyTn", "rideFinishKeyTn"],
-          true
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.rideNav === "ride_select") {
+      setTimeout(() => {
+        this.mapRef.fitToCoordinates(
+          [this.props.store.rideStart, this.props.store.rideFinish],
+          {
+            edgePadding: {
+              top: 50,
+              left: 100,
+              bottom: 300,
+              right: 100
+            },
+            animated: true
+          }
         );
-      }, 500);
+      }, 1000);
     }
   }
 
   render() {
-    let line;
-    if (this.props.store.rideNav === "ride_select") {
-      //
-    }
-    if (this.props.polyCoords.length > 0) {
+    let line = null;
+    if (this.props.polyCoords != null && this.props.polyCoords.length > 0) {
       line = (
         <MapView.Polyline
           coordinates={this.props.polyCoords}
@@ -50,6 +54,7 @@ class Map extends React.Component {
         showsCompass={false}
         toolbarEnable={false}
         rotateEnabled={false}
+        pitchEnabled={false}
         ref={ref => {
           this.mapRef = ref;
         }}
@@ -65,15 +70,9 @@ class Map extends React.Component {
           coordinate={this.props.position}
           image={require("../../images/user_low.png")}
         />
-        <MapView.Marker
-          key="rideStartKeyTn"
-          coordinate={this.props.store.rideStart}
-          image={require("../../images/car-top.png")}
-        />
-        <MapView.Marker
-          key="rideFinishKeyTn"
-          coordinate={this.props.store.rideFinish}
-          image={require("../../images/car-top.png")}
+        <RidePoints
+          rideStart={this.props.store.rideStart}
+          rideFinish={this.props.store.rideFinish}
         />
         {line}
       </MapView>
@@ -81,9 +80,33 @@ class Map extends React.Component {
   }
 }
 
+const RidePoints = ({ rideStart, rideFinish }) => {
+  let render = null;
+  if (rideStart != null && rideFinish != null) {
+    render = (
+      <View>
+        <MapView.Marker
+          key="rideStartKeyTn"
+          coordinate={rideStart}
+          image={require("../../images/ride_point_32x32.png")}
+        />
+        <MapView.Marker
+          key="rideFinishKeyTn"
+          coordinate={rideFinish}
+          image={require("../../images/ride_point_32x32.png")}
+        />
+      </View>
+    );
+  }
+
+  return render;
+};
+
 function mapStateToProps(state) {
   return {
-    store: state
+    store: state,
+    rideNav: state.rideNav,
+    polyCoords: state.polyCoords
   };
 }
 

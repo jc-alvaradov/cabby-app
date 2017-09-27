@@ -103,7 +103,36 @@ const Styles = StyleSheet.create({
     marginLeft: 10,
     color: "#444444",
     fontSize: 20
+  },
+  rideSelectContainer: {
+    backgroundColor: "#ffffff",
+    width: 300,
+    height: 150,
+    borderRadius: 5,
+    padding: 10,
+    flexDirection: "column",
+    justifyContent: "space-between"
+  },
+  btnContainer: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: 270
   }
 });
 
 export default Styles;
+
+/*
+  rideSelectContainer: {
+    flex: 1,
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 270,
+    maxHeight: 140,
+    marginBottom: 30,
+    zIndex: 1
+  }
+
+*/
