@@ -14,18 +14,22 @@ export default class HeaderButton extends Component {
   };
 
   render() {
-    return (
-      <View style={styles.container}>
-        <Icon.Button
-          name={this.props.icon}
-          size={44}
-          color="#444444"
-          backgroundColor="transparent"
-          underlayColor="transparent"
-          onPress={this.props.onPress}
-        />
-      </View>
-    );
+    let btn = null;
+    if (this.props.show) {
+      btn = (
+        <View style={styles.container}>
+          <Icon.Button
+            name={this.props.icon}
+            size={44}
+            color="#444444"
+            backgroundColor="transparent"
+            underlayColor="transparent"
+            onPress={this.props.onPress}
+          />
+        </View>
+      );
+    }
+    return btn;
   }
 }
 

@@ -10,54 +10,88 @@ import {
 import { NavigationActions } from "react-navigation";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { cambiarCiudad } from "../actions/cambiar_ciudad";
+import Geocoder from "react-native-geocoder";
+import { showIcons } from "../actions/show_icons";
+import { rideNav } from "../actions/ride_nav";
+import { setStart, setFinish } from "../actions/ride_position";
 import AutoCompleteInput from "../components/autoCompleteInput";
 import Button from "../components/basicButton";
 
 class Router extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      text: ""
-    };
-    this.textChange = this.textChange.bind(this);
-  }
 
-  textChange(data) {
-    //console.log(data);
-    this.setState({ text: data.description });
-    console.log("Voy a despachar la accion con texto: " + data.description);
-    this.props.cambiarCiudad(data.description);
-  }
-
-  showRoute() {
-    // esconder iconos de settings y caja de busqueda,
-    // guardar en el estado el startPos y destPos de las cajas de busqueda(lat y lng)
-    // despachar una accion que llame al getDirections para que dibuje el mapa
-    // y muestre un estimado de la distancia y precio, ademas de 2 botones, uno de
-    // pedir taxi y otro de cancelar
-    // cambiar variable rideMap para que muestre una caja con botones
-  }
-
-  render() {
-    const defaultStart = this.props.navigation.hasOwnProperty("state")
+    const startText = this.props.navigation.hasOwnProperty("state")
       ? this.props.navigation.state.params.userPos
       : "Start Location";
-
-    const defaultFinish = this.props.navigation.hasOwnProperty("state")
+    const finishText = this.props.navigation.hasOwnProperty("state")
       ? this.props.navigation.state.params.ciudad
       : "Finish Location";
 
+    this.state = {
+      startText: startText,
+      finishText: finishText,
+      start: startText,
+      finish: finishText
+    };
+
+    this.getStartValue = this.getStartValue.bind(this);
+    this.getFinishValue = this.getFinishValue.bind(this);
+    this.showRoute = this.showRoute.bind(this);
+  }
+
+  getStartValue(value) {
+    this.setState({ start: value });
+  }
+
+  getFinishValue(value) {
+    this.setState({ finish: value });
+  }
+
+  showRoute() {
+    // escondemos los iconos de la pantalla principal
+    this.props.showIcons(false);
+    // elegimos el estado de navegacion donde se muestra la ruta del viaje
+    this.props.rideNav("ride_select");
+
+    Geocoder.geocodeAddress(this.state.start).then(res => {
+      // despachamos la posicion de inicio del viaje
+      let startPos = {};
+      startPos.latitude = res[0].position.lat;
+      startPos.longitude = res[0].position.lng;
+      this.props.setStart(startPos);
+    });
+
+    Geocoder.geocodeAddress(this.state.finish).then(res => {
+      // despachamos la posicion final del viaje
+      let finishPos = {};
+      finishPos.latitude = res[0].position.lat;
+      finishPos.longitude = res[0].position.lng;
+      this.props.setFinish(finishPos);
+    });
+
+    this.props.navigation.goBack();
+  }
+
+  render() {
     return (
       <View style={styles.container}>
         <View style={styles.inputContainer}>
           <View>
             <Text>Start Location</Text>
-            <AutoCompleteInput defaultValue={defaultStart} />
+            <AutoCompleteInput
+              defaultValue={this.state.startText}
+              show={true}
+              getValue={this.getStartValue}
+            />
           </View>
           <View style={styles.input}>
             <Text>Finish Location</Text>
-            <AutoCompleteInput defaultValue={defaultFinish} />
+            <AutoCompleteInput
+              defaultValue={this.state.finishText}
+              getValue={this.getFinishValue}
+              show={true}
+            />
           </View>
         </View>
         <View style={styles.btnContainer}>
@@ -103,7 +137,10 @@ Router.navigationOptions = {
 };
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ cambiarCiudad: cambiarCiudad }, dispatch);
+  return bindActionCreators(
+    { showIcons, rideNav, setStart, setFinish },
+    dispatch
+  );
 }
 
 export default connect(null, mapDispatchToProps)(Router);

@@ -1,6 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
-import NavIcon from "react-native-vector-icons/Ionicons";
 import Loading from "../../components/loading";
 import Home from "./home";
 
@@ -8,7 +6,6 @@ class HomeContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      clientImg: undefined,
       position: {
         latitude: 0,
         longitude: 0
@@ -62,11 +59,8 @@ class HomeContainer extends React.Component {
         <Loading />
       ) : (
         <Home
-          user={this.props.store.user}
           position={this.state.position}
           cars={this.state.cars}
-          clientImg={this.state.clientImg}
-          ciudad={this.props.store.ciudad}
           navigation={this.props.navigation}
         />
       );
@@ -78,10 +72,4 @@ HomeContainer.navigationOptions = {
   header: null
 };
 
-function mapStateToProps(state) {
-  return {
-    store: state
-  };
-}
-
-export default connect(mapStateToProps)(HomeContainer);
+export default HomeContainer;

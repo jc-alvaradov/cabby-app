@@ -24,4 +24,25 @@ const RideSelect = () => {
     </View>
   );
 };
-export { DriverId, RideSelect };
+
+const RideNav = ({ state, user }) => {
+  let rideNav;
+  switch (state) {
+    case "searching_driver":
+      break;
+    case "ride_select":
+      rideNav = <RideSelect />;
+      break;
+    case "driver_id":
+      rideNav = <DriverId name={user.name} avatar={user.avatar} />;
+      break;
+    case "hidden":
+      rideNav = null;
+      break;
+    default:
+      rideNav = null;
+  }
+  return rideNav;
+};
+
+export default RideNav;
