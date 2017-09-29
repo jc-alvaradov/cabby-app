@@ -55,6 +55,9 @@ class Map extends React.Component {
         toolbarEnable={false}
         rotateEnabled={false}
         pitchEnabled={false}
+        showsUserLocation={true}
+        showsMyLocationButton={false}
+        provider={"google"}
         ref={ref => {
           this.mapRef = ref;
         }}
@@ -66,10 +69,6 @@ class Map extends React.Component {
             image={require("../../images/car-top.png")}
           />
         ))}
-        <MapView.Marker
-          coordinate={this.props.position}
-          image={require("../../images/user_low.png")}
-        />
         <RidePoints
           rideStart={this.props.store.rideStart}
           rideFinish={this.props.store.rideFinish}
@@ -88,12 +87,12 @@ const RidePoints = ({ rideStart, rideFinish }) => {
         <MapView.Marker
           key="rideStartKeyTn"
           coordinate={rideStart}
-          image={require("../../images/ride_point_32x32.png")}
+          image={require("../../images/ride_start.png")}
         />
         <MapView.Marker
           key="rideFinishKeyTn"
           coordinate={rideFinish}
-          image={require("../../images/ride_point_32x32.png")}
+          image={require("../../images/ride_finish.png")}
         />
       </View>
     );

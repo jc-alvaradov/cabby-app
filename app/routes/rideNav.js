@@ -7,6 +7,7 @@ import { cleanStart, cleanFinish } from "../actions/ride_position";
 import { showIcons } from "../actions/show_icons";
 import { cleanPolyCoords } from "../actions/clean_poly_coords";
 import Button from "../components/basicButton";
+import BackButton from "../components/backButton";
 import Loading from "../components/loading";
 import styles from "./styles";
 
@@ -29,9 +30,11 @@ class RideNav extends React.Component {
     this.state = {
       distance: 0,
       price: 0,
-      time: ""
+      time: "",
+      rideShown: false
     };
     this.closeRideSelect = this.closeRideSelect.bind(this);
+    this.calqDistance = this.calqDistance.bind(this);
   }
 
   closeRideSelect() {
@@ -40,10 +43,21 @@ class RideNav extends React.Component {
     this.props.cleanStart();
     this.props.cleanFinish();
     this.props.cleanPolyCoords();
+    this.setState({ rideShown: false });
   }
 
   closePosSelect() {
     //navegar hasta el router y pasarle por params los valores
+  }
+
+  addCommas(n) {
+    var rx = /(\d+)(\d{3})/;
+    return String(n).replace(/^\d+/, function(w) {
+      while (rx.test(w)) {
+        w = w.replace(rx, "$1.$2");
+      }
+      return w;
+    });
   }
 
   async calqDistance() {
@@ -57,10 +71,12 @@ class RideNav extends React.Component {
       if (!respJson.hasOwnProperty("error_message")) {
         const ride = respJson.rows[0].elements[0];
         // asegurarse de que no sea cero al dividir
+        const ridePrice = Math.round(ride.distance.value / 1000 * 400);
         this.setState({
           distance: ride.distance.text,
           time: ride.duration.text,
-          price: ride.distance.value / 1000 * 500
+          price: ridePrice > 999 ? this.addCommas(ridePrice) : ridePrice,
+          rideShown: true
         });
       } else {
         console.log(
@@ -88,19 +104,20 @@ class RideNav extends React.Component {
       case "finish_pos_select":
         break;
       case "ride_select":
-        this.calqDistance();
+        if (!this.state.rideShown) {
+          this.calqDistance();
+        }
         rideNav = (
-          <View style={styles.rideSelectContainer}>
-            <Text>{this.state.distance}</Text>
-            <Text>${this.state.price}</Text>
-            <Text>{this.state.time}</Text>
-            <View style={styles.btnContainer}>
-              <Button
-                text="Cancel"
-                onTouch={this.closeRideSelect}
-                btnStyle="small"
-              />
-              <Button text="Request Taxi" btnStyle="small" />
+          <View style={styles.rideSelectContainer} pointerEvents="box-none">
+            <BackButton onTouch={this.closeRideSelect} />
+            <View style={styles.textContainer}>
+              <Text style={styles.estimation}>
+                Estimated {this.state.distance}
+              </Text>
+              <Text style={styles.price}>${this.state.price}</Text>
+            </View>
+            <View>
+              <Button text="Request Taxi" btnStyle="long" />
             </View>
           </View>
         );

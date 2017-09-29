@@ -14,6 +14,9 @@ class Button extends React.Component {
       case "small":
         style = styles.small;
         break;
+      case "long":
+        style = styles.long;
+        break;
       default:
         style = styles.default;
     }
@@ -45,6 +48,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#1ca68a",
     marginTop: 20,
     elevation: 3
+  },
+  long: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: 300,
+    height: 50,
+    borderRadius: 5,
+    backgroundColor: "#1ca68a",
+    marginTop: 10,
+    marginBottom: 5,
+    elevation: 2
   },
   text: {
     color: "white",

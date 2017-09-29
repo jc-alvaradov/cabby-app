@@ -104,20 +104,42 @@ const Styles = StyleSheet.create({
     color: "#444444",
     fontSize: 20
   },
-  rideSelectContainer: {
-    backgroundColor: "#ffffff",
-    width: 300,
-    height: 150,
-    borderRadius: 5,
-    padding: 10,
-    flexDirection: "column",
-    justifyContent: "space-between"
-  },
   btnContainer: {
     flex: 1,
-    flexDirection: "row",
+    flexDirection: "column",
+    alignItems: "center",
     justifyContent: "space-between",
     width: 270
+  },
+  rideSelectContainer: {
+    width: 300,
+    height: 176,
+    borderRadius: 5,
+    flexDirection: "column",
+    justifyContent: "space-between",
+    marginBottom: 30
+  },
+  textContainer: {
+    backgroundColor: "#ffffff",
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+    width: 300,
+    height: 50,
+    borderRadius: 5,
+    elevation: 3
+  },
+  estimation: {
+    fontSize: 16,
+    paddingLeft: 10,
+    paddingTop: 14
+  },
+  price: {
+    fontWeight: "bold",
+    fontSize: 20,
+    paddingRight: 14,
+    paddingTop: 13
   }
 });
 
