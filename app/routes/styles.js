@@ -1,17 +1,20 @@
 import { StyleSheet } from "react-native";
 
 const Styles = StyleSheet.create({
-  container: {
+  confirmationContainer: {
     flex: 1,
     justifyContent: "flex-start",
     alignItems: "center",
     backgroundColor: "white"
   },
+  map: {
+    ...StyleSheet.absoluteFillObject
+  },
   form: {
     width: 280,
     marginTop: 30
   },
-  input: {
+  confirmationInput: {
     marginBottom: 10,
     padding: 10,
     fontSize: 16,
@@ -140,6 +143,56 @@ const Styles = StyleSheet.create({
     fontSize: 20,
     paddingRight: 14,
     paddingTop: 13
+  },
+  pinContainer: {
+    ...StyleSheet.absoluteFillObject
+  },
+  pickupContainer: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 60
+  },
+  pickupView: {
+    backgroundColor: "#1ca68a",
+    width: 200,
+    maxHeight: 35,
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+    padding: 6,
+    borderRadius: 20,
+    elevation: 3
+  },
+  pickupText: {
+    color: "#ffffff",
+    fontSize: 16,
+    marginLeft: 10,
+    marginTop: 2
+  },
+  pickupBtn: {
+    ...StyleSheet.absoluteFillObject,
+    flexDirection: "column",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    marginBottom: 30
+  },
+  chevronIcon: {
+    marginTop: 5,
+    marginRight: 8,
+    color: "#ffffff",
+    fontSize: 18
+  },
+  errorMsg: {
+    color: "red"
+  },
+  driverSearch: {
+    ...StyleSheet.absoluteFillObject,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#ffffff"
   }
 });
 

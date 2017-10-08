@@ -18,7 +18,7 @@ class Loader extends Component {
   async getAppState() {
     try {
       const user = await AsyncStorage.getItem("@TNStore:user");
-      if (user != null && JSON.parse(user).loggedIn === true) {
+      if (user != null) {
         // user is logged in
         this.props.loadHomeScreen(JSON.parse(user));
       } else {

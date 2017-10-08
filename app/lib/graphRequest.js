@@ -1,0 +1,15 @@
+import axios from "axios";
+axios.defaults.headers.post["Content-Type"] = "application/json";
+axios.defaults.withCredentials = true;
+axios.defaults.useXDomain = true;
+
+export function graphRequest(data) {
+  return axios
+    .post("http://45.7.229.110:3000/graphql", data)
+    .then(res => {
+      return res;
+    })
+    .catch(err => {
+      console.log(`Hubo un error en la peticion al dominio graphql: ${err}`);
+    });
+}

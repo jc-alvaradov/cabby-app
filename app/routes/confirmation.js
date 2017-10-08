@@ -3,6 +3,7 @@ import { Text, View, AsyncStorage, TextInput, Picker } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import PhoneInput from "react-native-phone-input";
+import { graphRequest } from "../lib/graphRequest";
 import { loadHomeScreen } from "../actions/load_screens";
 import Button from "../components/basicButton";
 import Styles from "./styles";
@@ -10,49 +11,94 @@ import Styles from "./styles";
 class Confirmation extends React.Component {
   constructor(props) {
     super(props);
+    const user = this.props.navigation.state.params.user;
     this.state = {
-      pressed: false
+      pressed: false,
+      name: user.name,
+      email: user.email,
+      phone: null,
+      payment: "Cash",
+      errorMsg: ""
     };
     this.continue = this.continue.bind(this);
     this.saveData = this.saveData.bind(this);
   }
+
   continue() {
     // checkear que los datos esten llenados y correctos
-    // datos correctos, continuamos al home
-    // enviamos los datos del cliente al home con un param
-    if (!this.state.pressed) {
-      const user = this.props.navigation.state.params.user;
-      user.loggedIn = true;
-      this.saveData(JSON.stringify(user)).then(() => {
+    const validFields =
+      this.state.name != null &&
+      this.state.email != null &&
+      this.state.phone != null &&
+      this.state.payment != null;
+    if (!this.state.pressed && validFields === true) {
+      const user = {
+        login: this.props.navigation.state.params.user.id,
+        avatar: this.props.navigation.state.params.user.avatar,
+        clientName: this.state.name,
+        email: this.state.email,
+        phone: this.state.phone,
+        payment: this.state.payment,
+        rating: 0,
+        active: "active"
+      };
+      this.saveData(user).then(res => {
+        if (res === false) {
+          console.log("Hubo un problema guardando el usuario");
+        }
+        // continuamos de todas formas por ahora
         this.props.loadHomeScreen(user);
       });
+    } else {
+      this.setState({ errorMsg: "Please fill in all fields" });
     }
   }
 
   async saveData(user) {
-    try {
-      return await AsyncStorage.setItem("@TNStore:user", user);
-    } catch (error) {
-      console.log("Error saving data");
+    const query = {
+      query:
+        "mutation ($cliente: ClientInput!) { addClient(client: $cliente) }",
+      variables: {
+        cliente: user
+      }
+    };
+    const saveUser = await graphRequest(query);
+    if (saveUser.data.data.addClient === true) {
+      try {
+        return await AsyncStorage.setItem(
+          "@TNStore:user",
+          JSON.stringify(user)
+        );
+      } catch (error) {
+        console.log("Error saving data");
+        return false;
+      }
+    } else {
+      return false;
     }
   }
 
   render() {
     const user = this.props.navigation.state.params.user;
     return (
-      <View style={Styles.container}>
+      <View style={Styles.confirmationContainer}>
         <View style={Styles.form}>
+          <Text style={Styles.errorMsg}>{this.state.errorMsg}</Text>
           <Text style={Styles.header}>Name</Text>
           <TextInput
-            style={Styles.input}
+            style={Styles.confirmationInput}
             underlineColorAndroid="rgba(0,0,0,0)"
+            maxLength={30}
             defaultValue={user.name}
+            onChangeText={name => this.setState({ name })}
           />
           <Text style={Styles.header}>Email</Text>
           <TextInput
-            style={Styles.input}
+            style={Styles.confirmationInput}
             underlineColorAndroid="rgba(0,0,0,0)"
+            maxLength={30}
             defaultValue={user.email}
+            onChangeText={email => this.setState({ email })}
           />
           <Text style={Styles.header}>Phone Number</Text>
           <View style={Styles.phone}>
@@ -60,12 +106,18 @@ class Confirmation extends React.Component {
               ref="phone"
               textStyle={{ fontSize: 15 }}
               initialCountry="cl"
+              textProps={{ maxLength: 12 }}
+              onChangePhoneNumber={phone => this.setState({ phone })}
             />
           </View>
           <Text style={Styles.header}>Payment Method</Text>
-          <Picker style={Styles.picker} selectedValue="Cash">
-            <Picker.Item label="Cash" value="cash" />
-            <Picker.Item label="Paypal" value="paypal" />
+          <Picker
+            style={Styles.picker}
+            selectedValue={this.state.payment}
+            onValueChange={payment => this.setState({ payment })}
+          >
+            <Picker.Item label="Cash" value="Cash" />
+            <Picker.Item label="Paypal" value="Paypal" />
           </Picker>
         </View>
         <Button onTouch={this.continue} text="Continue" btnStyle="default" />

@@ -47,9 +47,13 @@ class Home extends Component {
       nextProps.rideFinish != null
     ) {
       const startLoc =
-        nextProps.rideStart.latitude + "," + nextProps.rideStart.longitude;
+        nextProps.rideStart.coords.latitude +
+        "," +
+        nextProps.rideStart.coords.longitude;
       const destinationLoc =
-        nextProps.rideFinish.latitude + "," + nextProps.rideFinish.longitude;
+        nextProps.rideFinish.coords.latitude +
+        "," +
+        nextProps.rideFinish.coords.longitude;
       this.getDirections(startLoc, destinationLoc);
     }
   }
@@ -77,7 +81,7 @@ class Home extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Map position={this.props.position} cars={this.props.cars} />
+        <Map position={this.props.position} />
         <HeaderButton
           onPress={() => this.props.navigation.navigate("DrawerOpen")}
           show={this.props.showIcons}
@@ -89,7 +93,7 @@ class Home extends Component {
             show={this.props.showIcons}
           />
         </View>
-        <RideNav state={this.props.rideNav} />
+        <RideNav />
       </View>
     );
   }

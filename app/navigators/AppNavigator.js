@@ -12,6 +12,7 @@ import Login from "../routes/login";
 import Confirmation from "../routes/confirmation";
 import MapScreen from "../routes/Home/HomeContainer";
 import Settings from "../routes/settings";
+import Drawer from "../routes/drawer";
 import Router from "../routes/router";
 import Rides from "../routes/rides";
 import Ratings from "../routes/ratings";
@@ -29,6 +30,9 @@ const Main = StackNavigator(
     },
     Ratings: {
       screen: Ratings
+    },
+    Settings: {
+      screen: Settings
     }
   },
   {
@@ -44,7 +48,7 @@ const HomeScreen = DrawerNavigator(
     }
   },
   {
-    contentComponent: props => <Settings {...props} />
+    contentComponent: props => <Drawer {...props} />
   }
 );
 

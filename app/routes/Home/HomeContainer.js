@@ -9,23 +9,7 @@ class HomeContainer extends React.Component {
       position: {
         latitude: 0,
         longitude: 0
-      },
-      cars: [
-        {
-          key: "asdasd33k3kk!",
-          position: {
-            latitude: -33.112237,
-            longitude: -71.569072
-          }
-        },
-        {
-          key: "lksksksks!!",
-          position: {
-            latitude: -33.142007,
-            longitude: -71.575885
-          }
-        }
-      ]
+      }
     };
   }
 
@@ -39,20 +23,11 @@ class HomeContainer extends React.Component {
       });
     }, null);
   }
-  getCars() {
-    // hace una peticion get al servidor para que le envie un array con todos los conductores activos
-    // cada objeto del array(conductor) tiene 2 atributos: position(latitude y longitude) y un key
-    /* 
-    const cars = axios.get
-    if(cars != undefined){
-      this.setState({cars});
-    }
-    
-    subscribirse a la lista de autos
-  
 
-    */
+  componentWillUnmount() {
+    clearTimeout(this.timer);
   }
+
   render() {
     const render =
       this.state.position.latitude === 0 ? (
@@ -60,7 +35,6 @@ class HomeContainer extends React.Component {
       ) : (
         <Home
           position={this.state.position}
-          cars={this.state.cars}
           navigation={this.props.navigation}
         />
       );

@@ -38,6 +38,7 @@ class Router extends Component {
     this.getStartValue = this.getStartValue.bind(this);
     this.getFinishValue = this.getFinishValue.bind(this);
     this.showRoute = this.showRoute.bind(this);
+    this.setOnMap = this.setOnMap.bind(this);
   }
 
   getStartValue(value) {
@@ -56,20 +57,34 @@ class Router extends Component {
 
     Geocoder.geocodeAddress(this.state.start).then(res => {
       // despachamos la posicion de inicio del viaje
-      let startPos = {};
-      startPos.latitude = res[0].position.lat;
-      startPos.longitude = res[0].position.lng;
+      const startPos = {
+        name: this.state.start,
+        coords: {
+          latitude: res[0].position.lat,
+          longitude: res[0].position.lng
+        }
+      };
       this.props.setStart(startPos);
     });
 
     Geocoder.geocodeAddress(this.state.finish).then(res => {
       // despachamos la posicion final del viaje
-      let finishPos = {};
-      finishPos.latitude = res[0].position.lat;
-      finishPos.longitude = res[0].position.lng;
+      const finishPos = {
+        name: this.state.finish,
+        coords: {
+          latitude: res[0].position.lat,
+          longitude: res[0].position.lng
+        }
+      };
       this.props.setFinish(finishPos);
     });
 
+    this.props.navigation.goBack();
+  }
+
+  setOnMap() {
+    this.props.showIcons(false);
+    this.props.rideNav("start_pos_select");
     this.props.navigation.goBack();
   }
 
@@ -96,7 +111,7 @@ class Router extends Component {
         </View>
         <View style={styles.btnContainer}>
           <Button text="Show Route" btnStyle="small" onTouch={this.showRoute} />
-          <Button text="Set on Map" btnStyle="small" />
+          <Button text="Set on Map" btnStyle="small" onTouch={this.setOnMap} />
         </View>
       </View>
     );

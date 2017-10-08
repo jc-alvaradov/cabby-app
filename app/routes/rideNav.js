@@ -2,13 +2,16 @@ import React from "react";
 import { Text, View, Image, TextInput, StyleSheet } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import Icon from "react-native-vector-icons/FontAwesome";
+import { rideNav } from "../actions/ride_nav";
 import { hideRideNav } from "../actions/hide_ride_nav";
 import { cleanStart, cleanFinish } from "../actions/ride_position";
 import { showIcons } from "../actions/show_icons";
 import { cleanPolyCoords } from "../actions/clean_poly_coords";
+import SearchDriver from "./searchDriver";
+import Loading from "../components/loading";
 import Button from "../components/basicButton";
 import BackButton from "../components/backButton";
-import Loading from "../components/loading";
 import styles from "./styles";
 
 const DriverId = ({ name, avatar }) => {
@@ -30,11 +33,11 @@ class RideNav extends React.Component {
     this.state = {
       distance: 0,
       price: 0,
-      time: "",
       rideShown: false
     };
     this.closeRideSelect = this.closeRideSelect.bind(this);
     this.calqDistance = this.calqDistance.bind(this);
+    this.requestTaxi = this.requestTaxi.bind(this);
   }
 
   closeRideSelect() {
@@ -46,11 +49,8 @@ class RideNav extends React.Component {
     this.setState({ rideShown: false });
   }
 
-  closePosSelect() {
-    //navegar hasta el router y pasarle por params los valores
-  }
-
   addCommas(n) {
+    // añade puntos al precio
     var rx = /(\d+)(\d{3})/;
     return String(n).replace(/^\d+/, function(w) {
       while (rx.test(w)) {
@@ -62,8 +62,8 @@ class RideNav extends React.Component {
 
   async calqDistance() {
     if (this.props.rideStart != null && this.props.rideFinish != null) {
-      const rideStart = this.props.rideStart;
-      const rideFinish = this.props.rideFinish;
+      const rideStart = this.props.rideStart.coords;
+      const rideFinish = this.props.rideFinish.coords;
       const query = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${rideStart.latitude},${rideStart.longitude}&destinations=${rideFinish.latitude},${rideFinish.longitude}&key=AIzaSyAJTjCs9OddMqnuyL6qXowI8SYQTwU5vjQ`;
       let resp = await fetch(query);
       let respJson = await resp.json();
@@ -74,7 +74,6 @@ class RideNav extends React.Component {
         const ridePrice = Math.round(ride.distance.value / 1000 * 400);
         this.setState({
           distance: ride.distance.text,
-          time: ride.duration.text,
           price: ridePrice > 999 ? this.addCommas(ridePrice) : ridePrice,
           rideShown: true
         });
@@ -87,27 +86,18 @@ class RideNav extends React.Component {
     }
   }
 
+  requestTaxi() {
+    this.props.rideNav("searching_driver");
+  }
+
   render() {
-    let rideNav;
+    let nav;
     switch (this.props.state) {
-      case "start_pos_select":
-        rideNav = (
-          <View>
-            <Button
-              text="Cancel"
-              onTouch={this.closePosSelect}
-              btnStyle="small"
-            />
-          </View>
-        );
-        break;
-      case "finish_pos_select":
-        break;
       case "ride_select":
         if (!this.state.rideShown) {
           this.calqDistance();
         }
-        rideNav = (
+        nav = (
           <View style={styles.rideSelectContainer} pointerEvents="box-none">
             <BackButton onTouch={this.closeRideSelect} />
             <View style={styles.textContainer}>
@@ -117,16 +107,28 @@ class RideNav extends React.Component {
               <Text style={styles.price}>${this.state.price}</Text>
             </View>
             <View>
-              <Button text="Request Taxi" btnStyle="long" />
+              <Button
+                style={styles.pickupBtn}
+                text="Request Taxi"
+                btnStyle="long"
+                onTouch={this.requestTaxi}
+              />
             </View>
           </View>
         );
         break;
       case "searching_driver":
-        rideNav = <Loading />;
+        nav = (
+          <SearchDriver
+            rideStart={this.props.rideStart}
+            rideFinish={this.props.rideFinish}
+            amount={this.state.price}
+            user={this.props.user}
+          />
+        );
         break;
       case "driver_id":
-        rideNav = (
+        nav = (
           <DriverId
             name={this.props.user.name}
             avatar={this.props.user.avatar}
@@ -134,17 +136,18 @@ class RideNav extends React.Component {
         );
         break;
       case "hidden":
-        rideNav = null;
+        nav = null;
         break;
       default:
-        rideNav = null;
+        nav = null;
     }
-    return rideNav;
+    return nav;
   }
 }
 
 function mapStateToProps(state) {
   return {
+    state: state.rideNav,
     rideStart: state.rideStart,
     rideFinish: state.rideFinish
   };
@@ -152,7 +155,14 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
-    { hideRideNav, showIcons, cleanStart, cleanFinish, cleanPolyCoords },
+    {
+      rideNav,
+      hideRideNav,
+      showIcons,
+      cleanStart,
+      cleanFinish,
+      cleanPolyCoords
+    },
     dispatch
   );
 }
