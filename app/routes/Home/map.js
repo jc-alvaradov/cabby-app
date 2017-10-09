@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, Image, Animated } from "react-native";
+import { StyleSheet, Text, View, Image } from "react-native";
 import MapView from "react-native-maps";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -9,10 +9,12 @@ import Button from "../../components/basicButton";
 import { regionFrom } from "../../lib/delta";
 import { rideNav } from "../../actions/ride_nav";
 import { setStart, setFinish } from "../../actions/ride_position";
+import Driver from "../../components/driver";
 
 class Map extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       screenPos: null,
       showStartIcon: false,
@@ -42,13 +44,13 @@ class Map extends React.Component {
   }
 
   componentDidMount() {
-    console.log("Se monto el componente!");
     this.getDrivers();
   }
 
   getDrivers() {
     // hace una peticion get al servidor para que le envie un array con todos los conductores activos
     // cada objeto del array(conductor) tiene 2 atributos: position(latitude y longitude) y un key
+    // revisar que hayan datos antes de cambiar el estado
     console.log("Se ejecuto getDrivers!");
     const query = {
       query:
@@ -63,16 +65,18 @@ class Map extends React.Component {
 
     this.timer = setInterval(async () => {
       let drivers = await graphRequest(query);
-      drivers = drivers.data.data.getClosestDrivers.map(driver => {
-        return {
-          key: driver.driverId,
-          position: {
-            latitude: driver.coordinate.coordinates[1],
-            longitude: driver.coordinate.coordinates[0]
-          }
-        };
-      });
-      this.setState({ drivers });
+      if (drivers != null) {
+        drivers = drivers.data.data.getClosestDrivers.map(driver => {
+          return {
+            key: driver.driverId,
+            position: {
+              latitude: driver.coordinate.coordinates[1],
+              longitude: driver.coordinate.coordinates[0]
+            }
+          };
+        });
+        this.setState({ drivers });
+      }
     }, 3000);
   }
 
@@ -245,11 +249,7 @@ class Map extends React.Component {
           }}
         >
           {this.state.drivers.map(driver => (
-            <MapView.Marker
-              key={driver.key}
-              coordinate={driver.position}
-              image={require("../../images/car-top.png")}
-            />
+            <Driver key={driver.key} coordinate={driver.position} />
           ))}
           <RidePoints
             rideStart={this.props.store.rideStart}
