@@ -10,6 +10,7 @@ import { regionFrom } from "../../lib/delta";
 import { rideNav } from "../../actions/ride_nav";
 import { setStart, setFinish } from "../../actions/ride_position";
 import Driver from "../../components/driver";
+import RidePickup from "../RidePickup";
 
 class Map extends React.Component {
   constructor(props) {
@@ -17,6 +18,7 @@ class Map extends React.Component {
     this.state = {
       screenPos: null,
       showStartIcon: false,
+      showRideStart: false,
       drivers: [
         {
           key: "asdasd33k3kk!",
@@ -46,13 +48,6 @@ class Map extends React.Component {
 
   componentDidMount() {
     this.getDrivers();
-    /*this.setState({
-      region: regionFrom(
-        this.props.position.latitude,
-        this.props.position.longitude,
-        50
-      )
-    });*/
   }
 
   async getDriver() {
@@ -81,16 +76,27 @@ class Map extends React.Component {
         }
       ];
       this.setState({
-        drivers: driver
+        drivers: driver,
+        showRideStart: true
       });
-      this.mapRef.animateToRegion(
+      /*this.mapRef.fitToCoordinates([this.props.position, driver[0].position], {
+        edgePadding: {
+          top: 150,
+          left: 100,
+          bottom: 400,
+          right: 100
+        },
+        animated: true
+      });*/
+      // agregar condicion si es que el usuario decide no seguir al driver
+      /*this.mapRef.animateToRegion(
         regionFrom(
           driver[0].position.latitude,
           driver[0].position.longitude,
           15
         ),
         1000
-      );
+      );*/
     }
   }
 
@@ -321,6 +327,10 @@ class Map extends React.Component {
           <RideStart
             pos={this.props.store.rideStart}
             show={this.state.showStartIcon}
+          />
+          <RidePickup
+            show={this.props.rideState === "driver_id"}
+            coordinate={this.props.position}
           />
           {line}
         </MapView>

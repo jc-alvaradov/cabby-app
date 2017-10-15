@@ -9,25 +9,11 @@ import { cleanStart, cleanFinish } from "../actions/ride_position";
 import { showIcons } from "../actions/show_icons";
 import { cleanPolyCoords } from "../actions/clean_poly_coords";
 import SearchDriver from "./searchDriver";
+import DriverId from "./DriverId";
 import Loading from "../components/loading";
 import Button from "../components/basicButton";
 import BackButton from "../components/backButton";
 import styles from "./styles";
-
-class DriverId extends React.Component {
-  render() {
-    return (
-      <View style={styles.driverId}>
-        <Image
-          style={{ width: 50, height: 50, borderRadius: 25 }}
-          source={{ uri: this.props.driver.photo }}
-        />
-        <Text>{this.props.driver.driverName}</Text>
-        <Text>{this.props.driver.carModel}</Text>
-      </View>
-    );
-  }
-}
 
 class RideNav extends React.Component {
   constructor(props) {

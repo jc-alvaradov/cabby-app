@@ -71,13 +71,6 @@ const Styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 10
   },
-  driverId: {
-    backgroundColor: "#ffffff",
-    width: 300,
-    height: 180,
-    borderRadius: 5,
-    padding: 10
-  },
   container: {
     ...StyleSheet.absoluteFillObject,
     justifyContent: "flex-end",
@@ -193,21 +186,44 @@ const Styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#ffffff"
+  },
+  driverContainer: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 10,
+    marginBottom: 14
+  },
+  driverInfo: {
+    alignItems: "center"
+  },
+  bold: {
+    fontWeight: "bold"
+  },
+  carPlate: {
+    fontWeight: "bold",
+    fontSize: 16,
+    borderColor: "#444444",
+    borderWidth: 0.8,
+    borderRadius: 2,
+    padding: 4
+  },
+  driverId: {
+    backgroundColor: "#ffffff",
+    width: 300,
+    height: 175,
+    marginBottom: 30,
+    borderRadius: 2
+  },
+  rideStatus: {
+    borderColor: "#d1d1d1",
+    paddingBottom: 3,
+    marginTop: 5,
+    paddingLeft: 20,
+    marginBottom: 3,
+    borderBottomWidth: 0.3
   }
 });
 
 export default Styles;
-
-/*
-  rideSelectContainer: {
-    flex: 1,
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    width: 270,
-    maxHeight: 140,
-    marginBottom: 30,
-    zIndex: 1
-  }
-
-*/

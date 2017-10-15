@@ -3287,6 +3287,13 @@ raw-body@~2.1.2:
     iconv-lite "0.4.13"
     unpipe "1.0.0"
 
+react-addons-update@^15.6.0:
+  version "15.6.2"
+  resolved "https://registry.yarnpkg.com/react-addons-update/-/react-addons-update-15.6.2.tgz#e53753c5b34887974510c882d7fb075851d5e504"
+  dependencies:
+    fbjs "^0.8.9"
+    object-assign "^4.1.0"
+
 react-clone-referenced-element@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/react-clone-referenced-element/-/react-clone-referenced-element-1.0.1.tgz#2bba8c69404c5e4a944398600bcc4c941f860682"
@@ -3301,6 +3308,12 @@ react-devtools-core@2.3.1:
   dependencies:
     shell-quote "^1.6.1"
     ws "^2.0.3"
+
+react-native-button@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-button/-/react-native-button-2.1.0.tgz#a39e23292922afeea4f7be141dd43e18f1b51876"
+  dependencies:
+    prop-types "^15.5.10"
 
 react-native-dismiss-keyboard@1.0.0:
   version "1.0.0"
@@ -3334,6 +3347,10 @@ react-native-maps@^0.15.3:
   version "0.15.3"
   resolved "https://registry.yarnpkg.com/react-native-maps/-/react-native-maps-0.15.3.tgz#5d9e0a8e30ecc51dc755b7a3b9d6b6ed5e2dd08c"
 
+react-native-phone-call@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/react-native-phone-call/-/react-native-phone-call-1.0.4.tgz#809b7dd27452e429c9deddb4c311997702e333ba"
+
 react-native-phone-input@^0.1.8:
   version "0.1.9"
   resolved "https://registry.yarnpkg.com/react-native-phone-input/-/react-native-phone-input-0.1.9.tgz#e5634eca7676be93d9d56d8eb35f68627808aa01"
@@ -3341,11 +3358,28 @@ react-native-phone-input@^0.1.8:
     google-libphonenumber "^2.0.9"
     lodash "^4.17.4"
 
+react-native-star-rating@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/react-native-star-rating/-/react-native-star-rating-1.0.8.tgz#6e47d5335ddcc7920a5d92e6cc6478f8655a92a3"
+  dependencies:
+    prop-types "^15.5.10"
+    react-addons-update "^15.6.0"
+    react-native-button "^2.1.0"
+    react-native-vector-icons "^4.2.0"
+
 react-native-tab-view@^0.0.65:
   version "0.0.65"
   resolved "https://registry.yarnpkg.com/react-native-tab-view/-/react-native-tab-view-0.0.65.tgz#b685ea3081ff7c96486cd997361026c407302c59"
   dependencies:
     prop-types "^15.5.8"
+
+react-native-vector-icons@^4.2.0:
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/react-native-vector-icons/-/react-native-vector-icons-4.4.2.tgz#090f42ee0396c4cc4eae0ddaa518028ba8df40c7"
+  dependencies:
+    lodash "^4.0.0"
+    prop-types "^15.5.10"
+    yargs "^8.0.2"
 
 react-native-vector-icons@^4.3.0:
   version "4.3.0"
