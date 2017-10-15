@@ -14,6 +14,7 @@ class HomeContainer extends React.Component {
   }
 
   componentDidMount() {
+    // obtiene la posicion actual del usuario
     navigator.geolocation.getCurrentPosition(position => {
       this.setState({
         position: {
@@ -22,10 +23,6 @@ class HomeContainer extends React.Component {
         }
       });
     }, null);
-  }
-
-  componentWillUnmount() {
-    clearTimeout(this.timer);
   }
 
   render() {

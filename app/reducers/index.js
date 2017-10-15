@@ -1,5 +1,6 @@
 import { combineReducers } from "redux";
 import userReducer from "./user_reducer";
+import driverReducer from "./driver_reducer";
 import ciudadReducer from "./ciudad_reducer";
 import destinoReducer from "./destino_reducer";
 import iconsReducer from "./icons_reducer";
@@ -18,5 +19,6 @@ export default combineReducers({
   rideFinish: rideFinishReducer,
   polyCoords: polyCoordsReducer,
   user: userReducer,
+  driver: driverReducer,
   nav: navReducer
 });

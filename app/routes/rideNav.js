@@ -14,18 +14,20 @@ import Button from "../components/basicButton";
 import BackButton from "../components/backButton";
 import styles from "./styles";
 
-const DriverId = ({ name, avatar }) => {
-  return (
-    <View style={styles.driverId}>
-      <Image
-        style={{ width: 50, height: 50, borderRadius: 25 }}
-        source={{ uri: avatar }}
-      />
-      <Text>{name}</Text>
-      <Text>Suzuki Maruti</Text>
-    </View>
-  );
-};
+class DriverId extends React.Component {
+  render() {
+    return (
+      <View style={styles.driverId}>
+        <Image
+          style={{ width: 50, height: 50, borderRadius: 25 }}
+          source={{ uri: this.props.driver.photo }}
+        />
+        <Text>{this.props.driver.driverName}</Text>
+        <Text>{this.props.driver.carModel}</Text>
+      </View>
+    );
+  }
+}
 
 class RideNav extends React.Component {
   constructor(props) {
@@ -36,6 +38,7 @@ class RideNav extends React.Component {
       rideShown: false
     };
     this.closeRideSelect = this.closeRideSelect.bind(this);
+    this.closeSearchDriver = this.closeSearchDriver.bind(this);
     this.calqDistance = this.calqDistance.bind(this);
     this.requestTaxi = this.requestTaxi.bind(this);
   }
@@ -46,6 +49,10 @@ class RideNav extends React.Component {
     this.props.cleanStart();
     this.props.cleanFinish();
     this.props.cleanPolyCoords();
+    this.setState({ rideShown: false });
+  }
+
+  closeSearchDriver() {
     this.setState({ rideShown: false });
   }
 
@@ -70,7 +77,6 @@ class RideNav extends React.Component {
 
       if (!respJson.hasOwnProperty("error_message")) {
         const ride = respJson.rows[0].elements[0];
-        // asegurarse de que no sea cero al dividir
         const ridePrice = Math.round(ride.distance.value / 1000 * 400);
         this.setState({
           distance: ride.distance.text,
@@ -87,10 +93,13 @@ class RideNav extends React.Component {
   }
 
   requestTaxi() {
+    // hace que se muestre la pantalla de "buscando conductor" encima del mapa
     this.props.rideNav("searching_driver");
+    this.closeSearchDriver();
   }
 
   render() {
+    // dependiendo de los valores del store se muestran distintos componentes
     let nav;
     switch (this.props.state) {
       case "ride_select":
@@ -128,12 +137,7 @@ class RideNav extends React.Component {
         );
         break;
       case "driver_id":
-        nav = (
-          <DriverId
-            name={this.props.user.name}
-            avatar={this.props.user.avatar}
-          />
-        );
+        nav = <DriverId driver={this.props.driver} />;
         break;
       case "hidden":
         nav = null;
@@ -148,6 +152,8 @@ class RideNav extends React.Component {
 function mapStateToProps(state) {
   return {
     state: state.rideNav,
+    user: state.user,
+    driver: state.driver,
     rideStart: state.rideStart,
     rideFinish: state.rideFinish
   };

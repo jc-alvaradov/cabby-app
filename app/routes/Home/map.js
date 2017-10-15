@@ -14,7 +14,6 @@ import Driver from "../../components/driver";
 class Map extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       screenPos: null,
       showStartIcon: false,
@@ -41,17 +40,66 @@ class Map extends React.Component {
     this.setDropoffLocation = this.setDropoffLocation.bind(this);
     this.takeSnapshot = this.takeSnapshot.bind(this);
     this.getDrivers = this.getDrivers.bind(this);
+    this.getDriver = this.getDriver.bind(this);
+    this.getClosestDrivers = this.getClosestDrivers.bind(this);
   }
 
   componentDidMount() {
     this.getDrivers();
+    /*this.setState({
+      region: regionFrom(
+        this.props.position.latitude,
+        this.props.position.longitude,
+        50
+      )
+    });*/
   }
 
-  getDrivers() {
-    // hace una peticion get al servidor para que le envie un array con todos los conductores activos
-    // cada objeto del array(conductor) tiene 2 atributos: position(latitude y longitude) y un key
-    // revisar que hayan datos antes de cambiar el estado
-    console.log("Se ejecuto getDrivers!");
+  async getDriver() {
+    // se usa el driver id del store para hacer una peticion a la bd cada 3 min
+    // el array de autos se convierte en 1 solo auto.
+    // hay que cambiar this.state.drivers, se actualiza la pos del mapa con la del auto
+    // siempre y cuando no se haya seleccionado la opcion "dejar de seguir"
+    const query = {
+      query:
+        "query($id: String!) { getDriverPos(id: $id){ driverId socketId coordinate{ coordinates } }}",
+      variables: {
+        id: this.props.store.driver._id
+      }
+    };
+
+    let driver = await graphRequest(query);
+    if (driver != null && driver.data.data.getDriverPos) {
+      driver = driver.data.data.getDriverPos;
+      driver = [
+        {
+          key: driver.driverId,
+          position: {
+            latitude: driver.coordinate.coordinates[1],
+            longitude: driver.coordinate.coordinates[0]
+          }
+        }
+      ];
+      this.setState({
+        drivers: driver
+      });
+      this.mapRef.animateToRegion(
+        regionFrom(
+          driver[0].position.latitude,
+          driver[0].position.longitude,
+          15
+        ),
+        1000
+      );
+    }
+  }
+
+  async getClosestDrivers() {
+    /** 
+     * hace una peticion get al servidor para que le envie un array con todos los conductores activos
+     * cada objeto del array(conductor) tiene 2 atributos: position(latitude y longitude) y un key
+     * revisar que hayan datos antes de cambiar el estado
+     */
     const query = {
       query:
         "query($clientPos: DriverLocationInput!) { getClosestDrivers(clientPos: $clientPos){ driverId coordinate{ coordinates } } }",
@@ -62,27 +110,37 @@ class Map extends React.Component {
         }
       }
     };
+    let drivers = await graphRequest(query);
+    if (drivers != null && drivers.data.data.getClosestDrivers) {
+      drivers = drivers.data.data.getClosestDrivers.map(driver => {
+        return {
+          key: driver.driverId,
+          position: {
+            latitude: driver.coordinate.coordinates[1],
+            longitude: driver.coordinate.coordinates[0]
+          }
+        };
+      });
+      this.setState({ drivers });
+    }
+  }
 
-    this.timer = setInterval(async () => {
-      let drivers = await graphRequest(query);
-      if (drivers != null) {
-        drivers = drivers.data.data.getClosestDrivers.map(driver => {
-          return {
-            key: driver.driverId,
-            position: {
-              latitude: driver.coordinate.coordinates[1],
-              longitude: driver.coordinate.coordinates[0]
-            }
-          };
-        });
-        this.setState({ drivers });
+  getDrivers() {
+    // actualiza los datos de los conductores desde el servidor cada 3 segundos
+    this.timer = setInterval(() => {
+      // revisamos si el objeto del conductor tiene propiedades
+      if (Object.keys(this.props.store.driver).length > 0) {
+        this.getDriver();
+      } else {
+        // si no las tiene es porque no hay un conductor asignado todavia
+        this.getClosestDrivers();
       }
     }, 3000);
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.rideState === "ride_select") {
-      console.log("Se ejecuto el fitMap");
+      // hace un fit del mapa para que quepa en la pantalla
       this.timer = setTimeout(() => {
         this.mapRef.fitToCoordinates(
           [
@@ -104,10 +162,16 @@ class Map extends React.Component {
   }
 
   componentWillUnmount() {
+    // remueve el timer que actualiza los drivers
     clearTimeout(this.timer);
   }
 
   screenMoved(pos) {
+    /** 
+     * se ejecuta cuando se mueve el mapa. pos guarda un objeto con latitud y longitud
+     * que se refiere al centro de la pantalla
+     * si se esta seleccionando un punto de inicio o fin de viaje, se guarda esta posicion en el estado
+     */
     if (
       this.props.rideState === "start_pos_select" ||
       this.props.rideState === "finish_pos_select"
@@ -132,7 +196,7 @@ class Map extends React.Component {
         }
       };
       this.props.setStart(startPos);
-      this.setState({ showStartIcon: true }); // podemos cambiarlo aqui y no afectara al polyline porque todavia no hay un finishpos
+      this.setState({ showStartIcon: true });
       this.props.rideNav("finish_pos_select");
     }
   }
@@ -154,8 +218,6 @@ class Map extends React.Component {
   }
 
   takeSnapshot() {
-    // 'takeSnapshot' takes a config object with the
-    // following options
     const snapshot = this.mapRef.takeSnapshot({
       width: 300, // optional, when omitted the view-width is used
       height: 300, // optional, when omitted the view-height is used

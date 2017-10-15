@@ -25,7 +25,7 @@ class Confirmation extends React.Component {
   }
 
   continue() {
-    // checkear que los datos esten llenados y correctos
+    // checkea que los datos esten llenados y correctos
     const validFields =
       this.state.name != null &&
       this.state.email != null &&
@@ -46,7 +46,7 @@ class Confirmation extends React.Component {
         if (res === false) {
           console.log("Hubo un problema guardando el usuario");
         }
-        // continuamos de todas formas por ahora
+        // FIXME: continuamos de todas formas por ahora
         this.props.loadHomeScreen(user);
       });
     } else {

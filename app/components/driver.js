@@ -15,7 +15,12 @@ class Driver extends React.Component {
   }
 
   calculareRotation(lat1, long1, lat2, long2) {
-    // https://stackoverflow.com/questions/3932502/calculate-angle-between-two-latitude-longitude-points
+    /**
+     * calculamos la rotacion que tendra el auto, partiendo desde 
+     * una posicion inicial hasta otra, en latitud y longitud.
+     * algoritmo: https://stackoverflow.com/questions/3932502/calculate-angle-between-two-latitude-longitude-points
+     */
+
     const dLon = long2 - long1;
     const y = Math.sin(dLon) * Math.cos(lat2);
     const x =
@@ -30,16 +35,20 @@ class Driver extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // se actualiza desps de recibir la nueva posicion, podria ser muy inexacto.
-    // se actualiza la posicion cada 3 segundos, la idea es evitar los saltos bruscos
-    // entre una posicion horizontal y una vertical por ejemplo que podria ocurrir
-    // dentro de los 3 segundos
+    /**
+     * FIXME: 
+     * se actualiza desps de recibir la nueva posicion, podria ser muy inexacto.
+     * se actualiza la posicion cada 3 segundos, la idea es evitar los saltos bruscos
+     * entre una posicion horizontal y una vertical por ejemplo que podria ocurrir
+     * dentro de los 3 segundos
+     */
     if (this.props.coordinate !== nextProps.coordinate) {
+      // primero pasamos la posicion actual y luego la proxima posicion que tendra el conductor
       const newRotation =
         this.calculareRotation(
-          this.props.coordinate.latitude, // posicion actual
+          this.props.coordinate.latitude,
           this.props.coordinate.longitude,
-          nextProps.coordinate.latitude, // proxima posicion
+          nextProps.coordinate.latitude,
           nextProps.coordinate.longitude
         ) + "deg";
       this.setState({
