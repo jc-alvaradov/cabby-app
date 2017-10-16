@@ -1,26 +1,19 @@
-import React, { PropTypes } from "react";
+import React from "react";
+import PropTypes from "prop-types";
 import { StyleSheet, View, Text, Image } from "react-native";
 import MapView from "react-native-maps";
 
-const propTypes = {
-  show: PropTypes.bool.isRequired
-};
-
-const defaultProps = {
-  show: false
-};
-
 class RidePickup extends React.Component {
-  constructor(props) {
-    super(props);
-    /** 
-     * this initialRender state makes sure that the icon loads two times, is a hack for an issue with react native maps
-     * https://github.com/airbnb/react-native-maps/issues/924
-     */
-    this.state = {
-      initialRender: true
-    };
-  }
+  /** 
+   * this initialRender state makes sure that the icon loads two times, is a hack for an issue with react native maps
+   * https://github.com/airbnb/react-native-maps/issues/924
+   */
+  static propTypes = { show: PropTypes.bool.isRequired };
+  static defaultProps = { show: false };
+
+  state = {
+    initialRender: true
+  };
 
   render() {
     const { show } = this.props;
@@ -48,9 +41,6 @@ class RidePickup extends React.Component {
     }
   }
 }
-
-RidePickup.propTypes = propTypes;
-RidePickup.defaultProps = defaultProps;
 
 const styles = StyleSheet.create({
   container: {

@@ -17,18 +17,10 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import Styles from "./styles";
 
 class Login extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selected: false,
-      loading: false
-    };
-    this.handleOpenURL = this.handleOpenURL.bind(this);
-    this.loginWithFacebook = this.loginWithFacebook.bind(this);
-    this.loginWithGoogle = this.loginWithGoogle.bind(this);
-    this.userIsRegistered = this.userIsRegistered.bind(this);
-    this.saveData = this.saveData.bind(this);
-  }
+  state = {
+    selected: false,
+    loading: false
+  };
 
   componentDidMount() {
     Linking.addEventListener("url", this.handleOpenURL);
@@ -38,15 +30,15 @@ class Login extends Component {
     Linking.removeEventListener("url", this.handleOpenURL);
   }
 
-  async saveData(user) {
+  saveData = async user => {
     try {
       return await AsyncStorage.setItem("@TNStore:user", user);
     } catch (error) {
       console.log("Error saving data");
     }
-  }
+  };
 
-  async userIsRegistered(user) {
+  userIsRegistered = async user => {
     /*
       Evita que se registre un usuario mas de una vez. 
       Ej: Si un usuario crea una cuenta y despues cierra la app se borraran sus datos, 
@@ -76,9 +68,9 @@ class Login extends Component {
         this.setState({ selected: false, loading: false });
       }
     }
-  }
+  };
 
-  handleOpenURL({ url }) {
+  handleOpenURL = ({ url }) => {
     // recibimos el usuario como cadena, lo decodeamos y revisamos si ya esta registrado en el servidor.
     // si ya esta registrado al servidor guardamos al user en el estado y navegamos al home. Si no lo esta
     // navegamos al confirmation
@@ -87,23 +79,23 @@ class Login extends Component {
       SafariView.dismiss();
     }
     this.userIsRegistered(decodeURI(user_string));
-  }
+  };
 
-  loginWithFacebook() {
+  loginWithFacebook = () => {
     if (!this.state.selected) {
       this.openURL("http://45.7.229.110:3000/auth/facebook");
       this.setState({ selected: true, loading: true });
     }
-  }
+  };
 
-  loginWithGoogle() {
+  loginWithGoogle = () => {
     if (!this.state.selected) {
       this.openURL("http://45.7.229.110:3000/auth/google");
       this.setState({ selected: true, loading: true });
     }
-  }
+  };
 
-  openURL(url) {
+  openURL = url => {
     // Use SafariView on iOS
     if (Platform.OS === "ios") {
       SafariView.show({
@@ -114,7 +106,7 @@ class Login extends Component {
       // Or Linking.openURL on Android
       Linking.openURL(url);
     }
-  }
+  };
 
   render() {
     let render = <Loading />;
@@ -160,8 +152,8 @@ const iconStyles = {
   iconStyle: { paddingVertical: 5 }
 };
 
-function mapDispatchToProps(dispatch) {
+mapDispatchToProps = dispatch => {
   return bindActionCreators({ loadHomeScreen: loadHomeScreen }, dispatch);
-}
+};
 
 export default connect(null, mapDispatchToProps)(Login);

@@ -6,16 +6,11 @@ import Loading from "../components/loading";
 import { loadStartScreen, loadHomeScreen } from "../actions/load_screens";
 
 class Loader extends Component {
-  constructor(props) {
-    super(props);
-    this.getAppState = this.getAppState.bind(this);
-  }
-
   componentDidMount() {
     this.getAppState();
   }
 
-  async getAppState() {
+  getAppState = async () => {
     try {
       const user = await AsyncStorage.getItem("@TNStore:user");
       if (user != null) {
@@ -28,7 +23,7 @@ class Loader extends Component {
     } catch (error) {
       console.log("There was an error reading from disk");
     }
-  }
+  };
 
   render() {
     return <Loading />;
@@ -39,7 +34,7 @@ Loader.navigationOptions = {
   header: null
 };
 
-function mapDispatchToProps(dispatch) {
+mapDispatchToProps = dispatch => {
   return bindActionCreators({ loadStartScreen, loadHomeScreen }, dispatch);
-}
+};
 export default connect(null, mapDispatchToProps)(Loader);

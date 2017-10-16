@@ -1,4 +1,5 @@
-import React, { PropTypes } from "react";
+import React from "react";
+import PropTypes from "prop-types";
 import { StyleSheet, View, Text, Image } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -10,33 +11,23 @@ import { showIcons } from "../actions/show_icons";
 import { saveDriver } from "../actions/save_driver";
 import styles from "./styles";
 
-const propTypes = {
-  driver: PropTypes.object.isRequired
-};
-
-const defaultProps = {
-  driver: {}
-};
-
 class DriverId extends React.Component {
-  constructor(props) {
-    super(props);
-    this.cancelRide = this.cancelRide.bind(this);
-  }
+  static propTypes = { driver: PropTypes.object.isRequired };
+  static defaultProps = { driver: {} };
 
-  cancelRide() {
+  cancelRide = () => {
     this.props.hideRideNav("hidden");
     this.props.showIcons(true);
     this.props.saveDriver({});
-  }
+  };
 
-  callDriver(number) {
+  callDriver = number => {
     const args = {
       number,
       prompt: true
     };
     call(args).catch(console.error);
-  }
+  };
   render() {
     const { driver } = this.props;
     return (
@@ -103,10 +94,7 @@ class DriverId extends React.Component {
   }
 }
 
-DriverId.propTypes = propTypes;
-DriverId.defaultProps = defaultProps;
-
-function mapDispatchToProps(dispatch) {
+mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       hideRideNav,
@@ -115,6 +103,6 @@ function mapDispatchToProps(dispatch) {
     },
     dispatch
   );
-}
+};
 
 export default connect(null, mapDispatchToProps)(DriverId);

@@ -20,7 +20,6 @@ import Button from "../components/basicButton";
 class Router extends Component {
   constructor(props) {
     super(props);
-
     const startText = this.props.navigation.hasOwnProperty("state")
       ? this.props.navigation.state.params.userPos
       : "Start Location";
@@ -34,22 +33,17 @@ class Router extends Component {
       start: startText,
       finish: finishText
     };
-
-    this.getStartValue = this.getStartValue.bind(this);
-    this.getFinishValue = this.getFinishValue.bind(this);
-    this.showRoute = this.showRoute.bind(this);
-    this.setOnMap = this.setOnMap.bind(this);
   }
 
-  getStartValue(value) {
+  getStartValue = value => {
     this.setState({ start: value });
-  }
+  };
 
-  getFinishValue(value) {
+  getFinishValue = value => {
     this.setState({ finish: value });
-  }
+  };
 
-  showRoute() {
+  showRoute = () => {
     // escondemos los iconos de la pantalla principal
     this.props.showIcons(false);
     // elegimos el estado de navegacion donde se muestra la ruta del viaje
@@ -80,13 +74,13 @@ class Router extends Component {
     });
 
     this.props.navigation.goBack();
-  }
+  };
 
-  setOnMap() {
+  setOnMap = () => {
     this.props.showIcons(false);
     this.props.rideNav("start_pos_select");
     this.props.navigation.goBack();
-  }
+  };
 
   render() {
     return (
@@ -151,11 +145,11 @@ Router.navigationOptions = {
   title: "Choose a Route"
 };
 
-function mapDispatchToProps(dispatch) {
+mapDispatchToProps = dispatch => {
   return bindActionCreators(
     { showIcons, rideNav, setStart, setFinish },
     dispatch
   );
-}
+};
 
 export default connect(null, mapDispatchToProps)(Router);

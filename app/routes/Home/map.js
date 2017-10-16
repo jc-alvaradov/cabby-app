@@ -13,44 +13,17 @@ import Driver from "../../components/driver";
 import RidePickup from "../RidePickup";
 
 class Map extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      screenPos: null,
-      showStartIcon: false,
-      showRideStart: false,
-      drivers: [
-        {
-          key: "asdasd33k3kk!",
-          position: {
-            latitude: -33.112237,
-            longitude: -71.569072
-          }
-        },
-        {
-          key: "lksksksks!!",
-          position: {
-            latitude: -33.142007,
-            longitude: -71.575885
-          }
-        }
-      ]
-    };
-    this.mapRef = null;
-    this.screenMoved = this.screenMoved.bind(this);
-    this.setPickupLocation = this.setPickupLocation.bind(this);
-    this.setDropoffLocation = this.setDropoffLocation.bind(this);
-    this.takeSnapshot = this.takeSnapshot.bind(this);
-    this.getDrivers = this.getDrivers.bind(this);
-    this.getDriver = this.getDriver.bind(this);
-    this.getClosestDrivers = this.getClosestDrivers.bind(this);
-  }
+  state = {
+    screenPos: null,
+    showStartIcon: false,
+    drivers: []
+  };
 
   componentDidMount() {
     this.getDrivers();
   }
 
-  async getDriver() {
+  getDriver = async () => {
     // se usa el driver id del store para hacer una peticion a la bd cada 3 min
     // el array de autos se convierte en 1 solo auto.
     // hay que cambiar this.state.drivers, se actualiza la pos del mapa con la del auto
@@ -76,8 +49,7 @@ class Map extends React.Component {
         }
       ];
       this.setState({
-        drivers: driver,
-        showRideStart: true
+        drivers: driver
       });
       /*this.mapRef.fitToCoordinates([this.props.position, driver[0].position], {
         edgePadding: {
@@ -98,9 +70,9 @@ class Map extends React.Component {
         1000
       );*/
     }
-  }
+  };
 
-  async getClosestDrivers() {
+  getClosestDrivers = async () => {
     /** 
      * hace una peticion get al servidor para que le envie un array con todos los conductores activos
      * cada objeto del array(conductor) tiene 2 atributos: position(latitude y longitude) y un key
@@ -129,9 +101,9 @@ class Map extends React.Component {
       });
       this.setState({ drivers });
     }
-  }
+  };
 
-  getDrivers() {
+  getDrivers = () => {
     // actualiza los datos de los conductores desde el servidor cada 3 segundos
     this.timer = setInterval(() => {
       // revisamos si el objeto del conductor tiene propiedades
@@ -142,7 +114,7 @@ class Map extends React.Component {
         this.getClosestDrivers();
       }
     }, 3000);
-  }
+  };
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.rideState === "ride_select") {
@@ -172,7 +144,7 @@ class Map extends React.Component {
     clearTimeout(this.timer);
   }
 
-  screenMoved(pos) {
+  screenMoved = pos => {
     /** 
      * se ejecuta cuando se mueve el mapa. pos guarda un objeto con latitud y longitud
      * que se refiere al centro de la pantalla
@@ -189,9 +161,9 @@ class Map extends React.Component {
         }
       });
     }
-  }
+  };
 
-  setPickupLocation() {
+  setPickupLocation = () => {
     // muestra el icono de startPos del viaje en el mapa y cambia a la pantalla de elegir el segundo punto
     if (this.state.screenPos != null) {
       const startPos = {
@@ -205,9 +177,9 @@ class Map extends React.Component {
       this.setState({ showStartIcon: true });
       this.props.rideNav("finish_pos_select");
     }
-  }
+  };
 
-  setDropoffLocation() {
+  setDropoffLocation = () => {
     // guarda el segundo punto en el store y navega hasta la pantalla que muestra el viaje y los datos
     if (this.state.screenPos != null) {
       const finishPos = {
@@ -221,7 +193,7 @@ class Map extends React.Component {
       this.setState({ showStartIcon: false });
       this.props.rideNav("ride_select");
     }
-  }
+  };
 
   takeSnapshot() {
     const snapshot = this.mapRef.takeSnapshot({

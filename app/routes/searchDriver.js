@@ -11,11 +11,6 @@ import { cleanStart, cleanFinish } from "../actions/ride_position";
 import styles from "./styles";
 
 class SearchDriver extends React.Component {
-  constructor(props) {
-    super(props);
-    this.getDriver = this.getDriver.bind(this);
-  }
-
   componentDidMount() {
     const socket = SocketIOClient("http://45.7.229.110:3000");
     const { rideStart, rideFinish, amount, user } = this.props;
@@ -38,7 +33,7 @@ class SearchDriver extends React.Component {
     });
   }
 
-  async getDriver(driverId) {
+  getDriver = async driverId => {
     const query = {
       query:
         "query($id: String!) { getDriverById(id: $id){ _id driverName phone email earnings payment rating photo carPlate carModel carColor carPhoto active }}",
@@ -59,7 +54,7 @@ class SearchDriver extends React.Component {
       this.props.cleanFinish();
       this.props.cleanPolyCoords();
     }
-  }
+  };
 
   render() {
     return (
@@ -73,7 +68,7 @@ class SearchDriver extends React.Component {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       rideNav,
@@ -84,5 +79,5 @@ function mapDispatchToProps(dispatch) {
     },
     dispatch
   );
-}
+};
 export default connect(null, mapDispatchToProps)(SearchDriver);

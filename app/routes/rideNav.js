@@ -16,33 +16,26 @@ import BackButton from "../components/backButton";
 import styles from "./styles";
 
 class RideNav extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      distance: 0,
-      price: 0,
-      rideShown: false
-    };
-    this.closeRideSelect = this.closeRideSelect.bind(this);
-    this.closeSearchDriver = this.closeSearchDriver.bind(this);
-    this.calqDistance = this.calqDistance.bind(this);
-    this.requestTaxi = this.requestTaxi.bind(this);
-  }
+  state = {
+    distance: 0,
+    price: 0,
+    rideShown: false
+  };
 
-  closeRideSelect() {
+  closeRideSelect = () => {
     this.props.hideRideNav("hidden");
     this.props.showIcons(true);
     this.props.cleanStart();
     this.props.cleanFinish();
     this.props.cleanPolyCoords();
     this.setState({ rideShown: false });
-  }
+  };
 
-  closeSearchDriver() {
+  closeSearchDriver = () => {
     this.setState({ rideShown: false });
-  }
+  };
 
-  addCommas(n) {
+  addCommas = n => {
     // añade puntos al precio
     var rx = /(\d+)(\d{3})/;
     return String(n).replace(/^\d+/, function(w) {
@@ -51,9 +44,9 @@ class RideNav extends React.Component {
       }
       return w;
     });
-  }
+  };
 
-  async calqDistance() {
+  calqDistance = async () => {
     if (this.props.rideStart != null && this.props.rideFinish != null) {
       const rideStart = this.props.rideStart.coords;
       const rideFinish = this.props.rideFinish.coords;
@@ -76,13 +69,13 @@ class RideNav extends React.Component {
         );
       }
     }
-  }
+  };
 
-  requestTaxi() {
+  requestTaxi = () => {
     // hace que se muestre la pantalla de "buscando conductor" encima del mapa
     this.props.rideNav("searching_driver");
     this.closeSearchDriver();
-  }
+  };
 
   render() {
     // dependiendo de los valores del store se muestran distintos componentes
