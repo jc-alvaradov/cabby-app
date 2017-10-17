@@ -8,8 +8,16 @@ class RidePickup extends React.Component {
    * this initialRender state makes sure that the icon loads two times, is a hack for an issue with react native maps
    * https://github.com/airbnb/react-native-maps/issues/924
    */
-  static propTypes = { show: PropTypes.bool.isRequired };
-  static defaultProps = { show: false };
+  static propTypes = {
+    show: PropTypes.bool.isRequired,
+    distance: PropTypes.number.isRequired,
+    coordinate: PropTypes.object
+  };
+  static defaultProps = {
+    show: false,
+    distance: 0,
+    coordinate: { latitude: 0, longitude: 0 }
+  };
 
   state = {
     initialRender: true
@@ -20,7 +28,7 @@ class RidePickup extends React.Component {
     if (show) {
       return (
         <MapView.Marker
-          coordinate={this.props.coordinate}
+          coordinate={this.props.coordinate.coords}
           key="arrivalTimeMarker"
         >
           <Image
@@ -30,7 +38,7 @@ class RidePickup extends React.Component {
             key={`${this.state.initialRender}`}
           >
             <View style={styles.textContainer}>
-              <Text style={styles.mainText}>8</Text>
+              <Text style={styles.mainText}>{this.props.distance}</Text>
               <Text style={styles.subText}>mins</Text>
             </View>
           </Image>

@@ -7,7 +7,7 @@ import { graphRequest } from "../lib/graphRequest";
 import { rideNav } from "../actions/ride_nav";
 import { saveDriver } from "../actions/save_driver";
 import { cleanPolyCoords } from "../actions/clean_poly_coords";
-import { cleanStart, cleanFinish } from "../actions/ride_position";
+import { cleanFinish } from "../actions/ride_position";
 import styles from "./styles";
 
 class SearchDriver extends React.Component {
@@ -50,7 +50,6 @@ class SearchDriver extends React.Component {
       this.props.saveDriver(driver);
       // limpiamos los props anteriores de rideStart, rideFinish, etc
       this.props.rideNav("driver_id");
-      this.props.cleanStart();
       this.props.cleanFinish();
       this.props.cleanPolyCoords();
     }
@@ -73,7 +72,6 @@ mapDispatchToProps = dispatch => {
     {
       rideNav,
       saveDriver,
-      cleanStart,
       cleanFinish,
       cleanPolyCoords
     },

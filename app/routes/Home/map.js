@@ -3,14 +3,17 @@ import { StyleSheet, Text, View, Image } from "react-native";
 import MapView from "react-native-maps";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import styles from "../styles";
+import Geocoder from "react-native-geocoder";
 import { graphRequest } from "../../lib/graphRequest";
 import Button from "../../components/basicButton";
 import { regionFrom } from "../../lib/delta";
 import { rideNav } from "../../actions/ride_nav";
+import { saveRideDistance } from "../../actions/ride_distance";
 import { setStart, setFinish } from "../../actions/ride_position";
+import { calqDistance } from "../../lib/calqDistance";
 import Driver from "../../components/driver";
 import RidePickup from "../RidePickup";
+import styles from "../styles";
 
 class Map extends React.Component {
   state = {
@@ -51,24 +54,20 @@ class Map extends React.Component {
       this.setState({
         drivers: driver
       });
-      /*this.mapRef.fitToCoordinates([this.props.position, driver[0].position], {
-        edgePadding: {
-          top: 150,
-          left: 100,
-          bottom: 400,
-          right: 100
-        },
-        animated: true
-      });*/
+      // acerca el mapa para que muestre al driver y la posicion de inicio del viaje
+      this.mapRef.fitToCoordinates(
+        [this.props.store.rideStart.coords, driver[0].position],
+        {
+          edgePadding: {
+            top: 150,
+            left: 100,
+            bottom: 400,
+            right: 100
+          },
+          animated: true
+        }
+      );
       // agregar condicion si es que el usuario decide no seguir al driver
-      /*this.mapRef.animateToRegion(
-        regionFrom(
-          driver[0].position.latitude,
-          driver[0].position.longitude,
-          15
-        ),
-        1000
-      );*/
     }
   };
 
@@ -103,6 +102,11 @@ class Map extends React.Component {
     }
   };
 
+  getDistance = async (rideStart, rideFinish) => {
+    const ride = await calqDistance(rideStart, rideFinish);
+    this.props.saveRideDistance(Math.round(ride.duration.value / 60));
+  };
+
   getDrivers = () => {
     // actualiza los datos de los conductores desde el servidor cada 3 segundos
     this.timer = setInterval(() => {
@@ -114,6 +118,18 @@ class Map extends React.Component {
         this.getClosestDrivers();
       }
     }, 3000);
+    // actualiza la distancia entre el punto de inicio y el conductor (ej: 8 mins)
+    this.rideDistanceTimer = setInterval(() => {
+      if (
+        Object.keys(this.props.store.driver).length > 0 &&
+        this.state.drivers.length > 0
+      ) {
+        this.getDistance(
+          this.props.store.rideStart.coords,
+          this.state.drivers[0].position
+        );
+      }
+    }, 30000);
   };
 
   componentWillReceiveProps(nextProps) {
@@ -140,8 +156,9 @@ class Map extends React.Component {
   }
 
   componentWillUnmount() {
-    // remueve el timer que actualiza los drivers
+    // remueve el timer que actualiza los drivers y la distancia entre el driver y el cliente
     clearTimeout(this.timer);
+    clearTimeout(this.rideDistanceTimer);
   }
 
   screenMoved = pos => {
@@ -166,32 +183,42 @@ class Map extends React.Component {
   setPickupLocation = () => {
     // muestra el icono de startPos del viaje en el mapa y cambia a la pantalla de elegir el segundo punto
     if (this.state.screenPos != null) {
-      const startPos = {
-        name: "",
-        coords: {
-          latitude: this.state.screenPos.latitude,
-          longitude: this.state.screenPos.longitude
-        }
-      };
-      this.props.setStart(startPos);
-      this.setState({ showStartIcon: true });
-      this.props.rideNav("finish_pos_select");
+      Geocoder.geocodePosition({
+        lat: this.state.screenPos.latitude,
+        lng: this.state.screenPos.longitude
+      }).then(res => {
+        const startPos = {
+          name: res[0].formattedAddress,
+          coords: {
+            latitude: this.state.screenPos.latitude,
+            longitude: this.state.screenPos.longitude
+          }
+        };
+        this.props.setStart(startPos);
+        this.setState({ showStartIcon: true });
+        this.props.rideNav("finish_pos_select");
+      });
     }
   };
 
   setDropoffLocation = () => {
     // guarda el segundo punto en el store y navega hasta la pantalla que muestra el viaje y los datos
     if (this.state.screenPos != null) {
-      const finishPos = {
-        name: "",
-        coords: {
-          latitude: this.state.screenPos.latitude,
-          longitude: this.state.screenPos.longitude
-        }
-      };
-      this.props.setFinish(finishPos);
-      this.setState({ showStartIcon: false });
-      this.props.rideNav("ride_select");
+      Geocoder.geocodePosition({
+        lat: this.state.screenPos.latitude,
+        lng: this.state.screenPos.longitude
+      }).then(res => {
+        const finishPos = {
+          name: res[0].formattedAddress,
+          coords: {
+            latitude: this.state.screenPos.latitude,
+            longitude: this.state.screenPos.longitude
+          }
+        };
+        this.props.setFinish(finishPos);
+        this.setState({ showStartIcon: false });
+        this.props.rideNav("ride_select");
+      });
     }
   };
 
@@ -302,7 +329,8 @@ class Map extends React.Component {
           />
           <RidePickup
             show={this.props.rideState === "driver_id"}
-            coordinate={this.props.position}
+            coordinate={this.props.store.rideStart}
+            distance={this.props.store.distance}
           />
           {line}
         </MapView>
@@ -359,7 +387,10 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ setStart, setFinish, rideNav }, dispatch);
+  return bindActionCreators(
+    { setStart, setFinish, rideNav, saveRideDistance },
+    dispatch
+  );
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Map);

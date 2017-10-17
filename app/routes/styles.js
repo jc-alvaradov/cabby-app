@@ -223,6 +223,21 @@ const Styles = StyleSheet.create({
     paddingLeft: 20,
     marginBottom: 3,
     borderBottomWidth: 0.3
+  },
+  rideBtn: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderColor: "#d1d1d1",
+    borderTopWidth: 0.3
+  },
+  driverPhoto: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginTop: 8,
+    marginBottom: 4
   }
 });
 

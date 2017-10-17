@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View, Image, TextInput, StyleSheet } from "react-native";
+import { Text, View } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -13,6 +13,8 @@ import DriverId from "./DriverId";
 import Loading from "../components/loading";
 import Button from "../components/basicButton";
 import BackButton from "../components/backButton";
+import { addCommas } from "../lib/addCommas";
+import { calqDistance } from "../lib/calqDistance";
 import styles from "./styles";
 
 class RideNav extends React.Component {
@@ -35,55 +37,30 @@ class RideNav extends React.Component {
     this.setState({ rideShown: false });
   };
 
-  addCommas = n => {
-    // añade puntos al precio
-    var rx = /(\d+)(\d{3})/;
-    return String(n).replace(/^\d+/, function(w) {
-      while (rx.test(w)) {
-        w = w.replace(rx, "$1.$2");
-      }
-      return w;
-    });
-  };
-
-  calqDistance = async () => {
-    if (this.props.rideStart != null && this.props.rideFinish != null) {
-      const rideStart = this.props.rideStart.coords;
-      const rideFinish = this.props.rideFinish.coords;
-      const query = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${rideStart.latitude},${rideStart.longitude}&destinations=${rideFinish.latitude},${rideFinish.longitude}&key=AIzaSyAJTjCs9OddMqnuyL6qXowI8SYQTwU5vjQ`;
-      let resp = await fetch(query);
-      let respJson = await resp.json();
-
-      if (!respJson.hasOwnProperty("error_message")) {
-        const ride = respJson.rows[0].elements[0];
-        const ridePrice = Math.round(ride.distance.value / 1000 * 400);
-        this.setState({
-          distance: ride.distance.text,
-          price: ridePrice > 999 ? this.addCommas(ridePrice) : ridePrice,
-          rideShown: true
-        });
-      } else {
-        console.log(
-          "Hubo un error en la peticion a la api de google: " +
-            respJson.error_message
-        );
-      }
-    }
-  };
-
   requestTaxi = () => {
     // hace que se muestre la pantalla de "buscando conductor" encima del mapa
     this.props.rideNav("searching_driver");
     this.closeSearchDriver();
   };
 
+  getRide = async (rideStart, rideFinish) => {
+    const ride = await calqDistance(rideStart, rideFinish);
+    const ridePrice = Math.round(ride.distance.value / 1000 * 400);
+    this.setState({
+      distance: ride.distance.text,
+      price: ridePrice > 999 ? addCommas(ridePrice) : ridePrice,
+      rideShown: true
+    });
+  };
+
   render() {
     // dependiendo de los valores del store se muestran distintos componentes
     let nav;
+    const { rideStart, rideFinish } = this.props;
     switch (this.props.state) {
       case "ride_select":
-        if (!this.state.rideShown) {
-          this.calqDistance();
+        if (!this.state.rideShown && rideStart != null && rideFinish != null) {
+          this.getRide(rideStart.coords, rideFinish.coords);
         }
         nav = (
           <View style={styles.rideSelectContainer} pointerEvents="box-none">
@@ -108,18 +85,17 @@ class RideNav extends React.Component {
       case "searching_driver":
         nav = (
           <SearchDriver
-            rideStart={this.props.rideStart}
-            rideFinish={this.props.rideFinish}
+            rideStart={rideStart}
+            rideFinish={rideFinish}
             amount={this.state.price}
             user={this.props.user}
           />
         );
         break;
       case "driver_id":
-        nav = <DriverId driver={this.props.driver} />;
-        break;
-      case "hidden":
-        nav = null;
+        nav = (
+          <DriverId driver={this.props.driver} distance={this.props.distance} />
+        );
         break;
       default:
         nav = null;
@@ -133,6 +109,7 @@ function mapStateToProps(state) {
     state: state.rideNav,
     user: state.user,
     driver: state.driver,
+    distance: state.distance,
     rideStart: state.rideStart,
     rideFinish: state.rideFinish
   };

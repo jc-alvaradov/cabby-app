@@ -8,14 +8,19 @@ import call from "react-native-phone-call";
 import Button from "../components/basicButton";
 import { hideRideNav } from "../actions/hide_ride_nav";
 import { showIcons } from "../actions/show_icons";
+import { cleanStart } from "../actions/ride_position";
 import { saveDriver } from "../actions/save_driver";
 import styles from "./styles";
 
 class DriverId extends React.Component {
-  static propTypes = { driver: PropTypes.object.isRequired };
-  static defaultProps = { driver: {} };
+  static propTypes = {
+    driver: PropTypes.object.isRequired,
+    distance: PropTypes.number.isRequired
+  };
+  static defaultProps = { driver: {}, distance: 0 };
 
   cancelRide = () => {
+    this.props.cleanStart();
     this.props.hideRideNav("hidden");
     this.props.showIcons(true);
     this.props.saveDriver({});
@@ -33,20 +38,13 @@ class DriverId extends React.Component {
     return (
       <View style={styles.driverId}>
         <View style={styles.rideStatus}>
-          <Text>En Route: Your driver will arrive in 8 mins</Text>
+          <Text>
+            En Route: Your driver will arrive in {this.props.distance} mins
+          </Text>
         </View>
         <View style={styles.driverContainer}>
           <View>
-            <Image
-              style={{
-                width: 60,
-                height: 60,
-                borderRadius: 30,
-                marginTop: 8,
-                marginBottom: 4
-              }}
-              source={{ uri: driver.photo }}
-            />
+            <Image style={styles.driverPhoto} source={{ uri: driver.photo }} />
             <StarRating
               disabled={true}
               maxStars={5}
@@ -65,16 +63,7 @@ class DriverId extends React.Component {
             source={{ uri: driver.carPhoto }}
           />
         </View>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            borderColor: "#d1d1d1",
-            borderTopWidth: 0.3
-          }}
-        >
+        <View style={styles.rideBtn}>
           <Button
             style={styles.pickupBtn}
             text="Cancel"
@@ -99,7 +88,8 @@ mapDispatchToProps = dispatch => {
     {
       hideRideNav,
       showIcons,
-      saveDriver
+      saveDriver,
+      cleanStart
     },
     dispatch
   );
