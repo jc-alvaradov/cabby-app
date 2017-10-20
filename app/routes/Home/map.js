@@ -18,7 +18,6 @@ import styles from "../styles";
 class Map extends React.Component {
   state = {
     screenPos: null,
-    showStartIcon: false,
     drivers: []
   };
 
@@ -55,19 +54,20 @@ class Map extends React.Component {
         drivers: driver
       });
       // acerca el mapa para que muestre al driver y la posicion de inicio del viaje
-      this.mapRef.fitToCoordinates(
-        [this.props.store.rideStart.coords, driver[0].position],
-        {
-          edgePadding: {
-            top: 150,
-            left: 100,
-            bottom: 400,
-            right: 100
-          },
-          animated: true
-        }
-      );
-      // agregar condicion si es que el usuario decide no seguir al driver
+      if (this.props.store.rideStart.coords != null) {
+        this.mapRef.fitToCoordinates(
+          [this.props.store.rideStart.coords, driver[0].position],
+          {
+            edgePadding: {
+              top: 150,
+              left: 100,
+              bottom: 400,
+              right: 100
+            },
+            animated: true
+          }
+        );
+      }
     }
   };
 
@@ -104,14 +104,15 @@ class Map extends React.Component {
 
   getDistance = async (rideStart, rideFinish) => {
     const ride = await calqDistance(rideStart, rideFinish);
-    this.props.saveRideDistance(Math.round(ride.duration.value / 60));
+    this.props.saveRideDistance(ride.duration);
   };
 
   getDrivers = () => {
     // actualiza los datos de los conductores desde el servidor cada 3 segundos
+    const { store } = this.props;
     this.timer = setInterval(() => {
       // revisamos si el objeto del conductor tiene propiedades
-      if (Object.keys(this.props.store.driver).length > 0) {
+      if (Object.keys(store.driver).length > 0) {
         this.getDriver();
       } else {
         // si no las tiene es porque no hay un conductor asignado todavia
@@ -121,15 +122,15 @@ class Map extends React.Component {
     // actualiza la distancia entre el punto de inicio y el conductor (ej: 8 mins)
     this.rideDistanceTimer = setInterval(() => {
       if (
-        Object.keys(this.props.store.driver).length > 0 &&
+        Object.keys(store.driver).length > 0 &&
         this.state.drivers.length > 0
       ) {
         this.getDistance(
-          this.props.store.rideStart.coords,
+          store.rideStart.coords,
           this.state.drivers[0].position
         );
       }
-    }, 30000);
+    }, 10000);
   };
 
   componentWillReceiveProps(nextProps) {
@@ -182,20 +183,20 @@ class Map extends React.Component {
 
   setPickupLocation = () => {
     // muestra el icono de startPos del viaje en el mapa y cambia a la pantalla de elegir el segundo punto
+    const { screenPos } = this.state;
     if (this.state.screenPos != null) {
       Geocoder.geocodePosition({
-        lat: this.state.screenPos.latitude,
-        lng: this.state.screenPos.longitude
+        lat: screenPos.latitude,
+        lng: screenPos.longitude
       }).then(res => {
         const startPos = {
           name: res[0].formattedAddress,
           coords: {
-            latitude: this.state.screenPos.latitude,
-            longitude: this.state.screenPos.longitude
+            latitude: screenPos.latitude,
+            longitude: screenPos.longitude
           }
         };
         this.props.setStart(startPos);
-        this.setState({ showStartIcon: true });
         this.props.rideNav("finish_pos_select");
       });
     }
@@ -203,16 +204,17 @@ class Map extends React.Component {
 
   setDropoffLocation = () => {
     // guarda el segundo punto en el store y navega hasta la pantalla que muestra el viaje y los datos
-    if (this.state.screenPos != null) {
+    const { screenPos } = this.state;
+    if (screenPos != null) {
       Geocoder.geocodePosition({
-        lat: this.state.screenPos.latitude,
-        lng: this.state.screenPos.longitude
+        lat: screenPos.latitude,
+        lng: screenPos.longitude
       }).then(res => {
         const finishPos = {
           name: res[0].formattedAddress,
           coords: {
-            latitude: this.state.screenPos.latitude,
-            longitude: this.state.screenPos.longitude
+            latitude: screenPos.latitude,
+            longitude: screenPos.longitude
           }
         };
         this.props.setFinish(finishPos);
@@ -325,7 +327,10 @@ class Map extends React.Component {
           />
           <RideStart
             pos={this.props.store.rideStart}
-            show={this.state.showStartIcon}
+            show={
+              this.props.rideState === "start_pos_select" ||
+              this.props.rideState === "finish_pos_select"
+            }
           />
           <RidePickup
             show={this.props.rideState === "driver_id"}

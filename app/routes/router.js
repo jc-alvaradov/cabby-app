@@ -1,12 +1,5 @@
 import React, { Component } from "react";
-import {
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-  AsyncStorage
-} from "react-native";
+import { Text, View } from "react-native";
 import { NavigationActions } from "react-navigation";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -16,15 +9,17 @@ import { rideNav } from "../actions/ride_nav";
 import { setStart, setFinish } from "../actions/ride_position";
 import AutoCompleteInput from "../components/autoCompleteInput";
 import Button from "../components/basicButton";
+import styles from "./styles";
 
 class Router extends Component {
   constructor(props) {
     super(props);
-    const startText = this.props.navigation.hasOwnProperty("state")
-      ? this.props.navigation.state.params.userPos
+    const { navigation } = this.props;
+    const startText = navigation.hasOwnProperty("state")
+      ? navigation.state.params.userPos
       : "Start Location";
-    const finishText = this.props.navigation.hasOwnProperty("state")
-      ? this.props.navigation.state.params.ciudad
+    const finishText = navigation.hasOwnProperty("state")
+      ? navigation.state.params.ciudad
       : "Finish Location";
 
     this.state = {
@@ -44,11 +39,6 @@ class Router extends Component {
   };
 
   showRoute = () => {
-    // escondemos los iconos de la pantalla principal
-    this.props.showIcons(false);
-    // elegimos el estado de navegacion donde se muestra la ruta del viaje
-    this.props.rideNav("ride_select");
-
     Geocoder.geocodeAddress(this.state.start).then(res => {
       // despachamos la posicion de inicio del viaje
       const startPos = {
@@ -59,21 +49,23 @@ class Router extends Component {
         }
       };
       this.props.setStart(startPos);
+      Geocoder.geocodeAddress(this.state.finish).then(res => {
+        // despachamos la posicion final del viaje
+        const finishPos = {
+          name: this.state.finish,
+          coords: {
+            latitude: res[0].position.lat,
+            longitude: res[0].position.lng
+          }
+        };
+        this.props.setFinish(finishPos);
+        // escondemos los iconos de la pantalla principal
+        this.props.showIcons(false);
+        // elegimos el estado de navegacion donde se muestra la ruta del viaje
+        this.props.rideNav("ride_select");
+        this.props.navigation.goBack();
+      });
     });
-
-    Geocoder.geocodeAddress(this.state.finish).then(res => {
-      // despachamos la posicion final del viaje
-      const finishPos = {
-        name: this.state.finish,
-        coords: {
-          latitude: res[0].position.lat,
-          longitude: res[0].position.lng
-        }
-      };
-      this.props.setFinish(finishPos);
-    });
-
-    this.props.navigation.goBack();
   };
 
   setOnMap = () => {
@@ -84,8 +76,8 @@ class Router extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <View style={styles.inputContainer}>
+      <View style={styles.routerContainer}>
+        <View style={styles.routerInputContainer}>
           <View>
             <Text>Start Location</Text>
             <AutoCompleteInput
@@ -94,7 +86,7 @@ class Router extends Component {
               getValue={this.getStartValue}
             />
           </View>
-          <View style={styles.input}>
+          <View style={styles.routerInput}>
             <Text>Finish Location</Text>
             <AutoCompleteInput
               defaultValue={this.state.finishText}
@@ -103,7 +95,7 @@ class Router extends Component {
             />
           </View>
         </View>
-        <View style={styles.btnContainer}>
+        <View style={styles.routerBtnContainer}>
           <Button text="Show Route" btnStyle="small" onTouch={this.showRoute} />
           <Button text="Set on Map" btnStyle="small" onTouch={this.setOnMap} />
         </View>
@@ -111,35 +103,6 @@ class Router extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    ...StyleSheet.absoluteFillObject,
-    top: 0,
-    left: 0,
-    flex: 1,
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "center"
-  },
-  inputContainer: {
-    marginTop: 10,
-    width: 300,
-    height: 100
-  },
-  input: {
-    marginTop: 70
-  },
-  btnContainer: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 70,
-    width: 270,
-    height: "auto",
-    zIndex: 1
-  }
-});
 
 Router.navigationOptions = {
   title: "Choose a Route"

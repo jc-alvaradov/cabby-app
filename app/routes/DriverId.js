@@ -7,6 +7,7 @@ import StarRating from "react-native-star-rating";
 import call from "react-native-phone-call";
 import Button from "../components/basicButton";
 import { hideRideNav } from "../actions/hide_ride_nav";
+import { rideNav } from "../actions/ride_nav";
 import { showIcons } from "../actions/show_icons";
 import { cleanStart } from "../actions/ride_position";
 import { saveDriver } from "../actions/save_driver";
@@ -15,9 +16,9 @@ import styles from "./styles";
 class DriverId extends React.Component {
   static propTypes = {
     driver: PropTypes.object.isRequired,
-    distance: PropTypes.number.isRequired
+    distance: PropTypes.object.isRequired
   };
-  static defaultProps = { driver: {}, distance: 0 };
+  static defaultProps = { driver: {}, distance: { text: "0 min" } };
 
   cancelRide = () => {
     this.props.cleanStart();
@@ -33,14 +34,47 @@ class DriverId extends React.Component {
     };
     call(args).catch(console.error);
   };
+
+  componentDidMount() {
+    const { socket } = this.props;
+    socket.on("CONFIRM_PICKUP", () => {
+      // recogieron al usuario
+      this.props.rideNav("on_trip");
+    });
+  }
+
   render() {
     const { driver } = this.props;
+    const { text, value } = this.props.distance;
+    const distance = parseInt(text);
+    let message;
+    // ugly if else chain, but its faster than a switch statement
+    if (value <= 15) {
+      // aqui usamos value ya que es mas preciso para menos de un minuto, el distance.text lo redondea siempre hasta 1 min
+      message = "Arrived: Please go meet your driver";
+    } else if (distance >= 1 && distance < 5) {
+      // aqui usamos text porque tiene formato, ej: 14 mins
+      message = `Arriving: Your driver will arrive in ${text}`;
+    } else if (distance >= 5 && distance < 10) {
+      message = `En Route: Your driver will arrive in ${text}`;
+    } else {
+      message = `En Route: Your driver will arrive in ${text}`;
+    }
+
+    let cancelBtn =
+      value <= 15 ? null : (
+        <Button
+          style={styles.pickupBtn}
+          text="Cancel"
+          btnStyle="inline"
+          onTouch={this.cancelRide}
+        />
+      );
+
     return (
       <View style={styles.driverId}>
         <View style={styles.rideStatus}>
-          <Text>
-            En Route: Your driver will arrive in {this.props.distance} mins
-          </Text>
+          <Text>{message}</Text>
         </View>
         <View style={styles.driverContainer}>
           <View>
@@ -64,12 +98,7 @@ class DriverId extends React.Component {
           />
         </View>
         <View style={styles.rideBtn}>
-          <Button
-            style={styles.pickupBtn}
-            text="Cancel"
-            btnStyle="inline"
-            onTouch={this.cancelRide}
-          />
+          {cancelBtn}
           <Button
             style={styles.pickupBtn}
             text="Call"

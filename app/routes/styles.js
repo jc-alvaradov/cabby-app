@@ -7,6 +7,32 @@ const Styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "white"
   },
+  routerContainer: {
+    ...StyleSheet.absoluteFillObject,
+    top: 0,
+    left: 0,
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center"
+  },
+  routerInputContainer: {
+    marginTop: 10,
+    width: 300,
+    height: 100
+  },
+  routerInput: {
+    marginTop: 70
+  },
+  routerBtnContainer: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 70,
+    width: 270,
+    height: "auto",
+    zIndex: 1
+  },
   map: {
     ...StyleSheet.absoluteFillObject
   },
@@ -228,7 +254,7 @@ const Styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "center",
     borderColor: "#d1d1d1",
     borderTopWidth: 0.3
   },

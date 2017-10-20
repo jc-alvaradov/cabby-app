@@ -57,7 +57,7 @@ class Driver extends React.Component {
       this.state.coordinate
         .timing({
           ...nextProps.coordinate,
-          duration: 3000
+          duration: 4000
         })
         .start();
     }
@@ -66,7 +66,7 @@ class Driver extends React.Component {
     return (
       <MapView.Marker.Animated
         coordinate={this.state.coordinate}
-        image={require("../images/car-top.png")}
+        image={require("../images/car-top_blank.png")}
         style={{ transform: [{ rotate: this.state.rotation }] }}
       />
     );

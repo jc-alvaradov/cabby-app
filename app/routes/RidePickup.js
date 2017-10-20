@@ -10,12 +10,12 @@ class RidePickup extends React.Component {
    */
   static propTypes = {
     show: PropTypes.bool.isRequired,
-    distance: PropTypes.number.isRequired,
+    distance: PropTypes.object.isRequired,
     coordinate: PropTypes.object
   };
   static defaultProps = {
     show: false,
-    distance: 0,
+    distance: { text: "0 min" },
     coordinate: { latitude: 0, longitude: 0 }
   };
 
@@ -24,7 +24,9 @@ class RidePickup extends React.Component {
   };
 
   render() {
-    const { show } = this.props;
+    let { show, distance } = this.props;
+    // convertimos el valor de segundos a minutos
+    distance = parseInt(distance.text);
     if (show) {
       return (
         <MapView.Marker
@@ -38,7 +40,7 @@ class RidePickup extends React.Component {
             key={`${this.state.initialRender}`}
           >
             <View style={styles.textContainer}>
-              <Text style={styles.mainText}>{this.props.distance}</Text>
+              <Text style={styles.mainText}>{distance}</Text>
               <Text style={styles.subText}>mins</Text>
             </View>
           </Image>
