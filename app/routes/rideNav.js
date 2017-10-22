@@ -10,6 +10,7 @@ import { showIcons } from "../actions/show_icons";
 import { cleanPolyCoords } from "../actions/clean_poly_coords";
 import SearchDriver from "./searchDriver";
 import DriverId from "./DriverId";
+import OnTrip from "./OnTrip";
 import FinishedRide from "./FinishedRide";
 import Loading from "../components/loading";
 import Button from "../components/basicButton";
@@ -72,7 +73,7 @@ class RideNav extends React.Component {
           />
         );
         break;
-      case "driver_id":
+      case "waiting_for_driver":
         nav = (
           <DriverId
             driver={this.props.driver}
@@ -87,6 +88,7 @@ class RideNav extends React.Component {
             driver={this.props.driver}
             rideStart={rideStart}
             rideFinish={rideFinish}
+            socket={this.state.socket}
           />
         );
         break;

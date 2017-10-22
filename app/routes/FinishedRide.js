@@ -5,8 +5,10 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import StarRating from "react-native-star-rating";
 import Button from "../components/basicButton";
-import { hideRideNav } from "../actions/hide_ride_nav";
+import { rideNav } from "../actions/ride_nav";
+import { saveDriver } from "../actions/save_driver";
 import { showIcons } from "../actions/show_icons";
+import { graphRequest } from "../lib/graphRequest";
 import styles from "./styles";
 
 class FinishedRide extends React.Component {
@@ -32,46 +34,61 @@ class FinishedRide extends React.Component {
 
   cancelRide = () => {
     // se devuelve al menu principal
-    this.props.hideRideNav("hidden");
+    // limpiar driver
+    this.props.saveDriver({});
+    this.props.rideNav("hidden");
     this.props.showIcons(true);
   };
 
   render() {
     const { driver } = this.props;
-
     return (
-      <View style={styles.driverId}>
-        <View style={styles.driverContainer}>
-          <View style={styles.driverInfo}>
+      <View style={styles.rideApp}>
+        <View style={styles.headerTitle}>
+          <Text style={styles.rideStatus}>Finished Trip</Text>
+          <Text>Please rate your driver</Text>
+        </View>
+        <View style={styles.finishedContainer}>
+          <View style={styles.rideInfo}>
             <Image style={styles.driverPhoto} source={{ uri: driver.photo }} />
-            <Text style={styles.bold}>{driver.driverName}</Text>
-            <Text style={styles.carPlate}>{driver.carPlate}</Text>
+            <View style={styles.driverInfo}>
+              <Text style={styles.bold} numberOfLines={1}>
+                {driver.driverName}
+              </Text>
+              <Text numberOfLines={1}>{driver.carModel}</Text>
+              <Text style={styles.carPlate}>{driver.carPlate}</Text>
+            </View>
+            <Image
+              style={{ width: 60, height: 60, borderRadius: 30 }}
+              source={{ uri: driver.carPhoto }}
+            />
           </View>
-          <View>
-            <Text>$5.321</Text>
+          <View style={styles.ridePriceContainer}>
+            <Text style={styles.ridePrice}>Total: $5.321</Text>
           </View>
-        </View>
-        <View>
-          <StarRating
-            maxStars={5}
-            starColor="#444444"
-            rating={this.state.starCount}
-            selectedStar={rating => this.rateRide(rating)}
-          />
-        </View>
-        <View style={styles.rideBtn}>
-          <Button
-            style={styles.pickupBtn}
-            text="Cancel"
-            btnStyle="inline"
-            onTouch={() => this.cancel()}
-          />
-          <Button
-            style={styles.pickupBtn}
-            text="Rate Ride"
-            btnStyle="inline"
-            onTouch={() => this.finishAndRate()}
-          />
+          <View style={styles.starContainer}>
+            <StarRating
+              maxStars={5}
+              starColor="#444444"
+              rating={this.state.starCount}
+              starSize={35}
+              selectedStar={rating => this.rateRide(rating)}
+            />
+          </View>
+          <View style={styles.rideBtn}>
+            <Button
+              style={styles.pickupBtn}
+              text="Cancel"
+              btnStyle="inline"
+              onTouch={() => this.cancelRide()}
+            />
+            <Button
+              style={styles.pickupBtn}
+              text="Rate Ride"
+              btnStyle="inline"
+              onTouch={() => this.finishAndRate()}
+            />
+          </View>
         </View>
       </View>
     );
@@ -81,7 +98,8 @@ class FinishedRide extends React.Component {
 mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
-      hideRideNav,
+      rideNav,
+      saveDriver,
       showIcons
     },
     dispatch

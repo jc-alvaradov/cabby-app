@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { StyleSheet, View, Text, Image } from "react-native";
+import { StyleSheet, View, Text, Image, Alert } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import StarRating from "react-native-star-rating";
@@ -9,7 +9,7 @@ import Button from "../components/basicButton";
 import { hideRideNav } from "../actions/hide_ride_nav";
 import { rideNav } from "../actions/ride_nav";
 import { showIcons } from "../actions/show_icons";
-import { cleanStart } from "../actions/ride_position";
+import { cleanStart, cleanFinish } from "../actions/ride_position";
 import { saveDriver } from "../actions/save_driver";
 import styles from "./styles";
 
@@ -22,6 +22,7 @@ class DriverId extends React.Component {
 
   cancelRide = () => {
     this.props.cleanStart();
+    this.props.cleanFinish();
     this.props.hideRideNav("hidden");
     this.props.showIcons(true);
     this.props.saveDriver({});
@@ -39,7 +40,20 @@ class DriverId extends React.Component {
     const { socket } = this.props;
     socket.on("CONFIRM_PICKUP", () => {
       // recogieron al usuario
-      this.props.rideNav("on_trip");
+      // quieres iniciar el viaje? si o no
+      Alert.alert(
+        "Your ride is ready",
+        "Do you want to start your ride now?",
+        [
+          {
+            text: "I haven't found my driver yet",
+            onPress: () => console.log("Ask me later pressed"),
+            style: "cancel"
+          },
+          { text: "Yes", onPress: () => this.props.rideNav("on_trip") }
+        ],
+        { onDismiss: () => console.log("Ask me later pressed") }
+      );
     });
   }
 
@@ -47,18 +61,22 @@ class DriverId extends React.Component {
     const { driver } = this.props;
     const { text, value } = this.props.distance;
     const distance = parseInt(text);
-    let message;
+    let message, header;
     // ugly if else chain, but its faster than a switch statement
     if (value <= 15) {
       // aqui usamos value ya que es mas preciso para menos de un minuto, el distance.text lo redondea siempre hasta 1 min
-      message = "Arrived: Please go meet your driver";
+      header = "Your Driver Has Arrived";
+      message = "Please go meet your driver";
     } else if (distance >= 1 && distance < 5) {
       // aqui usamos text porque tiene formato, ej: 14 mins
-      message = `Arriving: Your driver will arrive in ${text}`;
+      header = "Arriving";
+      message = `Your driver will arrive in ${text}`;
     } else if (distance >= 5 && distance < 10) {
-      message = `En Route: Your driver will arrive in ${text}`;
+      header = "En Route";
+      message = `Your driver will arrive in ${text}`;
     } else {
-      message = `En Route: Your driver will arrive in ${text}`;
+      header = "En Route";
+      message = `Your driver will arrive in ${text}`;
     }
 
     let cancelBtn =
@@ -72,40 +90,48 @@ class DriverId extends React.Component {
       );
 
     return (
-      <View style={styles.driverId}>
-        <View style={styles.rideStatus}>
+      <View style={styles.rideApp}>
+        <View style={styles.headerTitle}>
+          <Text style={styles.rideStatus}>{header}</Text>
           <Text>{message}</Text>
         </View>
-        <View style={styles.driverContainer}>
-          <View>
-            <Image style={styles.driverPhoto} source={{ uri: driver.photo }} />
-            <StarRating
-              disabled={true}
-              maxStars={5}
-              starColor="#444444"
-              starSize={14}
-              rating={driver.rating}
+        <View style={styles.driverId}>
+          <View style={styles.driverContainer}>
+            <View>
+              <Image
+                style={styles.driverPhoto}
+                source={{ uri: driver.photo }}
+              />
+              <StarRating
+                disabled={true}
+                maxStars={5}
+                starColor="#444444"
+                starSize={14}
+                rating={driver.rating}
+              />
+            </View>
+            <View style={styles.driverInfo}>
+              <Text style={styles.bold} numberOfLines={1}>
+                {driver.driverName}
+              </Text>
+              <Text numberOfLines={1}>{driver.carModel}</Text>
+              <Text style={styles.carPlate}>{driver.carPlate}</Text>
+            </View>
+            <Image
+              style={{ width: 60, height: 60, borderRadius: 30 }}
+              source={{ uri: driver.carPhoto }}
             />
           </View>
-          <View style={styles.driverInfo}>
-            <Text style={styles.bold}>{driver.driverName}</Text>
-            <Text>{driver.carModel}</Text>
-            <Text style={styles.carPlate}>{driver.carPlate}</Text>
+          <View style={styles.rideBtn}>
+            {cancelBtn}
+            <Button
+              style={styles.pickupBtn}
+              text="Call"
+              icon="phone"
+              btnStyle="inline"
+              onTouch={() => this.callDriver(driver.phone)}
+            />
           </View>
-          <Image
-            style={{ width: 60, height: 60, borderRadius: 30 }}
-            source={{ uri: driver.carPhoto }}
-          />
-        </View>
-        <View style={styles.rideBtn}>
-          {cancelBtn}
-          <Button
-            style={styles.pickupBtn}
-            text="Call"
-            icon="phone"
-            btnStyle="inline"
-            onTouch={() => this.callDriver(driver.phone)}
-          />
         </View>
       </View>
     );
@@ -116,9 +142,11 @@ mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       hideRideNav,
+      rideNav,
       showIcons,
       saveDriver,
-      cleanStart
+      cleanStart,
+      cleanFinish
     },
     dispatch
   );

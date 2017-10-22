@@ -170,7 +170,7 @@ const Styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 60
+    marginBottom: 70
   },
   pickupView: {
     backgroundColor: "#1ca68a",
@@ -238,17 +238,15 @@ const Styles = StyleSheet.create({
   driverId: {
     backgroundColor: "#ffffff",
     width: 300,
-    height: 175,
+    height: 160,
     marginBottom: 30,
-    borderRadius: 2
+    paddingTop: 10,
+    borderRadius: 2,
+    elevation: 3
   },
   rideStatus: {
-    borderColor: "#d1d1d1",
-    paddingBottom: 3,
-    marginTop: 5,
-    paddingLeft: 20,
-    marginBottom: 3,
-    borderBottomWidth: 0.3
+    fontSize: 24,
+    fontWeight: "bold"
   },
   rideBtn: {
     flex: 1,
@@ -264,6 +262,69 @@ const Styles = StyleSheet.create({
     borderRadius: 30,
     marginTop: 8,
     marginBottom: 4
+  },
+  finishedContainer: {
+    backgroundColor: "#ffffff",
+    width: 300,
+    height: 300,
+    marginBottom: 30,
+    borderRadius: 2,
+    elevation: 3
+  },
+  rideApp: {
+    ...StyleSheet.absoluteFillObject,
+    flex: 1,
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "space-between"
+  },
+  headerTitle: {
+    backgroundColor: "#ffffff",
+    height: 80,
+    paddingTop: 10,
+    alignSelf: "stretch",
+    alignItems: "center",
+    elevation: 3
+  },
+  rideInfo: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 10,
+    marginTop: 10,
+    marginBottom: 14
+  },
+  starContainer: {
+    maxWidth: 280,
+    height: 50,
+    paddingLeft: 10
+  },
+  ridePriceContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  ridePrice: {
+    fontWeight: "bold",
+    fontSize: 25,
+    paddingRight: 14
+  },
+  onTrip: {
+    backgroundColor: "#ffffff",
+    width: 300,
+    padding: 10,
+    marginBottom: 30,
+    borderRadius: 2,
+    elevation: 3
+  },
+  place: {
+    width: 280,
+    padding: 10
+  },
+  onTripTitle: {
+    fontSize: 18,
+    fontWeight: "bold"
   }
 });
 

@@ -1,12 +1,13 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { Text, View, Alert } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { graphRequest } from "../lib/graphRequest";
 import { rideNav } from "../actions/ride_nav";
 import { saveDriver } from "../actions/save_driver";
+import { showIcons } from "../actions/show_icons";
 import { cleanPolyCoords } from "../actions/clean_poly_coords";
-import { cleanFinish } from "../actions/ride_position";
+import { cleanStart, cleanFinish } from "../actions/ride_position";
 import { calqDistance } from "../lib/calqDistance";
 import { saveRideDistance } from "../actions/ride_distance";
 
@@ -30,9 +31,22 @@ class SearchDriver extends React.Component {
     });
     socket.on("DRIVER_NOT_FOUND", () => {
       // no se pudo encontrar un conductor, le mandamos un mensaje de error al usuario
-      console.log("No se pudo encontrar un conductor :c");
+      Alert.alert(
+        "No drivers found next to you",
+        "Sorry, please try again later",
+        [{ text: "Ok", onPress: () => this.close() }],
+        { onDismiss: () => this.close() }
+      );
     });
   }
+
+  close = () => {
+    this.props.rideNav("hidden");
+    this.props.showIcons(true);
+    this.props.cleanStart();
+    this.props.cleanFinish();
+    this.props.cleanPolyCoords();
+  };
 
   getDistance = async (rideStart, rideFinish, driver) => {
     // esperamos a obtener la distancia para actualizar la pantalla y mostrar lo demas
@@ -40,12 +54,12 @@ class SearchDriver extends React.Component {
       latitude: rideFinish.coordinates[1],
       longitude: rideFinish.coordinates[0]
     };
+
     const ride = await calqDistance(rideStart.coords, rideFinish);
     this.props.saveRideDistance(ride.duration);
     this.props.saveDriver(driver);
     // limpiamos los props anteriores de rideStart, rideFinish, etc
-    this.props.rideNav("driver_id");
-    //this.props.cleanFinish();
+    this.props.rideNav("waiting_for_driver");
     this.props.cleanPolyCoords();
   };
 
@@ -72,9 +86,9 @@ class SearchDriver extends React.Component {
     return (
       <View style={styles.driverSearch}>
         <Text>Searching for Driver ...</Text>
-        <Text>Client Name: {this.props.user.name}</Text>
-        <Text>From {this.props.rideStart.name}</Text>
-        <Text>To {this.props.rideFinish.name}</Text>
+        <Text numberOfLines={1}>Client Name: {this.props.user.name}</Text>
+        <Text numberOfLines={1}>From {this.props.rideStart.name}</Text>
+        <Text numberOfLines={1}>To {this.props.rideFinish.name}</Text>
       </View>
     );
   }
@@ -84,8 +98,10 @@ mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       rideNav,
+      showIcons,
       saveDriver,
       saveRideDistance,
+      cleanStart,
       cleanFinish,
       cleanPolyCoords
     },

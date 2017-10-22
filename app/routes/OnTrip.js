@@ -2,8 +2,8 @@ import React from "react";
 import { Text, View } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import Icon from "react-native-vector-icons/FontAwesome";
 import { rideNav } from "../actions/ride_nav";
-import { cleanStart, cleanFinish } from "../actions/ride_position";
 import styles from "./styles";
 
 class OnTrip extends React.Component {
@@ -11,19 +11,33 @@ class OnTrip extends React.Component {
     const { socket } = this.props;
     socket.on("FINISH_RIDE", () => {
       // termino el viaje
-      console.log("Termino el viaje! :o");
-      this.props.cleanStart();
-      this.props.cleanFinish();
       this.props.rideNav("ride_finished");
     });
   }
   render() {
     // quizas el mapa podria ir siguiendo la posicion del cliente en el mapa
     return (
-      <View style={styles.driverSearch}>
-        <Text>On Trip</Text>
-        <Text>From {this.props.rideStart.name}</Text>
-        <Text>To {this.props.rideFinish.name}</Text>
+      <View style={styles.rideApp}>
+        <View style={styles.headerTitle}>
+          <Text style={styles.rideStatus}>On Trip</Text>
+          <Text>Your are on your way to your destination</Text>
+        </View>
+        <View style={styles.onTrip}>
+          <Text style={styles.onTripTitle}>
+            <Icon name="circle-o" color="#1ca68a" />
+            {"  "}From
+          </Text>
+          <Text style={styles.place} numberOfLines={1}>
+            {this.props.rideStart.name}
+          </Text>
+          <Text style={styles.onTripTitle}>
+            <Icon name="circle" color="#1ca68a" />
+            {"  "}To
+          </Text>
+          <Text style={styles.place} numberOfLines={1}>
+            {this.props.rideFinish.name}
+          </Text>
+        </View>
       </View>
     );
   }

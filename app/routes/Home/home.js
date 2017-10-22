@@ -21,6 +21,7 @@ class Home extends React.Component {
      * el nombre de la calle actual para que lo muestre por defecto como inicio del viaje
      */
     const { latitude, longitude } = this.props.position;
+    Geocoder.fallbackToGoogle("AIzaSyD_FEHOrO24D__vLp9OeW2e5x6dK4w0l2s");
     Geocoder.geocodePosition({
       lat: latitude,
       lng: longitude

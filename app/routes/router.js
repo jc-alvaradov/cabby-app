@@ -39,6 +39,7 @@ class Router extends Component {
   };
 
   showRoute = () => {
+    Geocoder.fallbackToGoogle("AIzaSyD_FEHOrO24D__vLp9OeW2e5x6dK4w0l2s");
     Geocoder.geocodeAddress(this.state.start).then(res => {
       // despachamos la posicion de inicio del viaje
       const startPos = {
