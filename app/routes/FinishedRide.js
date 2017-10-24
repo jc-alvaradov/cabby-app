@@ -69,7 +69,7 @@ class FinishedRide extends React.Component {
           <View style={styles.starContainer}>
             <StarRating
               maxStars={5}
-              starColor="#444444"
+              starColor="#1ca68a"
               rating={this.state.starCount}
               starSize={35}
               selectedStar={rating => this.rateRide(rating)}
