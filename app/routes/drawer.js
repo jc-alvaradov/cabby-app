@@ -35,9 +35,9 @@ class Drawer extends Component {
         <Text style={styles.header}>Options</Text>
         <Image
           style={{ width: 90, height: 90, borderRadius: 45 }}
-          source={{ uri: user.avatar }}
+          source={{ uri: user.photo }}
         />
-        <Text style={styles.userName}>{user.name}</Text>
+        <Text style={styles.userName}>{user.clientName}</Text>
         <TouchableOpacity
           onPress={() => navigate("Rides")}
           style={styles.button}

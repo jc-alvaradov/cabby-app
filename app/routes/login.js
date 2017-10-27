@@ -39,34 +39,36 @@ class Login extends Component {
   };
 
   userIsRegistered = async user => {
-    /*
-      Evita que se registre un usuario mas de una vez. 
-      Ej: Si un usuario crea una cuenta y despues cierra la app se borraran sus datos, 
-      por lo que al tratar de iniciar sesion nuevamente se le haria registrarse nuevamente.
-      Este metodo revisa que el usuario ya exista en la base de datos, en cuyo caso lo lleva 
-      al menu principal. Si no existe, crea una nueva cuenta.
-      
-    */
+    // recibe un usuario identificado en una red social
     user = JSON.parse(user);
+    /**
+     * preguntamos si es que el usuario ya existe en la bd. Si ya existe entonces
+     * lo guardaremos en el asyncstorage y cargaremos el menu principal
+     * si no existe iremos al confirmation para que el usuario agregue los datos extra
+     */
     const query = {
-      query: "query ($login: String!) { userExists(login: $login) }",
+      query:
+        "query ($login: String!) { getClient(login: $login) {_id login clientName active phone photo email rating payment }}",
       variables: {
         login: user.id
       }
     };
-
-    const alreadyExists = await graphRequest(query);
-    if (alreadyExists != null) {
-      if (alreadyExists.data.data.userExists === true) {
-        this.saveData(JSON.stringify(user)).then(() => {
-          this.props.loadHomeScreen(user);
-        });
-      } else {
-        this.props.navigation.navigate("Confirmation", {
-          user: user
-        });
-        this.setState({ selected: false, loading: false });
-      }
+    let clientExists = await graphRequest(query);
+    clientExists = clientExists.data.data.getClient;
+    if (clientExists != null) {
+      // el cliente ya existe en la bd, lo cargamos en la app
+      this.saveData(JSON.stringify(clientExists)).then(() => {
+        this.props.loadHomeScreen(clientExists);
+      });
+    } else {
+      /** 
+       * le enviamos el usuario que recibimos desde la red social al confirmation
+       * el confirmation le dara el formato correcto al usuario para guardarlo en la bd
+       */
+      this.props.navigation.navigate("Confirmation", {
+        user: user
+      });
+      this.setState({ selected: false, loading: false });
     }
   };
 

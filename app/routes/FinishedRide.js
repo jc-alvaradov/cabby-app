@@ -6,8 +6,9 @@ import { bindActionCreators } from "redux";
 import StarRating from "react-native-star-rating";
 import Button from "../components/basicButton";
 import { rideNav } from "../actions/ride_nav";
-import { saveDriver } from "../actions/save_driver";
+import { cleanStart, cleanFinish } from "../actions/ride_position";
 import { showIcons } from "../actions/show_icons";
+import { saveDriver } from "../actions/save_driver";
 import { graphRequest } from "../lib/graphRequest";
 import styles from "./styles";
 
@@ -22,19 +23,37 @@ class FinishedRide extends React.Component {
   };
 
   rateRide = rating => {
-    // despachar accion que le da nota al driver
     this.setState({ starCount: rating });
   };
 
-  finishAndRate = () => {
-    console.log("Vamo a darle nota al driver!: " + this.state.starCount);
+  finishAndRate = async () => {
     // aqui tenemos que limpiar todo el estado referente a el ride,
     // tenemos que guardar en la base de datos una foto del ride completo
+    // hay que mandar una peticion graphql de agregar un rating al ride que tiene este rideId
+    const query = {
+      query: "mutation ($rating: RatingInput!) { addRating(rating: $rating) }",
+      variables: {
+        rating: {
+          fromId: this.props.user._id,
+          toId: this.props.driver._id,
+          //message: "Buen conductor, el auto estaba limpio.",
+          rating: this.state.starCount
+        }
+      }
+    };
+    await graphRequest(query);
+    this.props.cleanStart();
+    this.props.cleanFinish();
+    this.props.saveDriver({});
+    this.props.rideNav("hidden");
+    this.props.showIcons(true);
   };
 
   cancelRide = () => {
     // se devuelve al menu principal
     // limpiar driver
+    this.props.cleanStart();
+    this.props.cleanFinish();
     this.props.saveDriver({});
     this.props.rideNav("hidden");
     this.props.showIcons(true);
@@ -100,10 +119,18 @@ mapDispatchToProps = dispatch => {
     {
       rideNav,
       saveDriver,
-      showIcons
+      showIcons,
+      cleanStart,
+      cleanFinish
     },
     dispatch
   );
 };
 
-export default connect(null, mapDispatchToProps)(FinishedRide);
+mapStateToProps = state => {
+  return {
+    user: state.user
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(FinishedRide);

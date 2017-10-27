@@ -6,7 +6,6 @@ import { bindActionCreators } from "redux";
 import StarRating from "react-native-star-rating";
 import call from "react-native-phone-call";
 import Button from "../components/basicButton";
-import { hideRideNav } from "../actions/hide_ride_nav";
 import { rideNav } from "../actions/ride_nav";
 import { showIcons } from "../actions/show_icons";
 import { cleanStart, cleanFinish } from "../actions/ride_position";
@@ -23,7 +22,7 @@ class DriverId extends React.Component {
   cancelRide = () => {
     this.props.cleanStart();
     this.props.cleanFinish();
-    this.props.hideRideNav("hidden");
+    this.props.rideNav("hidden");
     this.props.showIcons(true);
     this.props.saveDriver({});
   };
@@ -141,7 +140,6 @@ class DriverId extends React.Component {
 mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
-      hideRideNav,
       rideNav,
       showIcons,
       saveDriver,

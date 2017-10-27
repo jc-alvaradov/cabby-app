@@ -10,13 +10,11 @@ import { cleanPolyCoords } from "../actions/clean_poly_coords";
 import { cleanStart, cleanFinish } from "../actions/ride_position";
 import { calqDistance } from "../lib/calqDistance";
 import { saveRideDistance } from "../actions/ride_distance";
-
 import styles from "./styles";
 
 class SearchDriver extends React.Component {
   componentDidMount() {
     const { rideStart, rideFinish, amount, user, socket } = this.props;
-
     const client = {
       rideStart,
       rideFinish,

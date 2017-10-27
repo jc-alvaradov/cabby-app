@@ -34,7 +34,7 @@ class Confirmation extends React.Component {
     if (!this.state.pressed && validFields === true) {
       const user = {
         login: this.props.navigation.state.params.user.id,
-        avatar: this.props.navigation.state.params.user.avatar,
+        photo: this.props.navigation.state.params.user.avatar,
         clientName: this.state.name,
         email: this.state.email,
         phone: this.state.phone,
@@ -47,7 +47,7 @@ class Confirmation extends React.Component {
           console.log("Hubo un problema guardando el usuario");
         }
         // FIXME: continuamos de todas formas por ahora
-        this.props.loadHomeScreen(user);
+        this.props.loadHomeScreen(res);
       });
     } else {
       this.setState({ errorMsg: "Please fill in all fields" });
@@ -57,18 +57,17 @@ class Confirmation extends React.Component {
   async saveData(user) {
     const query = {
       query:
-        "mutation ($cliente: ClientInput!) { addClient(client: $cliente) }",
+        "mutation ($cliente: ClientInput!) { addClient(client: $cliente){ _id login clientName active phone photo email rating payment} }",
       variables: {
         cliente: user
       }
     };
-    const saveUser = await graphRequest(query);
-    if (saveUser.data.data.addClient === true) {
+    let savedUser = await graphRequest(query);
+    savedUser = savedUser.data.data.addClient;
+    if (savedUser != null) {
       try {
-        return await AsyncStorage.setItem(
-          "@TNStore:user",
-          JSON.stringify(user)
-        );
+        await AsyncStorage.setItem("@TNStore:user", JSON.stringify(savedUser));
+        return savedUser;
       } catch (error) {
         console.log("Error saving data");
         return false;
