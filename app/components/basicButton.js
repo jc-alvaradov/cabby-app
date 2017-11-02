@@ -3,9 +3,22 @@ import { Text, StyleSheet, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 class Button extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+  state = {
+    pressed: false
+  };
+
+  onBtnFinish = () => {
+    this.setState({ pressed: !this.state.pressed });
+  };
+
+  pressBtn = () => {
+    // se pasa un callback para volver a activar el boton si es que es necesario
+    if (!this.state.pressed) {
+      this.setState({ pressed: !this.state.pressed });
+      this.props.onTouch(this.onBtnFinish);
+    }
+  };
+
   render() {
     let style, textColor;
     switch (this.props.btnStyle) {
@@ -33,10 +46,11 @@ class Button extends React.Component {
     let icon = null;
 
     if (this.props.icon) {
-      icon = <Icon name="phone" color="#1ca68a" size={25} />;
+      icon = <Icon name={this.props.icon} color="#1ca68a" size={25} />;
     }
+
     return (
-      <TouchableOpacity onPress={this.props.onTouch} style={style}>
+      <TouchableOpacity onPress={this.pressBtn} style={style}>
         <Text style={textColor}>
           {icon} {this.props.text}
         </Text>

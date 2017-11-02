@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet, Text, View, Image, NetInfo } from "react-native";
 import MapView from "react-native-maps";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -15,6 +15,13 @@ import Driver from "../../components/driver";
 import RidePickup from "../RidePickup";
 import styles from "../styles";
 
+function handleFirstConnectivityChange(isConnected) {
+  if (!isConnected) {
+    // el cliente no esta conectado a la internets, evitar q la app siga funcionando.
+    // mostrar mensaje al cliente y permitirle activar los datos
+  }
+}
+
 class Map extends React.Component {
   state = {
     screenPos: null,
@@ -23,10 +30,17 @@ class Map extends React.Component {
 
   componentDidMount() {
     this.getDrivers();
+    NetInfo.isConnected.fetch().then(isConnected => {
+      console.log("First, is " + (isConnected ? "online" : "offline"));
+    });
+    NetInfo.isConnected.addEventListener(
+      "change",
+      handleFirstConnectivityChange
+    );
   }
 
   getDriver = async () => {
-    // se usa el driver id del store para hacer una peticion a la bd cada 3 min
+    // se usa el driver id del store para hacer una peticion a la bd cada 3 seg
     // el array de autos se convierte en 1 solo auto.
     // hay que cambiar this.state.drivers, se actualiza la pos del mapa con la del auto
     // siempre y cuando no se haya seleccionado la opcion "dejar de seguir"
@@ -169,6 +183,10 @@ class Map extends React.Component {
     // remueve el timer que actualiza los drivers y la distancia entre el driver y el cliente
     clearTimeout(this.timer);
     clearTimeout(this.rideDistanceTimer);
+    NetInfo.isConnected.removeEventListener(
+      "change",
+      handleFirstConnectivityChange
+    );
   }
 
   screenMoved = pos => {
