@@ -44,7 +44,7 @@ class Confirmation extends React.Component {
       };
       this.saveData(user).then(res => {
         if (res === false) {
-          console.log("Hubo un problema guardando el usuario");
+          //console.log("Hubo un problema guardando el usuario");
         }
         // FIXME: continuamos de todas formas por ahora
         this.props.loadHomeScreen(res);
@@ -70,7 +70,7 @@ class Confirmation extends React.Component {
         await AsyncStorage.setItem("@TNStore:user", JSON.stringify(savedUser));
         return savedUser;
       } catch (error) {
-        console.log("Error saving data");
+        //console.log("Error saving data");
         return false;
       }
     } else {

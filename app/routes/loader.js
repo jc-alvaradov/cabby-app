@@ -22,7 +22,7 @@ class Loader extends Component {
         this.props.loadStartScreen();
       }
     } catch (error) {
-      console.log("There was an error reading from disk");
+      //console.log("There was an error reading from disk");
     }
   };
 

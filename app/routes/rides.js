@@ -36,7 +36,7 @@ class Rides extends Component {
         const rides = res.data.data.getClientRides;
         this.setState({ rides });
       } else {
-        console.log("bad response");
+        //console.log("bad response");
       }
     });
   }

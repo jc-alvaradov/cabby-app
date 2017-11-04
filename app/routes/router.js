@@ -71,11 +71,11 @@ class Router extends Component {
               this.props.navigation.goBack();
             })
             .catch(err => {
-              console.log("Hubo un error en el geocoder:" + err);
+              //console.log("Hubo un error en el geocoder:" + err);
             });
         })
         .catch(err => {
-          console.log("Hubo un error en el geocoder:" + err);
+          //console.log("Hubo un error en el geocoder:" + err);
         });
     } else {
       //Alert.alert();

@@ -78,10 +78,6 @@ export const AppNavigator = StackNavigator(
 );
 
 class AppWithNavigationState extends React.Component {
-  constructor(props) {
-    super(props);
-    this.onBackPress = this.onBackPress.bind(this);
-  }
   componentDidMount() {
     BackHandler.addEventListener("hardwareBackPress", this.onBackPress);
   }
@@ -97,7 +93,7 @@ class AppWithNavigationState extends React.Component {
     );
   }
 
-  onBackPress() {
+  onBackPress = () => {
     const { dispatch, nav } = this.props;
     // el primer caso evita que se cierre la app cuando se esta en un navegador anidado
     // y vuelve al screen anterior (anidado)
@@ -116,7 +112,7 @@ class AppWithNavigationState extends React.Component {
       dispatch(NavigationActions.back());
       return true;
     }
-  }
+  };
 }
 
 const mapStateToProps = state => ({

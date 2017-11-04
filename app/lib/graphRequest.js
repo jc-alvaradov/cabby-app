@@ -11,6 +11,6 @@ export function graphRequest(data) {
       return res;
     })
     .catch(err => {
-      console.log(`Hubo un error en la peticion al dominio graphql: ${err}`);
+      //console.log(`Hubo un error en la peticion al dominio graphql: ${err}`);
     });
 }

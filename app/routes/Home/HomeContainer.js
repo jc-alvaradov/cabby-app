@@ -8,7 +8,8 @@ class HomeContainer extends React.Component {
     position: {
       latitude: 0,
       longitude: 0
-    }
+    },
+    loading: true
   };
 
   componentDidMount() {
@@ -30,7 +31,8 @@ class HomeContainer extends React.Component {
                 position: {
                   latitude: position.coords.latitude,
                   longitude: position.coords.longitude
-                }
+                },
+                loading: false
               });
             },
             error => console.log(error.message),
@@ -39,20 +41,16 @@ class HomeContainer extends React.Component {
         }.bind(this)
       )
       .catch(error => {
-        console.log(error.message);
+        //console.log(error.message);
       });
   }
 
   render() {
-    const render =
-      this.state.position.latitude === 0 ? (
-        <Loading />
-      ) : (
-        <Home
-          position={this.state.position}
-          navigation={this.props.navigation}
-        />
-      );
+    const render = this.state.loading ? (
+      <Loading />
+    ) : (
+      <Home position={this.state.position} navigation={this.props.navigation} />
+    );
     return render;
   }
 }

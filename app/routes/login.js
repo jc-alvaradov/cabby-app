@@ -34,7 +34,7 @@ class Login extends Component {
     try {
       return await AsyncStorage.setItem("@TNStore:user", user);
     } catch (error) {
-      console.log("Error saving data");
+      //console.log("Error saving data");
     }
   };
 

@@ -88,10 +88,3 @@ mapDispatchToProps = dispatch => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
-
-/*
-
-import Icon from "react-native-vector-icons/FontAwesome";
-            <Icon style={styles.icon} name="search" />
-
-*/

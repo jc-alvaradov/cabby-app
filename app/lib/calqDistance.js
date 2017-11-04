@@ -2,7 +2,7 @@ export async function calqDistance(start, destination) {
   if (start != null && destination != null) {
     const query = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${start.latitude},${start.longitude}&destinations=${destination.latitude},${destination.longitude}&key=AIzaSyAJTjCs9OddMqnuyL6qXowI8SYQTwU5vjQ`;
     let resp = await fetch(query).catch(error => {
-      console.log(error);
+      //console.log(error);
     });
     if (resp != undefined) {
       let respJson = await resp.json();
