@@ -3,9 +3,6 @@ import { StyleSheet, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 class BackButton extends React.Component {
-  constructor(props) {
-    super(props);
-  }
   render() {
     return (
       <TouchableOpacity onPress={this.props.onTouch} style={styles.button}>

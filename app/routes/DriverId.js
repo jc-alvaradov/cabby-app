@@ -27,19 +27,18 @@ class DriverId extends React.Component {
     this.props.saveDriver({});
   };
 
-  callDriver = number => {
+  callDriver = (number, callback) => {
     const args = {
       number,
       prompt: true
     };
     call(args).catch(console.error);
+    callback();
   };
 
   componentDidMount() {
     const { socket } = this.props;
     socket.on("CONFIRM_PICKUP", () => {
-      // recogieron al usuario
-      // quieres iniciar el viaje? si o no
       Alert.alert(
         "Your ride is ready",
         "Do you want to start your ride now?",
@@ -128,7 +127,7 @@ class DriverId extends React.Component {
               text="Call"
               icon="phone"
               btnStyle="inline"
-              onTouch={() => this.callDriver(driver.phone)}
+              onTouch={callback => this.callDriver(driver.phone, callback)}
             />
           </View>
         </View>

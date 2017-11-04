@@ -2,20 +2,23 @@ import React from "react";
 import { Text, StyleSheet, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 
+let globalVar = {};
+
 class Button extends React.Component {
   state = {
     pressed: false
   };
 
   onBtnFinish = () => {
-    this.setState({ pressed: !this.state.pressed });
+    this.setState({ pressed: false });
   };
 
   pressBtn = () => {
     // se pasa un callback para volver a activar el boton si es que es necesario
     if (!this.state.pressed) {
-      this.setState({ pressed: !this.state.pressed });
-      this.props.onTouch(this.onBtnFinish);
+      this.setState({ pressed: true }, () =>
+        this.props.onTouch(this.onBtnFinish)
+      );
     }
   };
 

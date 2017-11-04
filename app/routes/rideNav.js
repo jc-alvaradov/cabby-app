@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import SocketIOClient from "socket.io-client";
 import { rideNav } from "../actions/ride_nav";
-import { hideRideNav } from "../actions/hide_ride_nav";
 import { cleanStart, cleanFinish } from "../actions/ride_position";
 import { showIcons } from "../actions/show_icons";
 import { cleanPolyCoords } from "../actions/clean_poly_coords";
@@ -46,9 +45,12 @@ class RideNav extends React.Component {
           <View style={styles.rideSelectContainer} pointerEvents="box-none">
             <BackButton onTouch={this.closeRideSelect} />
             <View style={styles.textContainer}>
-              <Text style={styles.estimation}>
-                Estimated {this.state.distance}, {this.state.time}
-              </Text>
+              <View style={styles.estimations}>
+                <Text style={styles.estimation}>
+                  Estimated {this.state.distance}
+                </Text>
+                <Text style={styles.estimation}>{this.state.time}</Text>
+              </View>
               <Text style={styles.price}>${this.state.price}</Text>
             </View>
             <View>
@@ -101,12 +103,12 @@ class RideNav extends React.Component {
     return nav;
   }
   closeRideSelect = () => {
-    this.props.hideRideNav("hidden");
     this.props.showIcons(true);
+    this.props.cleanPolyCoords();
     this.props.cleanStart();
     this.props.cleanFinish();
-    this.props.cleanPolyCoords();
     this.setState({ rideShown: false });
+    this.props.rideNav("hidden");
   };
 
   closeSearchDriver = () => {
@@ -146,7 +148,6 @@ mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       rideNav,
-      hideRideNav,
       showIcons,
       cleanStart,
       cleanFinish,

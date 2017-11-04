@@ -53,6 +53,7 @@ class Login extends Component {
         login: user.id
       }
     };
+    // chequear que haya internet
     let clientExists = await graphRequest(query);
     clientExists = clientExists.data.data.getClient;
     if (clientExists != null) {

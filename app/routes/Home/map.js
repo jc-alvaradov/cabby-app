@@ -1,26 +1,26 @@
 import React from "react";
-import { StyleSheet, Text, View, Image, NetInfo } from "react-native";
+import { StyleSheet, Text, View, Image, NetInfo, Alert } from "react-native";
 import MapView from "react-native-maps";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import Geocoder from "react-native-geocoder";
+import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 import { graphRequest } from "../../lib/graphRequest";
 import Button from "../../components/basicButton";
+import BackButton from "../../components/backButton";
 import { regionFrom } from "../../lib/delta";
 import { rideNav } from "../../actions/ride_nav";
+import { connectionState } from "../../actions/connection_state";
 import { saveRideDistance } from "../../actions/ride_distance";
+import { cleanStart, cleanFinish } from "../../actions/ride_position";
+import { cleanPolyCoords } from "../../actions/clean_poly_coords";
+import { saveDriver } from "../../actions/save_driver";
+import { showIcons } from "../../actions/show_icons";
 import { setStart, setFinish } from "../../actions/ride_position";
 import { calqDistance } from "../../lib/calqDistance";
 import Driver from "../../components/driver";
 import RidePickup from "../RidePickup";
 import styles from "../styles";
-
-function handleFirstConnectivityChange(isConnected) {
-  if (!isConnected) {
-    // el cliente no esta conectado a la internets, evitar q la app siga funcionando.
-    // mostrar mensaje al cliente y permitirle activar los datos
-  }
-}
 
 class Map extends React.Component {
   state = {
@@ -30,14 +30,64 @@ class Map extends React.Component {
 
   componentDidMount() {
     this.getDrivers();
+    // primer chequeo de conexion a internet
     NetInfo.isConnected.fetch().then(isConnected => {
-      console.log("First, is " + (isConnected ? "online" : "offline"));
+      this.handleConnection(isConnected);
     });
-    NetInfo.isConnected.addEventListener(
-      "change",
-      handleFirstConnectivityChange
-    );
+    // chequeos siguientes
+    NetInfo.isConnected.addEventListener("change", this.handleConnection);
   }
+
+  componentWillUnmount() {
+    // remueve el timer que actualiza los drivers y la distancia entre el driver y el cliente
+    clearTimeout(this.timer);
+    clearTimeout(this.rideDistanceTimer);
+    NetInfo.isConnected.removeEventListener("change", this.handleConnection);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (
+      nextProps.rideState === "ride_select" &&
+      this.props.store.rideStart != null &&
+      this.props.store.rideFinish != null
+    ) {
+      // hace un fit del mapa para que quepa en la pantalla
+      this.mapRef.fitToCoordinates(
+        [this.props.store.rideStart.coords, this.props.store.rideFinish.coords],
+        {
+          edgePadding: {
+            top: 50,
+            left: 100,
+            bottom: 300,
+            right: 100
+          },
+          animated: true
+        }
+      );
+    }
+  }
+
+  handleConnection = isConnected => {
+    // cambiar el estado de la app de connected
+    this.props.connectionState(isConnected);
+    if (!isConnected) {
+      if (
+        this.props.rideState === "waiting_for_driver" ||
+        this.props.rideState === "searching_driver" ||
+        this.props.rideState === "on_trip"
+      ) {
+        Alert.alert(
+          "Ride Canceled",
+          "Your internet connection failed, so your ride had to be canceled"
+        );
+      } else {
+        Alert.alert(
+          "No Internet Connection Detected",
+          "Please make sure you are connected to the internet"
+        );
+      }
+    }
+  };
 
   getDriver = async () => {
     // se usa el driver id del store para hacer una peticion a la bd cada 3 seg
@@ -52,40 +102,45 @@ class Map extends React.Component {
       }
     };
 
-    let driver = await graphRequest(query);
-    if (driver != null && driver.data.data.getDriverPos) {
-      driver = driver.data.data.getDriverPos;
-      driver = [
-        {
-          key: driver.driverId,
-          position: {
-            latitude: driver.coordinate.coordinates[1],
-            longitude: driver.coordinate.coordinates[0]
-          }
-        }
-      ];
-      this.setState({
-        drivers: driver
-      });
-      // acerca el mapa para que muestre al driver y la posicion de inicio del viaje
-      if (
-        this.props.store.rideStart != null &&
-        this.props.store.rideStart.hasOwnProperty("coords") &&
-        this.props.rideState === "waiting_for_driver"
-      ) {
-        this.mapRef.fitToCoordinates(
-          [this.props.store.rideStart.coords, driver[0].position],
+    if (this.props.connected) {
+      let driver = await graphRequest(query);
+      if (driver != null && driver.data.data.getDriverPos) {
+        driver = driver.data.data.getDriverPos;
+        driver = [
           {
-            edgePadding: {
-              top: 150,
-              left: 100,
-              bottom: 400,
-              right: 100
-            },
-            animated: true
+            key: driver.driverId,
+            position: {
+              latitude: driver.coordinate.coordinates[1],
+              longitude: driver.coordinate.coordinates[0]
+            }
           }
-        );
+        ];
+        this.setState({
+          drivers: driver
+        });
+        // acerca el mapa para que muestre al driver y la posicion de inicio del viaje
+        if (
+          this.props.store.rideStart != null &&
+          this.props.store.rideStart.hasOwnProperty("coords") &&
+          this.props.rideState === "waiting_for_driver"
+        ) {
+          this.mapRef.fitToCoordinates(
+            [this.props.store.rideStart.coords, driver[0].position],
+            {
+              edgePadding: {
+                top: 150,
+                left: 100,
+                bottom: 400,
+                right: 100
+              },
+              animated: true
+            }
+          );
+        }
       }
+    } else {
+      // internet connection failed, cancel ride
+      this.closeRideSelect();
     }
   };
 
@@ -105,18 +160,21 @@ class Map extends React.Component {
         }
       }
     };
-    let drivers = await graphRequest(query);
-    if (drivers != null && drivers.data.data.getClosestDrivers) {
-      drivers = drivers.data.data.getClosestDrivers.map(driver => {
-        return {
-          key: driver.driverId,
-          position: {
-            latitude: driver.coordinate.coordinates[1],
-            longitude: driver.coordinate.coordinates[0]
-          }
-        };
-      });
-      this.setState({ drivers });
+    //Revisar bien que haya internet
+    if (this.props.connected) {
+      let drivers = await graphRequest(query);
+      if (drivers != null && drivers.data.data.getClosestDrivers) {
+        drivers = drivers.data.data.getClosestDrivers.map(driver => {
+          return {
+            key: driver.driverId,
+            position: {
+              latitude: driver.coordinate.coordinates[1],
+              longitude: driver.coordinate.coordinates[0]
+            }
+          };
+        });
+        this.setState({ drivers });
+      }
     }
   };
 
@@ -129,14 +187,25 @@ class Map extends React.Component {
     // actualiza los datos de los conductores desde el servidor cada 3 segundos
     this.timer = setInterval(() => {
       // revisamos si el objeto del conductor tiene propiedades
-      if (Object.keys(this.props.store.driver).length > 0) {
+      if (
+        Object.keys(this.props.store.driver).length > 0 &&
+        this.props.connected === true
+      ) {
         this.getDriver();
-      } else {
+      } else if (this.props.connected === true) {
         // si no las tiene es porque no hay un conductor asignado todavia
         this.getClosestDrivers();
       }
       if (this.props.rideState === "on_trip") {
         this.mapRef.animateToCoordinate(this.state.drivers[0].position, 3000);
+      }
+      if (
+        this.props.connected === false &&
+        (this.props.rideState === "waiting_for_driver" ||
+          this.props.rideState === "searching_driver" ||
+          this.props.rideState === "on_trip")
+      ) {
+        this.closeRideSelect();
       }
     }, 3000);
     // actualiza la distancia entre el punto de inicio y el conductor (ej: 8 mins)
@@ -146,7 +215,8 @@ class Map extends React.Component {
         this.state.drivers.length > 0 &&
         this.props.store.rideStart != null &&
         this.props.store.rideStart.hasOwnProperty("coords") &&
-        this.props.rideState === "waiting_for_driver"
+        this.props.rideState === "waiting_for_driver" &&
+        this.props.connected === true
       ) {
         this.getDistance(
           this.props.store.rideStart.coords,
@@ -155,39 +225,6 @@ class Map extends React.Component {
       }
     }, 5000);
   };
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.rideState === "ride_select") {
-      // hace un fit del mapa para que quepa en la pantalla
-      this.timer = setTimeout(() => {
-        this.mapRef.fitToCoordinates(
-          [
-            this.props.store.rideStart.coords,
-            this.props.store.rideFinish.coords
-          ],
-          {
-            edgePadding: {
-              top: 50,
-              left: 100,
-              bottom: 300,
-              right: 100
-            },
-            animated: true
-          }
-        );
-      }, 1000);
-    }
-  }
-
-  componentWillUnmount() {
-    // remueve el timer que actualiza los drivers y la distancia entre el driver y el cliente
-    clearTimeout(this.timer);
-    clearTimeout(this.rideDistanceTimer);
-    NetInfo.isConnected.removeEventListener(
-      "change",
-      handleFirstConnectivityChange
-    );
-  }
 
   screenMoved = pos => {
     /** 
@@ -211,7 +248,7 @@ class Map extends React.Component {
   setPickupLocation = () => {
     // muestra el icono de startPos del viaje en el mapa y cambia a la pantalla de elegir el segundo punto
     const { screenPos } = this.state;
-    if (screenPos != null) {
+    if (screenPos != null && this.props.connected) {
       Geocoder.fallbackToGoogle("AIzaSyD_FEHOrO24D__vLp9OeW2e5x6dK4w0l2s");
       Geocoder.geocodePosition({
         lat: screenPos.latitude,
@@ -233,7 +270,7 @@ class Map extends React.Component {
   setDropoffLocation = () => {
     // guarda el segundo punto en el store y navega hasta la pantalla que muestra el viaje y los datos
     const { screenPos } = this.state;
-    if (screenPos != null) {
+    if (screenPos != null && this.props.connected) {
       Geocoder.geocodePosition({
         lat: screenPos.latitude,
         lng: screenPos.longitude
@@ -246,7 +283,6 @@ class Map extends React.Component {
           }
         };
         this.props.setFinish(finishPos);
-        this.setState({ showStartIcon: false });
         this.props.rideNav("ride_select");
       });
     }
@@ -265,6 +301,15 @@ class Map extends React.Component {
       this.setState({ mapSnapshot: uri });
     });
   }
+
+  closeRideSelect = () => {
+    this.props.rideNav("hidden");
+    this.props.showIcons(true);
+    this.props.cleanStart();
+    this.props.cleanFinish();
+    this.props.cleanPolyCoords();
+    this.props.saveDriver({});
+  };
 
   render() {
     let line = null;
@@ -294,9 +339,13 @@ class Map extends React.Component {
               />
             </View>
             <View style={styles.pickupBtn}>
+              <View style={styles.backBtn}>
+                <BackButton onTouch={this.closeRideSelect} />
+              </View>
               <Button
                 text="Set Pickup Location"
                 btnStyle="long"
+                key="startLocationBtn"
                 onTouch={this.setPickupLocation}
               />
             </View>
@@ -313,8 +362,12 @@ class Map extends React.Component {
               />
             </View>
             <View style={styles.pickupBtn}>
+              <View style={styles.backBtn}>
+                <BackButton onTouch={this.closeRideSelect} />
+              </View>
               <Button
                 text="Set Drop Off Location"
+                key="dropOffLocationBtn"
                 btnStyle="long"
                 onTouch={this.setDropoffLocation}
               />
@@ -410,19 +463,31 @@ const RidePoints = ({ rideStart, rideFinish, rideState }) => {
   return render;
 };
 
-function mapStateToProps(state) {
+mapStateToProps = state => {
   return {
     store: state,
     rideState: state.rideNav,
-    polyCoords: state.polyCoords
+    polyCoords: state.polyCoords,
+    connected: state.connected
   };
-}
+};
 
-function mapDispatchToProps(dispatch) {
+mapDispatchToProps = dispatch => {
   return bindActionCreators(
-    { setStart, setFinish, rideNav, saveRideDistance },
+    {
+      setStart,
+      setFinish,
+      rideNav,
+      saveRideDistance,
+      connectionState,
+      showIcons,
+      cleanStart,
+      cleanFinish,
+      saveDriver,
+      cleanPolyCoords
+    },
     dispatch
   );
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Map);

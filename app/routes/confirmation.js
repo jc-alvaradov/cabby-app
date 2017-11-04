@@ -62,6 +62,7 @@ class Confirmation extends React.Component {
         cliente: user
       }
     };
+    // chequear que haya internet conectado
     let savedUser = await graphRequest(query);
     savedUser = savedUser.data.data.addClient;
     if (savedUser != null) {

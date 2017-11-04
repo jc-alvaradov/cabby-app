@@ -41,6 +41,7 @@ class FinishedRide extends React.Component {
         }
       }
     };
+    // revisar que haya internet conectado
     await graphRequest(query);
     this.props.cleanStart();
     this.props.cleanFinish();

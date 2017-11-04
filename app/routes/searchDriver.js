@@ -1,5 +1,6 @@
 import React from "react";
 import { Text, View, Alert } from "react-native";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { graphRequest } from "../lib/graphRequest";
@@ -13,6 +14,18 @@ import { saveRideDistance } from "../actions/ride_distance";
 import styles from "./styles";
 
 class SearchDriver extends React.Component {
+  static propTypes = {
+    user: PropTypes.object.isRequired,
+    rideStart: PropTypes.object.isRequired,
+    rideFinish: PropTypes.object.isRequired
+  };
+
+  static defaultProps = {
+    user: { name: "" },
+    rideStart: { name: "" },
+    rideFinish: { name: "" }
+  };
+
   componentDidMount() {
     const { rideStart, rideFinish, amount, user, socket } = this.props;
     const client = {
@@ -53,12 +66,16 @@ class SearchDriver extends React.Component {
       longitude: rideFinish.coordinates[0]
     };
 
-    const ride = await calqDistance(rideStart.coords, rideFinish);
-    this.props.saveRideDistance(ride.duration);
-    this.props.saveDriver(driver);
-    // limpiamos los props anteriores de rideStart, rideFinish, etc
-    this.props.rideNav("waiting_for_driver");
-    this.props.cleanPolyCoords();
+    if (this.props.connected === true) {
+      const ride = await calqDistance(rideStart.coords, rideFinish);
+      this.props.saveRideDistance(ride.duration);
+      this.props.saveDriver(driver);
+      // limpiamos los props anteriores de rideStart, rideFinish, etc
+      this.props.rideNav("waiting_for_driver");
+      this.props.cleanPolyCoords();
+    } else {
+      // alert no internet
+    }
   };
 
   getDriver = async (driverPos, rideStart) => {
@@ -69,14 +86,17 @@ class SearchDriver extends React.Component {
         id: driverPos.driverId
       }
     };
-
-    let driver = await graphRequest(query);
-    driver = driver.data.data.getDriverById;
-    if (driver != null) {
-      // guardamos al driver en el estado de redux para poder usarlo en otras partes
-      // de la app.
-      // aqui recibimos la posicion actual del driver y calculamos la distancia con el rideStart
-      this.getDistance(rideStart, driverPos.coordinate, driver);
+    if (this.props.connected === true) {
+      let driver = await graphRequest(query);
+      driver = driver.data.data.getDriverById;
+      if (driver != null) {
+        // guardamos al driver en el estado de redux para poder usarlo en otras partes
+        // de la app.
+        // aqui recibimos la posicion actual del driver y calculamos la distancia con el rideStart
+        this.getDistance(rideStart, driverPos.coordinate, driver);
+      }
+    } else {
+      // alert, no internet connection
     }
   };
 
@@ -92,6 +112,12 @@ class SearchDriver extends React.Component {
   }
 }
 
+mapStateToProps = state => {
+  return {
+    connected: state.connected
+  };
+};
+
 mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
@@ -106,4 +132,4 @@ mapDispatchToProps = dispatch => {
     dispatch
   );
 };
-export default connect(null, mapDispatchToProps)(SearchDriver);
+export default connect(mapStateToProps, mapDispatchToProps)(SearchDriver);

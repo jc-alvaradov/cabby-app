@@ -12,6 +12,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.CallbackManager;
 import com.facebook.appevents.AppEventsLogger; 
 import com.devfd.RNGeocoder.RNGeocoderPackage;
+import com.showlocationservicesdialogbox.LocationServicesDialogBoxPackage;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,7 +34,8 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
           new MapsPackage(),
           new VectorIconsPackage(),
-          new RNGeocoderPackage()
+          new RNGeocoderPackage(),
+          new LocationServicesDialogBoxPackage()
       );
     }
   };

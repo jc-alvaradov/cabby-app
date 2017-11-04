@@ -7,6 +7,7 @@ import { loadStartScreen, loadHomeScreen } from "../actions/load_screens";
 
 class Loader extends Component {
   componentDidMount() {
+    // chequear si es que la app esta pagada o no
     this.getAppState();
   }
 

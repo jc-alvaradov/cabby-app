@@ -135,7 +135,7 @@ const Styles = StyleSheet.create({
   },
   rideSelectContainer: {
     width: 300,
-    height: 176,
+    height: 200,
     borderRadius: 5,
     flexDirection: "column",
     justifyContent: "space-between",
@@ -148,9 +148,15 @@ const Styles = StyleSheet.create({
     alignItems: "flex-start",
     justifyContent: "space-between",
     width: 300,
-    height: 50,
+    minHeight: 80,
     borderRadius: 5,
     elevation: 3
+  },
+  estimations: {
+    flex: 1,
+    flexDirection: "column",
+    alignItems: "flex-start",
+    justifyContent: "space-between"
   },
   estimation: {
     fontSize: 16,
@@ -196,6 +202,10 @@ const Styles = StyleSheet.create({
     justifyContent: "flex-end",
     alignItems: "center",
     marginBottom: 30
+  },
+  backBtn: {
+    width: 300,
+    alignItems: "flex-start"
   },
   chevronIcon: {
     marginTop: 5,

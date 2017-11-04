@@ -30,6 +30,7 @@ class Rides extends Component {
         id: user.id
       }
     };
+    // chequear que haya internet
     graphRequest(request).then(res => {
       if (res !== undefined) {
         const rides = res.data.data.getClientRides;

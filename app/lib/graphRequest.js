@@ -7,6 +7,7 @@ export function graphRequest(data) {
   return axios
     .post("http://45.7.229.110:3000/graphql", data)
     .then(res => {
+      //console.log("LA RESPUESTA A MI PETICION FUE: " + JSON.stringify(res));
       return res;
     })
     .catch(err => {

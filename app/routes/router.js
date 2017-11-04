@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View } from "react-native";
+import { Text, View, NetInfo } from "react-native";
 import { NavigationActions } from "react-navigation";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -38,41 +38,57 @@ class Router extends Component {
     this.setState({ finish: value });
   };
 
-  showRoute = () => {
-    Geocoder.fallbackToGoogle("AIzaSyD_FEHOrO24D__vLp9OeW2e5x6dK4w0l2s");
-    Geocoder.geocodeAddress(this.state.start).then(res => {
-      // despachamos la posicion de inicio del viaje
-      const startPos = {
-        name: this.state.start,
-        coords: {
-          latitude: res[0].position.lat,
-          longitude: res[0].position.lng
-        }
-      };
-      this.props.setStart(startPos);
-      Geocoder.geocodeAddress(this.state.finish).then(res => {
-        // despachamos la posicion final del viaje
-        const finishPos = {
-          name: this.state.finish,
-          coords: {
-            latitude: res[0].position.lat,
-            longitude: res[0].position.lng
-          }
-        };
-        this.props.setFinish(finishPos);
-        // escondemos los iconos de la pantalla principal
-        this.props.showIcons(false);
-        // elegimos el estado de navegacion donde se muestra la ruta del viaje
-        this.props.rideNav("ride_select");
-        this.props.navigation.goBack();
-      });
-    });
+  showRoute = callback => {
+    // revisamos si estamos conectados a internet antes de hacer la peticion
+    if (this.props.connected === true) {
+      Geocoder.fallbackToGoogle("AIzaSyD_FEHOrO24D__vLp9OeW2e5x6dK4w0l2s");
+      Geocoder.geocodeAddress(this.state.start)
+        .then(res => {
+          // despachamos la posicion de inicio del viaje
+          const startPos = {
+            name: this.state.start,
+            coords: {
+              latitude: res[0].position.lat,
+              longitude: res[0].position.lng
+            }
+          };
+          this.props.setStart(startPos);
+          Geocoder.geocodeAddress(this.state.finish)
+            .then(res => {
+              // despachamos la posicion final del viaje
+              const finishPos = {
+                name: this.state.finish,
+                coords: {
+                  latitude: res[0].position.lat,
+                  longitude: res[0].position.lng
+                }
+              };
+              this.props.setFinish(finishPos);
+              // escondemos los iconos de la pantalla principal
+              this.props.showIcons(false);
+              // elegimos el estado de navegacion donde se muestra la ruta del viaje
+              this.props.rideNav("ride_select");
+              this.props.navigation.goBack();
+            })
+            .catch(err => {
+              console.log("Hubo un error en el geocoder:" + err);
+            });
+        })
+        .catch(err => {
+          console.log("Hubo un error en el geocoder:" + err);
+        });
+    } else {
+      //Alert.alert();
+      callback();
+    }
   };
 
   setOnMap = () => {
-    this.props.showIcons(false);
-    this.props.rideNav("start_pos_select");
-    this.props.navigation.goBack();
+    if (this.props.connected === true) {
+      this.props.showIcons(false);
+      this.props.rideNav("start_pos_select");
+      this.props.navigation.goBack();
+    }
   };
 
   render() {
@@ -109,6 +125,12 @@ Router.navigationOptions = {
   title: "Choose a Route"
 };
 
+mapStateToProps = state => {
+  return {
+    connected: state.connected
+  };
+};
+
 mapDispatchToProps = dispatch => {
   return bindActionCreators(
     { showIcons, rideNav, setStart, setFinish },
@@ -116,4 +138,4 @@ mapDispatchToProps = dispatch => {
   );
 };
 
-export default connect(null, mapDispatchToProps)(Router);
+export default connect(mapStateToProps, mapDispatchToProps)(Router);
