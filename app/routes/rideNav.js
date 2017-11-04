@@ -41,28 +41,36 @@ class RideNav extends React.Component {
         if (!this.state.rideShown && rideStart != null && rideFinish != null) {
           this.getRide(rideStart.coords, rideFinish.coords);
         }
-        nav = (
-          <View style={styles.rideSelectContainer} pointerEvents="box-none">
-            <BackButton onTouch={this.closeRideSelect} />
-            <View style={styles.textContainer}>
-              <View style={styles.estimations}>
-                <Text style={styles.estimation}>
-                  Estimated {this.state.distance}
-                </Text>
-                <Text style={styles.estimation}>{this.state.time}</Text>
+        if (this.state.price == 0) {
+          nav = (
+            <View style={styles.loadingBackground}>
+              <Loading />
+            </View>
+          );
+        } else {
+          nav = (
+            <View style={styles.rideSelectContainer} pointerEvents="box-none">
+              <BackButton onTouch={this.closeRideSelect} />
+              <View style={styles.textContainer}>
+                <View style={styles.estimations}>
+                  <Text style={styles.estimation}>
+                    Estimated {this.state.distance}
+                  </Text>
+                  <Text style={styles.estimation}>{this.state.time}</Text>
+                </View>
+                <Text style={styles.price}>${this.state.price}</Text>
               </View>
-              <Text style={styles.price}>${this.state.price}</Text>
+              <View>
+                <Button
+                  style={styles.pickupBtn}
+                  text="Request Taxi"
+                  btnStyle="long"
+                  onTouch={this.requestTaxi}
+                />
+              </View>
             </View>
-            <View>
-              <Button
-                style={styles.pickupBtn}
-                text="Request Taxi"
-                btnStyle="long"
-                onTouch={this.requestTaxi}
-              />
-            </View>
-          </View>
-        );
+          );
+        }
         break;
       case "searching_driver":
         nav = (
@@ -102,11 +110,12 @@ class RideNav extends React.Component {
     }
     return nav;
   }
+
   closeRideSelect = () => {
-    this.props.showIcons(true);
-    this.props.cleanPolyCoords();
     this.props.cleanStart();
     this.props.cleanFinish();
+    this.props.showIcons(true);
+    this.props.cleanPolyCoords();
     this.setState({ rideShown: false });
     this.props.rideNav("hidden");
   };
@@ -123,13 +132,17 @@ class RideNav extends React.Component {
 
   getRide = async (rideStart, rideFinish) => {
     const ride = await calqDistance(rideStart, rideFinish);
-    const ridePrice = Math.round(ride.distance.value / 1000 * 400);
-    this.setState({
-      distance: ride.distance.text,
-      price: ridePrice > 999 ? addCommas(ridePrice) : ridePrice,
-      time: ride.duration.text,
-      rideShown: true
-    });
+    if (ride.status !== "OVER_QUERY_LIMIT") {
+      const ridePrice = Math.round(ride.distance.value / 1000 * 400);
+      this.setState({
+        distance: ride.distance.text,
+        price: ridePrice > 999 ? addCommas(ridePrice) : ridePrice,
+        time: ride.duration.text,
+        rideShown: true
+      });
+    } else {
+      //console.log("Se ha superado la cantidad maxima de solicitudes diarias a Google");
+    }
   };
 }
 

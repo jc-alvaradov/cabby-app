@@ -85,9 +85,9 @@ class Router extends Component {
 
   setOnMap = () => {
     if (this.props.connected === true) {
+      this.props.navigation.goBack();
       this.props.showIcons(false);
       this.props.rideNav("start_pos_select");
-      this.props.navigation.goBack();
     }
   };
 
@@ -99,8 +99,8 @@ class Router extends Component {
             <Text>Start Location</Text>
             <AutoCompleteInput
               defaultValue={this.state.startText}
-              show={true}
               getValue={this.getStartValue}
+              show={true}
             />
           </View>
           <View style={styles.routerInput}>

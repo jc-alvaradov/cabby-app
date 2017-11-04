@@ -68,11 +68,15 @@ class SearchDriver extends React.Component {
 
     if (this.props.connected === true) {
       const ride = await calqDistance(rideStart.coords, rideFinish);
-      this.props.saveRideDistance(ride.duration);
-      this.props.saveDriver(driver);
-      // limpiamos los props anteriores de rideStart, rideFinish, etc
-      this.props.rideNav("waiting_for_driver");
-      this.props.cleanPolyCoords();
+      if (ride.status !== "OVER_QUERY_LIMIT") {
+        this.props.saveRideDistance(ride.duration);
+        this.props.saveDriver(driver);
+        // limpiamos los props anteriores de rideStart, rideFinish, etc
+        this.props.rideNav("waiting_for_driver");
+        this.props.cleanPolyCoords();
+      } else {
+        //console.log("Se ha superado la cantidad maxima de solicitudes diarias a Google");
+      }
     } else {
       // alert no internet
     }

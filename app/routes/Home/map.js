@@ -8,6 +8,10 @@ import LocationServicesDialogBox from "react-native-android-location-services-di
 import { graphRequest } from "../../lib/graphRequest";
 import Button from "../../components/basicButton";
 import BackButton from "../../components/backButton";
+import RidePoints from "./RidePoints";
+import RideStart from "./RideStart";
+import StartPosSelect from "./StartPosSelect";
+import FinishPosSelect from "./FinishPosSelect";
 import { regionFrom } from "../../lib/delta";
 import { rideNav } from "../../actions/ride_nav";
 import { connectionState } from "../../actions/connection_state";
@@ -163,7 +167,10 @@ class Map extends React.Component {
     //Revisar bien que haya internet
     if (this.props.connected) {
       let drivers = await graphRequest(query);
-      if (drivers != null && drivers.data.data.getClosestDrivers) {
+      if (
+        drivers != null &&
+        drivers.data.data.hasOwnProperty("getClosestDrivers")
+      ) {
         drivers = drivers.data.data.getClosestDrivers.map(driver => {
           return {
             key: driver.driverId,
@@ -180,7 +187,11 @@ class Map extends React.Component {
 
   getDistance = async (rideStart, rideFinish) => {
     const ride = await calqDistance(rideStart, rideFinish);
-    this.props.saveRideDistance(ride.duration);
+    if (ride.status !== "OVER_QUERY_LIMIT") {
+      this.props.saveRideDistance(ride.duration);
+    } else {
+      //console.log("Se ha superado la cantidad maxima de solicitudes diarias a Google");
+    }
   };
 
   getDrivers = () => {
@@ -196,9 +207,16 @@ class Map extends React.Component {
         // si no las tiene es porque no hay un conductor asignado todavia
         this.getClosestDrivers();
       }
+
+      // se hace un zoom al vehiculo del conductor si es que el estado del viaje es on_trip
       if (this.props.rideState === "on_trip") {
         this.mapRef.animateToCoordinate(this.state.drivers[0].position, 3000);
       }
+
+      /**
+       * si el usuario pierde su conexion a internet durante alguno de los siguientes estados
+       * la app cancela el viaje
+       */
       if (
         this.props.connected === false &&
         (this.props.rideState === "waiting_for_driver" ||
@@ -288,20 +306,6 @@ class Map extends React.Component {
     }
   };
 
-  takeSnapshot() {
-    const snapshot = this.mapRef.takeSnapshot({
-      width: 300, // optional, when omitted the view-width is used
-      height: 300, // optional, when omitted the view-height is used
-      //region: {..},    // iOS only, optional region to render
-      format: "png", // image formats: 'png', 'jpg' (default: 'png')
-      quality: 0.8, // image quality: 0..1 (only relevant for jpg, default: 1)
-      result: "file" // result types: 'file', 'base64' (default: 'file')
-    });
-    snapshot.then(uri => {
-      this.setState({ mapSnapshot: uri });
-    });
-  }
-
   closeRideSelect = () => {
     this.props.rideNav("hidden");
     this.props.showIcons(true);
@@ -331,48 +335,18 @@ class Map extends React.Component {
     switch (this.props.rideState) {
       case "start_pos_select":
         nav = (
-          <View style={styles.pinContainer} pointerEvents="box-none">
-            <View style={styles.pickupContainer} pointerEvents="none">
-              <Image
-                style={{ width: 40, height: 59 }}
-                source={require("../../images/ride_start.png")}
-              />
-            </View>
-            <View style={styles.pickupBtn}>
-              <View style={styles.backBtn}>
-                <BackButton onTouch={this.closeRideSelect} />
-              </View>
-              <Button
-                text="Set Pickup Location"
-                btnStyle="long"
-                key="startLocationBtn"
-                onTouch={this.setPickupLocation}
-              />
-            </View>
-          </View>
+          <StartPosSelect
+            setPickupLocation={this.setPickupLocation}
+            close={this.closeRideSelect}
+          />
         );
         break;
       case "finish_pos_select":
         nav = (
-          <View style={styles.pinContainer} pointerEvents="box-none">
-            <View style={styles.pickupContainer} pointerEvents="none">
-              <Image
-                style={{ width: 40, height: 59 }}
-                source={require("../../images/ride_finish.png")}
-              />
-            </View>
-            <View style={styles.pickupBtn}>
-              <View style={styles.backBtn}>
-                <BackButton onTouch={this.closeRideSelect} />
-              </View>
-              <Button
-                text="Set Drop Off Location"
-                key="dropOffLocationBtn"
-                btnStyle="long"
-                onTouch={this.setDropoffLocation}
-              />
-            </View>
-          </View>
+          <FinishPosSelect
+            setDropoffLocation={this.setDropoffLocation}
+            close={this.closeRideSelect}
+          />
         );
         break;
     }
@@ -422,46 +396,6 @@ class Map extends React.Component {
     );
   }
 }
-
-const RideStart = ({ pos, rideState }) => {
-  let render = null;
-  const condition =
-    rideState === "start_pos_select" || rideState === "finish_pos_select";
-  if (pos != null && condition) {
-    return (
-      <View>
-        <MapView.Marker
-          key="rideStartPlanTn"
-          coordinate={pos.coords}
-          image={require("../../images/ride_start.png")}
-        />
-      </View>
-    );
-  }
-  return render;
-};
-
-const RidePoints = ({ rideStart, rideFinish, rideState }) => {
-  let render = null;
-  if (rideStart != null && rideFinish != null && rideState === "ride_select") {
-    render = (
-      <View>
-        <MapView.Marker
-          key="rideStartKeyTn"
-          coordinate={rideStart.coords}
-          image={require("../../images/ride_start.png")}
-        />
-        <MapView.Marker
-          key="rideFinishKeyTn"
-          coordinate={rideFinish.coords}
-          image={require("../../images/ride_finish.png")}
-        />
-      </View>
-    );
-  }
-
-  return render;
-};
 
 mapStateToProps = state => {
   return {

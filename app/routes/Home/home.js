@@ -35,7 +35,11 @@ class Home extends React.Component {
 
   getPolyCoord = async (start, destination) => {
     const coords = await getDirections(start, destination);
-    this.props.setPolyCoords(coords);
+    if (coords.status !== "OVER_QUERY_LIMIT") {
+      this.props.setPolyCoords(coords);
+    } else {
+      //console.log("Se ha superado la cantidad maxima de solicitudes diarias a Google");
+    }
   };
 
   componentWillReceiveProps(nextProps) {
@@ -79,7 +83,8 @@ mapStateToProps = state => {
     showIcons: state.showIcons,
     rideNav: state.rideNav,
     rideStart: state.rideStart,
-    rideFinish: state.rideFinish
+    rideFinish: state.rideFinish,
+    connected: state.connected
   };
 };
 
