@@ -10,10 +10,6 @@ import {
 import { NavigationActions } from "react-navigation";
 
 export default class Ratings extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const { navigate } = this.props.navigation;
     return (

@@ -11,7 +11,6 @@ import SearchDriver from "./searchDriver";
 import DriverId from "./DriverId";
 import OnTrip from "./OnTrip";
 import FinishedRide from "./FinishedRide";
-import Loading from "../components/loading";
 import Button from "../components/basicButton";
 import BackButton from "../components/backButton";
 import { addCommas } from "../lib/addCommas";
@@ -42,11 +41,7 @@ class RideNav extends React.Component {
           this.getRide(rideStart.coords, rideFinish.coords);
         }
         if (this.state.price == 0) {
-          nav = (
-            <View style={styles.loadingBackground}>
-              <Loading />
-            </View>
-          );
+          nav = null;
         } else {
           nav = (
             <View style={styles.rideSelectContainer} pointerEvents="box-none">

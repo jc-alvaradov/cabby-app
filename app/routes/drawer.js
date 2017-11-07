@@ -13,19 +13,14 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { logOut } from "../actions/load_screens";
 
 class Drawer extends Component {
-  constructor(props) {
-    super(props);
-    this.closeSession = this.closeSession.bind(this);
-  }
-
-  async closeSession() {
+  closeSession = async () => {
     try {
       await AsyncStorage.removeItem("@TNStore:user");
       this.props.logOut();
     } catch (error) {
       // Error saving data
     }
-  }
+  };
 
   render() {
     const { navigate } = this.props.navigation;
