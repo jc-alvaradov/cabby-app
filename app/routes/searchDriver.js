@@ -3,7 +3,9 @@ import { Text, View, Alert } from "react-native";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import Icon from "react-native-vector-icons/FontAwesome";
 import { graphRequest } from "../lib/graphRequest";
+import Loading from "../components/loading";
 import { rideNav } from "../actions/ride_nav";
 import { saveDriver } from "../actions/save_driver";
 import { showIcons } from "../actions/show_icons";
@@ -17,13 +19,15 @@ class SearchDriver extends React.Component {
   static propTypes = {
     user: PropTypes.object.isRequired,
     rideStart: PropTypes.object.isRequired,
-    rideFinish: PropTypes.object.isRequired
+    rideFinish: PropTypes.object.isRequired,
+    amount: PropTypes.string.isRequired
   };
 
   static defaultProps = {
     user: { name: "" },
     rideStart: { name: "" },
-    rideFinish: { name: "" }
+    rideFinish: { name: "" },
+    amount: "0"
   };
 
   componentDidMount() {
@@ -107,10 +111,11 @@ class SearchDriver extends React.Component {
   render() {
     return (
       <View style={styles.driverSearch}>
-        <Text>Searching for Driver ...</Text>
-        <Text numberOfLines={1}>Client Name: {this.props.user.name}</Text>
-        <Text numberOfLines={1}>From {this.props.rideStart.name}</Text>
-        <Text numberOfLines={1}>To {this.props.rideFinish.name}</Text>
+        <View style={styles.headerTitle}>
+          <Text style={styles.rideStatus}>Searching For Driver</Text>
+          <Text>Please wait...</Text>
+        </View>
+        <Loading />
       </View>
     );
   }

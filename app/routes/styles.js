@@ -334,7 +334,9 @@ const Styles = StyleSheet.create({
   },
   onTripTitle: {
     fontSize: 18,
-    fontWeight: "bold"
+    fontWeight: "bold",
+    width: 300,
+    elevation: 3
   },
   loadingBackground: {
     backgroundColor: "#ffffff",

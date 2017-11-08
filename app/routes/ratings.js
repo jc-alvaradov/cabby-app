@@ -8,6 +8,7 @@ import {
   FlatList
 } from "react-native";
 import { graphRequest } from "../lib/graphRequest";
+import Icon from "react-native-vector-icons/FontAwesome";
 import Loading from "../components/loading";
 
 class Ratings extends React.Component {
@@ -18,21 +19,76 @@ class Ratings extends React.Component {
   getUserRatings = async user => {
     const request = {
       query:
-        "query ($id: String!) { getClientRatings(id: $id){ _id rating from to message date}}",
+        "query ($id: String!) { getClientRatings(id: $id){ _id rating fromId toId message date}}",
       variables: {
         id: user._id
       }
     };
     // chequear que haya internet
-    graphRequest(request).then(res => {
-      if (res !== undefined) {
-        const ratings = res.data.data.getClientRatings;
-        console.log(JSON.stringify(ratings));
-        this.setState({ ratings });
-      } else {
-        //console.log("bad response");
+    let res = await graphRequest(request);
+    res = res.data.data.getClientRatings;
+    if (res !== null) {
+      let ratings = await this.getRatings(res, user);
+      ratings = ratings.filter(rating => {
+        return rating !== null;
+      });
+      this.setState({ ratings });
+    } else {
+      //console.log("bad response");
+    }
+  };
+
+  getRatings = (ratings, user) => {
+    let driver;
+    // parseamos los ratings, hacemos peticiones para obtener el from y to de cada rating
+    ratings = ratings.map(async rating => {
+      rating.to = {};
+      rating.from = {};
+      if (rating.fromId === user._id) {
+        // el rating lo hizo el user
+        rating.from.name = user.clientName;
+        rating.from.photo = user.photo;
+        // ahora pedimos los datos del driver
+        const req = {
+          query:
+            "query ($id: String!) { getDriverById(id: $id){ _id driverName photo}}",
+          variables: {
+            id: rating.toId
+          }
+        };
+        driver = await graphRequest(req);
+        driver = driver.data.data.getDriverById;
+        if (driver != null) {
+          rating.to.name = driver.driverName;
+          rating.to.photo = driver.photo;
+          return rating;
+        } else {
+          return null;
+        }
+      } else if (rating.toId === user._id) {
+        // le hicieron el rating al user
+        rating.to.name = user.clientName;
+        rating.to.photo = user.photo;
+        // ahora pedimos los datos del driver
+        const req = {
+          query:
+            "query ($id: String!) { getDriverById(id: $id){ _id driverName photo}}",
+          variables: {
+            id: rating.fromId
+          }
+        };
+        driver = await graphRequest(req);
+        driver = driver.data.data.getDriverById;
+        if (driver != null) {
+          rating.from.name = driver.driverName;
+          rating.from.photo = driver.photo;
+          return rating;
+        } else {
+          return null;
+        }
       }
     });
+    return Promise.all(ratings);
   };
 
   componentDidMount() {
@@ -49,10 +105,22 @@ class Ratings extends React.Component {
           renderItem={({ item }) => {
             return (
               <View style={styles.ratings}>
-                <Text>{item.from}</Text>
-                <Text>{item.to}</Text>
-                <Text>{item.message}</Text>
-                <Text>{item.rating}</Text>
+                <View style={styles.rating}>
+                  <Image
+                    style={{ width: 50, height: 50, borderRadius: 25 }}
+                    source={{ uri: item.from.photo }}
+                  />
+                  <Text numberOfLines={1}>{item.from.name}</Text>
+                </View>
+                <Icon name="long-arrow-right" size={40} />
+                <View style={styles.rating}>
+                  <Image
+                    style={{ width: 50, height: 50, borderRadius: 25 }}
+                    source={{ uri: item.to.photo }}
+                  />
+                  <Text numberOfLines={1}>{item.to.name}</Text>
+                </View>
+                <Text style={styles.rideRating}>{item.rating}</Text>
               </View>
             );
           }}
@@ -77,11 +145,23 @@ const styles = StyleSheet.create({
     paddingTop: 10
   },
   ratings: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 30,
     padding: 10,
     height: 80,
     backgroundColor: "#ffffff",
     elevation: 3
+  },
+  rating: {
+    width: 120,
+    maxWidth: 120
+  },
+  rideRating: {
+    fontSize: 24,
+    fontWeight: "bold"
   }
 });
 
