@@ -1,11 +1,11 @@
-import React, { Component } from "react";
+import React from "react";
 import { AsyncStorage } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import Loading from "../components/loading";
 import { loadStartScreen, loadHomeScreen } from "../actions/load_screens";
 
-class Loader extends Component {
+class Loader extends React.Component {
   componentDidMount() {
     // chequear si es que la app esta pagada o no
     this.getAppState();

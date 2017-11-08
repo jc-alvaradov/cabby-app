@@ -24,7 +24,7 @@ class Drawer extends Component {
 
   render() {
     const { navigate } = this.props.navigation;
-    const user = this.props.store.user;
+    const user = this.props.user;
     return (
       <View style={styles.container}>
         <Text style={styles.header}>Options</Text>
@@ -34,7 +34,7 @@ class Drawer extends Component {
         />
         <Text style={styles.userName}>{user.clientName}</Text>
         <TouchableOpacity
-          onPress={() => navigate("Rides")}
+          onPress={() => navigate("Rides", { user })}
           style={styles.button}
         >
           <Text style={styles.text}>
@@ -43,7 +43,7 @@ class Drawer extends Component {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => navigate("Ratings")}
+          onPress={() => navigate("Ratings", { user })}
           style={styles.button}
         >
           <Text style={styles.text}>
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
   return {
-    store: state
+    user: state.user
   };
 }
 

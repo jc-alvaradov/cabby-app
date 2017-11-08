@@ -1,33 +1,26 @@
-import React, { Component } from "react";
+import React from "react";
 import {
   Text,
   View,
   Image,
   TouchableOpacity,
   StyleSheet,
-  AsyncStorage,
   FlatList
 } from "react-native";
-import { connect } from "react-redux";
-import { NavigationActions } from "react-navigation";
 import { graphRequest } from "../lib/graphRequest";
 import Loading from "../components/loading";
 
-class Rides extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      rides: []
-    };
-    this.getUserRides = this.getUserRides.bind(this);
-  }
+class Rides extends React.Component {
+  state = {
+    rides: []
+  };
 
-  async getUserRides(user) {
+  getUserRides = async user => {
     const request = {
       query:
-        "query ($id: String!) { getClientRides(id: $id){ id amount driverName clientName startLocation{ lat lng } destination{ lat lng } rideState}}",
+        "query ($id: String!) { getClientRides(id: $id){ _id amount driverName clientName startLocation{ lat lng } destination{ lat lng } rideState}}",
       variables: {
-        id: user.id
+        id: user._id
       }
     };
     // chequear que haya internet
@@ -39,10 +32,10 @@ class Rides extends Component {
         //console.log("bad response");
       }
     });
-  }
+  };
 
   componentDidMount() {
-    this.getUserRides(this.props.store.user);
+    this.getUserRides(this.props.navigation.state.params.user);
   }
 
   render() {
@@ -51,7 +44,7 @@ class Rides extends Component {
       this.state.rides.length > 0 ? (
         <FlatList
           data={this.state.rides}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item._id}
           renderItem={({ item }) => {
             return (
               <View style={styles.rides}>
@@ -73,12 +66,6 @@ Rides.navigationOptions = {
   title: "Rides"
 };
 
-function mapStateToProps(state) {
-  return {
-    store: state
-  };
-}
-
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
@@ -95,4 +82,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(mapStateToProps)(Rides);
+export default Rides;
