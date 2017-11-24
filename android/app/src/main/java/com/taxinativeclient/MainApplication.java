@@ -38,6 +38,11 @@ public class MainApplication extends Application implements ReactApplication {
           new LocationServicesDialogBoxPackage()
       );
     }
+
+    @Override
+    protected String getJSMainModuleName() {
+      return "index";
+    }
   };
 
   @Override

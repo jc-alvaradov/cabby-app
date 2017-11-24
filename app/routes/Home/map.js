@@ -39,14 +39,14 @@ class Map extends React.Component {
       this.handleConnection(isConnected);
     });
     // chequeos siguientes
-    NetInfo.isConnected.addEventListener("change", this.handleConnection);
+    NetInfo.isConnected.addEventListener("connectionChange", this.handleConnection);
   }
 
   componentWillUnmount() {
     // remueve el timer que actualiza los drivers y la distancia entre el driver y el cliente
     clearTimeout(this.timer);
     clearTimeout(this.rideDistanceTimer);
-    NetInfo.isConnected.removeEventListener("change", this.handleConnection);
+    NetInfo.isConnected.removeEventListener("connectionChange", this.handleConnection);
   }
 
   componentWillReceiveProps(nextProps) {
