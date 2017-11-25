@@ -10,6 +10,7 @@ import {
 import { NavigationActions } from "react-navigation";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import SafariView from 'react-native-safari-view';
 import { graphRequest } from "../lib/graphRequest";
 import Loading from "../components/loading";
 import { loadHomeScreen } from "../actions/load_screens";

@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { StyleSheet, View, Text, Image } from "react-native";
+import { StyleSheet, View, Text, ImageBackground } from "react-native";
 import MapView from "react-native-maps";
 
 class RidePickup extends React.Component {
@@ -33,7 +33,7 @@ class RidePickup extends React.Component {
           coordinate={this.props.coordinate.coords}
           key="arrivalTimeMarker"
         >
-          <Image
+          <ImageBackground
             style={styles.container}
             source={require("../images/ride_pickup.png")}
             onLayout={() => this.setState({ initialRender: false })}
@@ -43,7 +43,7 @@ class RidePickup extends React.Component {
               <Text style={styles.mainText}>{distance}</Text>
               <Text style={styles.subText}>mins</Text>
             </View>
-          </Image>
+          </ImageBackground>
         </MapView.Marker>
       );
     } else {

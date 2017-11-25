@@ -4,7 +4,6 @@ import MapView from "react-native-maps";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import Geocoder from "react-native-geocoder";
-import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 import { graphRequest } from "../../lib/graphRequest";
 import Button from "../../components/basicButton";
 import BackButton from "../../components/backButton";
@@ -74,7 +73,7 @@ class Map extends React.Component {
   handleConnection = isConnected => {
     // cambiar el estado de la app de connected
     this.props.connectionState(isConnected);
-    if (!isConnected) {
+    if (isConnected.type === "none") {
       if (
         this.props.rideState === "waiting_for_driver" ||
         this.props.rideState === "searching_driver" ||
@@ -367,7 +366,7 @@ class Map extends React.Component {
           showsUserLocation={true}
           showsMyLocationButton={false}
           onRegionChange={pos => this.screenMoved(pos)}
-          provider={"google"}
+          //provider={"google"}
           ref={ref => {
             this.mapRef = ref;
           }}

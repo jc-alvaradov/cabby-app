@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: "#ffffff",
     marginTop: 10,
-    width: 300,
+    alignSelf: 'stretch',
     height: 50
   },
   text: {
