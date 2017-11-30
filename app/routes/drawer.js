@@ -5,11 +5,13 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
+  Platform,
   AsyncStorage
 } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import Icon from "react-native-vector-icons/FontAwesome";
+import LinearGradient from "react-native-linear-gradient";
+import Icon from "react-native-vector-icons/SimpleLineIcons";
 import { logOut } from "../actions/load_screens";
 
 class Drawer extends Component {
@@ -26,19 +28,32 @@ class Drawer extends Component {
     const { navigate } = this.props.navigation;
     const user = this.props.user;
     return (
-      <View style={styles.container}>
-        <Text style={styles.header}>Options</Text>
-        <Image
-          style={{ width: 90, height: 90, borderRadius: 45 }}
-          source={{ uri: user.photo }}
-        />
-        <Text style={styles.userName}>{user.clientName}</Text>
+      <View>
+        <LinearGradient
+          start={{ x: 0.0, y: 0.25 }}
+          end={{ x: 0.5, y: 1.0 }}
+          locations={[0, 0.8]}
+          colors={["#47C9A2", "#10A585"]}
+          style={styles.profile}
+        >
+          <Image
+            style={{
+              width: 90,
+              height: 90,
+              borderRadius: 45,
+              borderWidth: 3,
+              borderColor: "#ffffff"
+            }}
+            source={{ uri: user.photo }}
+          />
+          <Text style={styles.userName}>{user.clientName}</Text>
+        </LinearGradient>
         <TouchableOpacity
           onPress={() => navigate("Rides", { user })}
           style={styles.button}
         >
           <Text style={styles.text}>
-            <Icon name="car" size={20} />
+            <Icon name="map" size={20} />
             <Text> Rides</Text>
           </Text>
         </TouchableOpacity>
@@ -56,13 +71,13 @@ class Drawer extends Component {
           style={styles.button}
         >
           <Text style={styles.text}>
-            <Icon name="cog" size={20} />
+            <Icon name="settings" size={20} />
             <Text> Settings</Text>
           </Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={this.closeSession} style={styles.button}>
           <Text style={styles.text}>
-            <Icon name="sign-out" style={styles.icon} size={20} />
+            <Icon name="logout" style={styles.icon} size={20} />
             <Text> Log out</Text>
           </Text>
         </TouchableOpacity>
@@ -76,30 +91,35 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     top: 0,
     left: 0,
-    alignItems: "center",
-    paddingTop: 10
+    alignItems: "center"
   },
-  header: {
-    color: "#000000",
-    fontSize: 25,
-    fontWeight: "bold",
-    marginBottom: 20
+  profile: {
+    alignItems: "center",
+    margin: 0,
+    paddingTop: 30,
+    height: 180,
+    alignSelf: "stretch"
   },
   userName: {
+    backgroundColor: "transparent",
+    color: "#ffffff",
     fontSize: 18,
     margin: 10
   },
   button: {
     backgroundColor: "#ffffff",
+    borderBottomWidth: 1,
+    borderBottomColor: "#f5f5f5",
     marginTop: 10,
-    alignSelf: 'stretch',
     height: 50
   },
   text: {
     backgroundColor: "#ffffff",
+    fontFamily: "Nunito-Bold",
     color: "#000000",
     fontSize: 20,
     textAlign: "left",
+    paddingTop: 6,
     paddingLeft: 40
   }
 });

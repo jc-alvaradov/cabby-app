@@ -55,7 +55,7 @@ class Home extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <View style={styles.container} pointerEvents="box-none">
         <Map position={this.props.position} />
         <HeaderButton
           onPress={() => this.props.navigation.navigate("DrawerOpen")}

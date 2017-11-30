@@ -44,14 +44,13 @@ const AutoCompleteInput = ({ defaultValue, callBack, show, getValue }) => {
           },
           textInput: {
             maxWidth: 300,
-            height: 50,
-            borderRadius: 1,
+            height: 60,
+            lineHeight: 30,
+            borderRadius: 2,
             backgroundColor: "#FFFFFF",
             color: "#444444",
             overflow: "hidden",
-            fontSize: 16,
-            marginTop: 5,
-            elevation: 3
+            fontSize: 18
           },
           listView: {
             maxWidth: 300,

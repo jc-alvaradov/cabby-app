@@ -351,7 +351,7 @@ class Map extends React.Component {
     }
 
     return (
-      <View style={styles.map} pointerEvents="box-none">
+      <View style={styles.mapContainer} pointerEvents="box-none">
         <MapView
           style={styles.map}
           initialRegion={regionFrom(

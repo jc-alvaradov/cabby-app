@@ -70,8 +70,7 @@ const styles = StyleSheet.create({
     height: 55,
     borderRadius: 50,
     backgroundColor: "#1ca68a",
-    marginTop: 20,
-    elevation: 3
+    marginTop: 20
   },
   small: {
     alignItems: "center",
@@ -80,8 +79,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 5,
     backgroundColor: "#1ca68a",
-    marginTop: 20,
-    elevation: 3
+    marginTop: 20
   },
   inline: {
     alignItems: "center",
@@ -97,8 +95,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: "#1ca68a",
     marginTop: 10,
-    marginBottom: 5,
-    elevation: 2
+    marginBottom: 5
   },
   text: {
     color: "white",

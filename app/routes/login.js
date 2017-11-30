@@ -137,7 +137,7 @@ class Login extends Component {
               {...iconStyles}
             >
               Login with Google
-            </Icon.Button>
+                    </Icon.Button>
           </View>
         </View>
       );

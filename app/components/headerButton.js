@@ -35,8 +35,8 @@ export default class HeaderButton extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    ...StyleSheet.absoluteFillObject,
-    top: 0,
+    position: "absolute",
+    top: 15,
     left: 0,
     flex: 1,
     flexDirection: "row",

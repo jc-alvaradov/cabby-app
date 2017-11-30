@@ -8,7 +8,7 @@ import {
   FlatList
 } from "react-native";
 import { graphRequest } from "../lib/graphRequest";
-import Icon from "react-native-vector-icons/FontAwesome";
+import Icon from "react-native-vector-icons/SimpleLineIcons";
 import Loading from "../components/loading";
 
 class Ratings extends React.Component {
@@ -112,7 +112,7 @@ class Ratings extends React.Component {
                   />
                   <Text numberOfLines={1}>{item.from.name}</Text>
                 </View>
-                <Icon name="long-arrow-right" size={40} />
+                <Icon name="arrow-right" size={25} />
                 <View style={styles.rating}>
                   <Image
                     style={{ width: 50, height: 50, borderRadius: 25 }}

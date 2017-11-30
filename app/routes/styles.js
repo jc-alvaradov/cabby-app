@@ -99,18 +99,26 @@ const Styles = StyleSheet.create({
   },
   container: {
     ...StyleSheet.absoluteFillObject,
+    position: 'absolute',
+    top: 0,
     justifyContent: "flex-end",
     alignItems: "center"
   },
   searchView: {
+    position: 'absolute',
     top: 60,
-    flex: 1
   },
   searchInput: {
     backgroundColor: "white",
     width: 300,
     height: 50,
-    elevation: 3
+    elevation: 3,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowOpacity: 0.3
   },
   input: {
     marginTop: -24,
@@ -134,6 +142,7 @@ const Styles = StyleSheet.create({
     width: 270
   },
   rideSelectContainer: {
+    position: 'absolute',
     width: 300,
     height: 200,
     borderRadius: 5,
@@ -150,7 +159,13 @@ const Styles = StyleSheet.create({
     width: 300,
     minHeight: 80,
     borderRadius: 5,
-    elevation: 3
+    elevation: 3,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowOpacity: 0.3
   },
   estimations: {
     flex: 1,
@@ -170,10 +185,25 @@ const Styles = StyleSheet.create({
     paddingTop: 13
   },
   pinContainer: {
-    ...StyleSheet.absoluteFillObject
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+  },
+  mapContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
   },
   pickupContainer: {
-    ...StyleSheet.absoluteFillObject,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 70
@@ -188,7 +218,13 @@ const Styles = StyleSheet.create({
     justifyContent: "space-between",
     padding: 6,
     borderRadius: 20,
-    elevation: 3
+    elevation: 3,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowOpacity: 0.3
   },
   pickupText: {
     color: "#ffffff",
@@ -197,7 +233,11 @@ const Styles = StyleSheet.create({
     marginTop: 2
   },
   pickupBtn: {
-    ...StyleSheet.absoluteFillObject,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
     flexDirection: "column",
     justifyContent: "flex-end",
     alignItems: "center",
@@ -217,7 +257,12 @@ const Styles = StyleSheet.create({
     color: "red"
   },
   driverSearch: {
-    ...StyleSheet.absoluteFillObject,
+    //...StyleSheet.absoluteFillObject,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
@@ -252,7 +297,13 @@ const Styles = StyleSheet.create({
     marginBottom: 30,
     paddingTop: 10,
     borderRadius: 2,
-    elevation: 3
+    elevation: 3,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowOpacity: 0.3
   },
   rideStatus: {
     fontSize: 24,
@@ -264,7 +315,7 @@ const Styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderColor: "#d1d1d1",
-    borderTopWidth: 0.3
+    borderTopWidth: 1
   },
   driverPhoto: {
     width: 60,
@@ -279,10 +330,20 @@ const Styles = StyleSheet.create({
     height: 300,
     marginBottom: 30,
     borderRadius: 2,
-    elevation: 3
+    elevation: 3,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowOpacity: 0.3
   },
   rideApp: {
-    ...StyleSheet.absoluteFillObject,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
     flex: 1,
     flexDirection: "column",
     alignItems: "center",
@@ -294,7 +355,13 @@ const Styles = StyleSheet.create({
     paddingTop: 10,
     alignSelf: "stretch",
     alignItems: "center",
-    elevation: 3
+    elevation: 3,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowOpacity: 0.3
   },
   rideInfo: {
     flex: 1,
@@ -326,7 +393,13 @@ const Styles = StyleSheet.create({
     padding: 10,
     marginBottom: 30,
     borderRadius: 2,
-    elevation: 3
+    elevation: 3,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowOpacity: 0.3
   },
   place: {
     width: 280,
@@ -336,7 +409,13 @@ const Styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     width: 300,
-    elevation: 3
+    elevation: 3,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowOpacity: 0.3
   },
   loadingBackground: {
     backgroundColor: "#ffffff",
@@ -344,7 +423,13 @@ const Styles = StyleSheet.create({
     minHeight: 180,
     marginBottom: 30,
     borderRadius: 5,
-    elevation: 3
+    elevation: 3,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowOpacity: 0.3
   }
 });
 

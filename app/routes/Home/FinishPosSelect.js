@@ -14,8 +14,8 @@ class FinishPosSelect extends React.Component {
             source={require("../../images/ride_finish.png")}
           />
         </View>
-        <View style={styles.pickupBtn}>
-          <View style={styles.backBtn}>
+        <View style={styles.pickupBtn} pointerEvents="box-none">
+          <View style={styles.backBtn} pointerEvents="box-none">
             <BackButton onTouch={this.props.close} />
           </View>
           <Button
