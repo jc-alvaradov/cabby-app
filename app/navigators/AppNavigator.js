@@ -16,8 +16,7 @@ import Drawer from "../routes/drawer";
 import Router from "../routes/router";
 import Rides from "../routes/rides";
 import Ratings from "../routes/ratings";
-import PaymentSettings from "../routes/paymentSettings";
-import ProfileSettings from "../routes/profileSettings";
+import Payments from "../routes/Payments";
 
 const Main = StackNavigator(
   {
@@ -36,11 +35,8 @@ const Main = StackNavigator(
     Settings: {
       screen: Settings
     },
-    ProfileSettings: {
-      screen: ProfileSettings
-    },
-    PaymentSettings: {
-      screen: PaymentSettings
+    Payments: {
+      screen: Payments
     }
   },
   {

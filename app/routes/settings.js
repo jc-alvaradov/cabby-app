@@ -9,13 +9,25 @@ import {
   AsyncStorage
 } from "react-native";
 import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import { NavigationActions } from "react-navigation";
-import Icon from "react-native-vector-icons/FontAwesome";
+import { editUser } from "../actions/editUser";
+import Icon from "react-native-vector-icons/SimpleLineIcons";
 import Button from "../components/basicButton";
 
 class Settings extends React.Component {
   state = {
     name: ""
+  };
+
+  saveSettings = async () => {
+    // guarda los nuevos datos del usuario en el estado
+    let { user } = this.props;
+    if (this.state.name != "") {
+      user.clientName = this.state.name;
+      this.props.editUser(user);
+      await AsyncStorage.setItem("@TNStore:user", JSON.stringify(user));
+    }
   };
 
   render() {
@@ -24,24 +36,24 @@ class Settings extends React.Component {
 
     return (
       <View style={styles.container}>
-        <TouchableOpacity
-          onPress={() => navigate("ProfileSettings")}
-          style={styles.button}
-        >
-          <Text style={styles.text}>
-            <Icon name="user" size={20} />
-            <Text> Profile</Text>
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => navigate("PaymentSettings")}
-          style={styles.button}
-        >
-          <Text style={styles.text}>
-            <Icon name="credit-card" size={20} />
-            <Text> Payment Settings</Text>
-          </Text>
-        </TouchableOpacity>
+        <View style={styles.form}>
+          <Text style={styles.header}>Name shown to drivers</Text>
+          <TextInput
+            style={styles.input}
+            underlineColorAndroid="rgba(0,0,0,0)"
+            maxLength={30}
+            defaultValue={user.clientName}
+            onChangeText={name => this.setState({ name })}
+          />
+
+          <View style={styles.saveBtn}>
+            <Button
+              onTouch={() => this.saveSettings()}
+              text="Save"
+              btnStyle="small"
+            />
+          </View>
+        </View>
       </View>
     );
   }
@@ -57,22 +69,27 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     alignItems: "center",
-    paddingTop: 20
+    paddingTop: 10
   },
   button: {
     backgroundColor: "#ffffff",
-    marginBottom: 20,
+    marginBottom: 10,
     padding: 10,
     width: 280,
     height: 50,
-    borderRadius: 2
+    elevation: 2
   },
   text: {
     backgroundColor: "#ffffff",
     color: "#000000",
+    fontSize: 16,
+    textAlign: "left"
+  },
+  header: {
     fontSize: 18,
-    textAlign: "left",
-    lineHeight: 25
+    color: "#444444",
+    marginTop: 5,
+    marginBottom: 5
   },
   input: {
     marginBottom: 10,
@@ -81,6 +98,9 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     height: 50,
     elevation: 2
+  },
+  form: {
+    width: 280
   },
   saveBtn: {
     alignItems: "center"
@@ -93,4 +113,8 @@ mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, null)(Settings);
+mapDispatchToProps = dispatch => {
+  return bindActionCreators({ editUser }, dispatch);
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Settings);

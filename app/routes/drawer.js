@@ -67,6 +67,15 @@ class Drawer extends Component {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
+          onPress={() => navigate("Payments", { user })}
+          style={styles.button}
+        >
+          <Text style={styles.text}>
+            <Icon name="credit-card" size={20} />
+            <Text> Payments</Text>
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
           onPress={() => navigate("Settings")}
           style={styles.button}
         >
