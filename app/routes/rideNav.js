@@ -27,7 +27,7 @@ class RideNav extends React.Component {
   };
 
   componentDidMount() {
-    const socket = SocketIOClient("http://45.7.229.110:3000");
+    const socket = SocketIOClient("http://127.0.0.1:3000");
     this.setState({ socket });
   }
 

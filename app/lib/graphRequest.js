@@ -5,7 +5,7 @@ axios.defaults.useXDomain = true;
 
 export function graphRequest(data) {
   return axios
-    .post("http://45.7.229.110:3000/graphql", data)
+    .post("http://127.0.0.1:3000/graphql", data)
     .then(res => {
       //console.log("LA RESPUESTA A MI PETICION FUE: " + JSON.stringify(res));
       return res;

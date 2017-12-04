@@ -10,7 +10,7 @@ import {
 import { NavigationActions } from "react-navigation";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import SafariView from 'react-native-safari-view';
+import SafariView from "react-native-safari-view";
 import { graphRequest } from "../lib/graphRequest";
 import Loading from "../components/loading";
 import { loadHomeScreen } from "../actions/load_screens";
@@ -87,14 +87,14 @@ class Login extends Component {
 
   loginWithFacebook = () => {
     if (!this.state.selected) {
-      this.openURL("http://45.7.229.110:3000/auth/facebook");
+      this.openURL("http://127.0.0.1:3000/auth/facebook");
       this.setState({ selected: true, loading: true });
     }
   };
 
   loginWithGoogle = () => {
     if (!this.state.selected) {
-      this.openURL("http://45.7.229.110:3000/auth/google");
+      this.openURL("http://127.0.0.1:3000/auth/google");
       this.setState({ selected: true, loading: true });
     }
   };
@@ -137,7 +137,7 @@ class Login extends Component {
               {...iconStyles}
             >
               Login with Google
-                    </Icon.Button>
+            </Icon.Button>
           </View>
         </View>
       );
