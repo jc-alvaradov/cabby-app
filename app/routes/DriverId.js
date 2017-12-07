@@ -28,6 +28,8 @@ class DriverId extends React.Component {
   };
 
   callDriver = (number, callback) => {
+    // elimina todos los caracteres que no sean numeros
+    number = number.replace(/\D/g, "");
     const args = {
       number,
       prompt: true

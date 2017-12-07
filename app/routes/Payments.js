@@ -5,29 +5,15 @@ import {
   View,
   Image,
   TouchableOpacity,
-  StyleSheet,
-  AsyncStorage
+  StyleSheet
 } from "react-native";
 import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import { NavigationActions } from "react-navigation";
+import { changePayment } from "../actions/change_payment";
 import Icon from "react-native-vector-icons/FontAwesome";
-import Button from "../components/basicButton";
 
 class Payments extends React.Component {
-  state = {
-    selected: ""
-  };
-
-  changeSelection = selection => {
-    this.setState({ selected: selection });
-  };
-
-  componentDidMount() {
-    // recibir desde el servidor todas las cuentas asociadas (encriptadas) y guardarlas en el estado
-    // renderizar la lista de cuentas
-    // la cuenta seleccionada muestra un icono de checked a su derecha
-  }
-
   render() {
     const { navigate } = this.props.navigation;
     const { user } = this.props;
@@ -36,39 +22,63 @@ class Payments extends React.Component {
       <View style={styles.container}>
         <View style={styles.form}>
           <TouchableOpacity
-            onPress={selection => this.changeSelection("Cash")}
+            onPress={() => this.props.changePayment("cash")}
             style={styles.topBtn}
           >
             <View style={styles.text}>
               <View style={styles.textChild}>
-                <Icon name="money" size={20} />
+                <Icon name="money" size={25} color="#47C9A2" />
                 <Text> Cash </Text>
               </View>
-              <Text style={styles.icon}>
-                <Icon name="check" color="#47C9A2" size={20} />
-              </Text>
+              {this.props.payment === "cash" ? (
+                <Text style={styles.icon}>
+                  <Icon name="check" color="#47C9A2" size={20} />
+                </Text>
+              ) : null}
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => console.log("Personal")}
+            onPress={() => this.props.changePayment("paypal")}
             style={styles.button}
           >
             <View style={styles.text}>
               <View style={styles.textChild}>
-                <Icon name="cc-paypal" size={20} />
-                <Text numberOfLines={1}> Personal 4558****</Text>
+                <Image
+                  style={{
+                    width: 50,
+                    height: 25
+                  }}
+                  source={require("../images/paypal.png")}
+                />
+                <Text numberOfLines={1}> Paypal</Text>
               </View>
+              {this.props.payment === "paypal" ? (
+                <Text style={styles.icon}>
+                  <Icon name="check" color="#47C9A2" size={20} />
+                </Text>
+              ) : null}
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => console.log("Add new")}
+            onPress={() => this.props.changePayment("khipu")}
             style={[styles.button, styles.bottomBtn]}
           >
             <View style={styles.text}>
               <View style={styles.textChild}>
-                <Icon name="plus-circle" size={20} />
-                <Text> Add payment</Text>
+                <Image
+                  style={{
+                    width: 50,
+                    height: 25
+                  }}
+                  source={require("../images/khipu.png")}
+                />
+                <Text numberOfLines={1}> Khipu</Text>
               </View>
+              {this.props.payment === "khipu" ? (
+                <Text style={styles.icon}>
+                  <Icon name="check" color="#47C9A2" size={20} />
+                </Text>
+              ) : null}
             </View>
           </TouchableOpacity>
         </View>
@@ -116,7 +126,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between"
   },
   textChild: {
-    marginTop: 8,
+    marginTop: 4,
     flexDirection: "row",
     alignItems: "flex-start",
     width: 220,
@@ -134,15 +144,13 @@ const styles = StyleSheet.create({
 
 mapStateToProps = state => {
   return {
-    user: state.user
+    user: state.user,
+    payment: state.payment
   };
 };
 
-/*
-              <Text style={styles.icon}>
-                <Icon name="check" color="#47C9A2" size={20} />
-              </Text>
+mapDispatchToProps = dispatch => {
+  return bindActionCreators({ changePayment }, dispatch);
+};
 
-*/
-
-export default connect(mapStateToProps, null)(Payments);
+export default connect(mapStateToProps, mapDispatchToProps)(Payments);

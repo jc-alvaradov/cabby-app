@@ -10,6 +10,7 @@ import { cleanPolyCoords } from "../actions/clean_poly_coords";
 import SearchDriver from "./searchDriver";
 import DriverId from "./DriverId";
 import OnTrip from "./OnTrip";
+import PaymentScreen from "./PaymentScreen";
 import FinishedRide from "./FinishedRide";
 import Button from "../components/basicButton";
 import BackButton from "../components/backButton";
@@ -97,6 +98,9 @@ class RideNav extends React.Component {
           />
         );
         break;
+      case "payment":
+        nav = <PaymentScreen navigation={this.props.navigation} />;
+        break;
       case "ride_finished":
         nav = <FinishedRide driver={this.props.driver} />;
         break;
@@ -131,7 +135,7 @@ class RideNav extends React.Component {
       const ridePrice = Math.round(ride.distance.value / 1000 * 400);
       this.setState({
         distance: ride.distance.text,
-        price: ridePrice > 999 ? addCommas(ridePrice) : ridePrice,
+        price: ridePrice > 999 ? addCommas(ridePrice) : ridePrice.toString(),
         time: ride.duration.text,
         rideShown: true
       });

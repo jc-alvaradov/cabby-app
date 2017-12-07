@@ -68,7 +68,7 @@ class Home extends React.Component {
             show={this.props.showIcons}
           />
         </View>
-        <RideNav />
+        <RideNav navigation={this.props.navigation} />
       </View>
     );
   }

@@ -99,21 +99,21 @@ const Styles = StyleSheet.create({
   },
   container: {
     ...StyleSheet.absoluteFillObject,
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     justifyContent: "flex-end",
     alignItems: "center"
   },
   searchView: {
-    position: 'absolute',
-    top: 60,
+    position: "absolute",
+    top: 60
   },
   searchInput: {
     backgroundColor: "white",
     width: 300,
     height: 50,
     elevation: 3,
-    shadowColor: '#000000',
+    shadowColor: "#000000",
     shadowOffset: {
       width: 0,
       height: 3
@@ -142,7 +142,7 @@ const Styles = StyleSheet.create({
     width: 270
   },
   rideSelectContainer: {
-    position: 'absolute',
+    position: "absolute",
     width: 300,
     height: 200,
     borderRadius: 5,
@@ -158,9 +158,12 @@ const Styles = StyleSheet.create({
     justifyContent: "space-between",
     width: 300,
     minHeight: 80,
-    borderRadius: 5,
+    borderBottomLeftRadius: 4,
+    borderBottomRightRadius: 4,
+    borderTopLeftRadius: 4,
+    borderTopRightRadius: 4,
     elevation: 3,
-    shadowColor: '#000000',
+    shadowColor: "#000000",
     shadowOffset: {
       width: 0,
       height: 3
@@ -185,21 +188,21 @@ const Styles = StyleSheet.create({
     paddingTop: 13
   },
   pinContainer: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     right: 0,
     top: 0,
-    bottom: 0,
+    bottom: 0
   },
   mapContainer: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     right: 0,
     top: 0,
-    bottom: 0,
+    bottom: 0
   },
   pickupContainer: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     right: 0,
     top: 0,
@@ -219,7 +222,7 @@ const Styles = StyleSheet.create({
     padding: 6,
     borderRadius: 20,
     elevation: 3,
-    shadowColor: '#000000',
+    shadowColor: "#000000",
     shadowOffset: {
       width: 0,
       height: 3
@@ -233,7 +236,7 @@ const Styles = StyleSheet.create({
     marginTop: 2
   },
   pickupBtn: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     right: 0,
     top: 0,
@@ -258,7 +261,7 @@ const Styles = StyleSheet.create({
   },
   driverSearch: {
     //...StyleSheet.absoluteFillObject,
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     right: 0,
     top: 0,
@@ -298,7 +301,7 @@ const Styles = StyleSheet.create({
     paddingTop: 10,
     borderRadius: 2,
     elevation: 3,
-    shadowColor: '#000000',
+    shadowColor: "#000000",
     shadowOffset: {
       width: 0,
       height: 3
@@ -331,7 +334,7 @@ const Styles = StyleSheet.create({
     marginBottom: 30,
     borderRadius: 2,
     elevation: 3,
-    shadowColor: '#000000',
+    shadowColor: "#000000",
     shadowOffset: {
       width: 0,
       height: 3
@@ -339,7 +342,7 @@ const Styles = StyleSheet.create({
     shadowOpacity: 0.3
   },
   rideApp: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     right: 0,
     top: 0,
@@ -352,11 +355,11 @@ const Styles = StyleSheet.create({
   headerTitle: {
     backgroundColor: "#ffffff",
     height: 80,
-    paddingTop: 10,
+    paddingTop: 20,
     alignSelf: "stretch",
     alignItems: "center",
     elevation: 3,
-    shadowColor: '#000000',
+    shadowColor: "#000000",
     shadowOffset: {
       width: 0,
       height: 3
@@ -393,13 +396,13 @@ const Styles = StyleSheet.create({
     padding: 10,
     marginBottom: 30,
     borderRadius: 2,
-    elevation: 3,
-    shadowColor: '#000000',
+    shadowColor: "#000000",
     shadowOffset: {
       width: 0,
       height: 3
     },
-    shadowOpacity: 0.3
+    shadowOpacity: 0.3,
+    elevation: 3
   },
   place: {
     width: 280,
@@ -407,29 +410,7 @@ const Styles = StyleSheet.create({
   },
   onTripTitle: {
     fontSize: 18,
-    fontWeight: "bold",
-    width: 300,
-    elevation: 3,
-    shadowColor: '#000000',
-    shadowOffset: {
-      width: 0,
-      height: 3
-    },
-    shadowOpacity: 0.3
-  },
-  loadingBackground: {
-    backgroundColor: "#ffffff",
-    width: 300,
-    minHeight: 180,
-    marginBottom: 30,
-    borderRadius: 5,
-    elevation: 3,
-    shadowColor: '#000000',
-    shadowOffset: {
-      width: 0,
-      height: 3
-    },
-    shadowOpacity: 0.3
+    fontWeight: "bold"
   }
 });
 

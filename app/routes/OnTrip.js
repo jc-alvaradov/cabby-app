@@ -11,13 +11,13 @@ class OnTrip extends React.Component {
     const { socket } = this.props;
     socket.on("FINISH_RIDE", () => {
       // termino el viaje
-      this.props.rideNav("ride_finished");
+      this.props.rideNav("payment");
     });
   }
   render() {
     // quizas el mapa podria ir siguiendo la posicion del cliente en el mapa
     return (
-      <View style={styles.rideApp}>
+      <View style={styles.rideApp} pointerEvents="box-none">
         <View style={styles.headerTitle}>
           <Text style={styles.rideStatus}>On Trip</Text>
           <Text>Your are on your way to your destination</Text>
@@ -43,6 +43,12 @@ class OnTrip extends React.Component {
   }
 }
 
+mapStateToProps = state => {
+  return {
+    payment: state.payment
+  };
+};
+
 mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
@@ -51,4 +57,4 @@ mapDispatchToProps = dispatch => {
     dispatch
   );
 };
-export default connect(null, mapDispatchToProps)(OnTrip);
+export default connect(mapStateToProps, mapDispatchToProps)(OnTrip);

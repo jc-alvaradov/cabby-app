@@ -19,6 +19,12 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     backgroundColor: "#ffffff",
     elevation: 3,
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowOpacity: 0.3,
     marginBottom: 8
   },
   icon: {
