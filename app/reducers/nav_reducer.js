@@ -38,14 +38,6 @@ export default function navReducer(state = initialNavState, action) {
         state
       );
       break;
-    case "NAV":
-      nextState = AppNavigator.router.getStateForAction(
-        NavigationActions.navigate({
-          routeName: state.route
-        }),
-        state
-      );
-      break;
     default:
       nextState = AppNavigator.router.getStateForAction(action, state);
       break;

@@ -4,12 +4,24 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import Button from "../components/basicButton";
 import { rideNav } from "../actions/ride_nav";
-import { nav } from "../actions/nav";
 import { graphRequest } from "../lib/graphRequest";
 import Icon from "react-native-vector-icons/FontAwesome";
 import styles from "./styles";
 
 class PaymentScreen extends React.Component {
+
+  finishPayment = () => {
+    // revisa el tipo de pago, dependiendo de eso paga de forma distinta
+    if(this.props.payment === "cash"){
+      this.props.rideNav("ride_finished");    
+    }else if(this.props.payment === "paypal"){
+      // redirigir a la pagina de paypal para que pague 
+    }else if(this.props.payment === "khipu"){
+      this.props.rideNav("ride_finished");    
+    }
+  }
+
+
   render() {
     let img = "";
     let paymentMethod = "";
@@ -69,7 +81,7 @@ class PaymentScreen extends React.Component {
               style={styles.pickupBtn}
               text="Finish payment"
               btnStyle="inline"
-              onTouch={() => console.log("finish payment")}
+              onTouch={() => this.finishPayment()}
             />
           </View>
         </View>
@@ -107,8 +119,7 @@ const paymentStyles = StyleSheet.create({
 mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
-      rideNav,
-      nav
+      rideNav
     },
     dispatch
   );
