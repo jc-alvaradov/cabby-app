@@ -23,15 +23,12 @@ class Rides extends React.Component {
         id: user._id
       }
     };
-    // chequear que haya internet
-    graphRequest(request).then(res => {
-      if (res !== undefined) {
-        const rides = res.data.data.getClientRides;
-        this.setState({ rides });
-      } else {
-        //console.log("bad response");
-      }
-    });
+    let rides = await graphRequest(request, "getClientRides");
+    if (rides !== null && rides != undefined) {
+      this.setState({ rides });
+    } else {
+      //console.log("bad response");
+    };
   };
 
   componentDidMount() {

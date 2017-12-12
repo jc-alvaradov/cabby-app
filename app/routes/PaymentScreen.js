@@ -4,18 +4,17 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import Button from "../components/basicButton";
 import { rideNav } from "../actions/ride_nav";
-import { graphRequest } from "../lib/graphRequest";
 import Icon from "react-native-vector-icons/FontAwesome";
 import styles from "./styles";
 
 class PaymentScreen extends React.Component {
-
   finishPayment = () => {
     // revisa el tipo de pago, dependiendo de eso paga de forma distinta
     if(this.props.payment === "cash"){
       this.props.rideNav("ride_finished");    
     }else if(this.props.payment === "paypal"){
       // redirigir a la pagina de paypal para que pague 
+      this.props.navigation.navigate("PayWithPaypal")
     }else if(this.props.payment === "khipu"){
       this.props.rideNav("ride_finished");    
     }
@@ -35,7 +34,7 @@ class PaymentScreen extends React.Component {
           source={require("../images/khipu.png")}
         />
       );
-      paymentMethod = "Khipu";
+      paymentMethod = "Continue with Khipu";
     } else if (this.props.payment === "paypal") {
       img = (
         <Image
@@ -46,10 +45,10 @@ class PaymentScreen extends React.Component {
           source={require("../images/paypal.png")}
         />
       );
-      paymentMethod = "Paypal";
+      paymentMethod = "Continue with Paypal";
     } else {
       img = <Icon name="money" size={25} color="#47C9A2" />;
-      paymentMethod = "Cash";
+      paymentMethod = "Continue with Cash";
     }
 
     return (
@@ -58,12 +57,11 @@ class PaymentScreen extends React.Component {
           <Text style={styles.rideStatus}>Finished Trip</Text>
           <Text>Please continue with your payment</Text>
         </View>
-        <View style={styles.finishedContainer}>
+        <View style={paymentStyles.paymentContainer}>
           <View style={styles.ridePriceContainer}>
             <Text style={styles.ridePrice}>Total: $5.321</Text>
           </View>
           <View>
-            <Text>Continue With</Text>
             <TouchableOpacity
               onPress={() => this.props.navigation.navigate("Payments")}
               style={paymentStyles.button}
@@ -76,11 +74,10 @@ class PaymentScreen extends React.Component {
               </View>
             </TouchableOpacity>
           </View>
-          <View style={styles.rideBtn}>
+          <View style={paymentStyles.btnContainer}>
             <Button
-              style={styles.pickupBtn}
               text="Finish payment"
-              btnStyle="inline"
+              btnStyle="finishedLong"
               onTouch={() => this.finishPayment()}
             />
           </View>
@@ -91,12 +88,29 @@ class PaymentScreen extends React.Component {
 }
 
 const paymentStyles = StyleSheet.create({
-  button: {
+  btnContainer: {
+    width: 300,
+    height: 50,
+  },
+  paymentContainer: {
     backgroundColor: "#ffffff",
-    borderTopLeftRadius: 4,
-    borderTopRightRadius: 4,
+    width: 300,
+    height: 150,
+    marginBottom: 160,
+    paddingTop: 10,
     borderBottomLeftRadius: 4,
     borderBottomRightRadius: 4,
+    borderRadius: 2,
+    elevation: 3,
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowOpacity: 0.3
+  },
+  button: {
+    backgroundColor: "#ffffff",
     padding: 10,
     width: 280,
     height: 50

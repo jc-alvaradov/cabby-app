@@ -2,6 +2,7 @@ import React from "react";
 import { Platform } from "react-native";
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 import Loading from "../../components/loading";
+import PaymentScreen from "../PaymentScreen";
 import Home from "./home";
 
 class HomeContainer extends React.Component {

@@ -33,10 +33,6 @@ class Map extends React.Component {
 
   componentDidMount() {
     this.getDrivers();
-    // primer chequeo de conexion a internet
-    NetInfo.isConnected.fetch().then(isConnected => {
-      this.handleConnection(isConnected);
-    });
     // chequeos siguientes
     NetInfo.isConnected.addEventListener(
       "connectionChange",
@@ -77,7 +73,7 @@ class Map extends React.Component {
   }
 
   handleConnection = isConnected => {
-    // cambiar el estado de la app de connected
+    // cambiar el estado de connected de la app
     this.props.connectionState(isConnected);
     if (isConnected.type === "none") {
       if (
@@ -112,9 +108,8 @@ class Map extends React.Component {
     };
 
     if (this.props.connected) {
-      let driver = await graphRequest(query);
-      if (driver != null && driver.data.data.getDriverPos) {
-        driver = driver.data.data.getDriverPos;
+      let driver = await graphRequest(query, "getDriverPos");
+      if (driver != null) {
         driver = [
           {
             key: driver.driverId,
@@ -161,7 +156,7 @@ class Map extends React.Component {
      */
     const query = {
       query:
-        "query($clientPos: DriverLocationInput!) { getClosestDrivers(clientPos: $clientPos){ driverId coordinate{ coordinates } } }",
+        "query($clientPos: DriverLocationInput!) { º  (clientPos: $clientPos){ driverId coordinate{ coordinates } } }",
       variables: {
         clientPos: {
           longitude: this.props.position.longitude,
@@ -171,12 +166,9 @@ class Map extends React.Component {
     };
     //Revisar bien que haya internet
     if (this.props.connected) {
-      let drivers = await graphRequest(query);
-      if (
-        drivers != null &&
-        drivers.data.data.hasOwnProperty("getClosestDrivers")
-      ) {
-        drivers = drivers.data.data.getClosestDrivers.map(driver => {
+      let drivers = await graphRequest(query, "getClosestDrivers");
+      if (drivers != null) {
+        drivers = drivers.map(driver => {
           return {
             key: driver.driverId,
             position: {

@@ -17,6 +17,7 @@ import Router from "../routes/router";
 import Rides from "../routes/rides";
 import Ratings from "../routes/ratings";
 import Payments from "../routes/Payments";
+import PayWithPaypal from "../routes/PayWithPaypal";
 
 const Main = StackNavigator(
   {
@@ -37,6 +38,9 @@ const Main = StackNavigator(
     },
     Payments: {
       screen: Payments
+    },
+    PayWithPaypal: {
+      screen: PayWithPaypal
     }
   },
   {

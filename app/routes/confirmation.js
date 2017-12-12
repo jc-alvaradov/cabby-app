@@ -63,8 +63,7 @@ class Confirmation extends React.Component {
       }
     };
     // chequear que haya internet conectado
-    let savedUser = await graphRequest(query);
-    savedUser = savedUser.data.data.addClient;
+    let savedUser = await graphRequest(query, "addClient");
     if (savedUser != null) {
       try {
         await AsyncStorage.setItem("@TNStore:user", JSON.stringify(savedUser));

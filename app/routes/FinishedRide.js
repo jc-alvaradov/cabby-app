@@ -42,7 +42,7 @@ class FinishedRide extends React.Component {
       }
     };
     // revisar que haya internet conectado
-    await graphRequest(query);
+    const res = await graphRequest(query, "addRating");
     this.props.cleanStart();
     this.props.cleanFinish();
     this.props.saveDriver({});

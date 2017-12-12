@@ -95,8 +95,7 @@ class SearchDriver extends React.Component {
       }
     };
     if (this.props.connected === true) {
-      let driver = await graphRequest(query);
-      driver = driver.data.data.getDriverById;
+      let driver = await graphRequest(query, "getDriverById");
       if (driver != null) {
         // guardamos al driver en el estado de redux para poder usarlo en otras partes
         // de la app.

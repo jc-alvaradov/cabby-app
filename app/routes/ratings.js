@@ -25,8 +25,7 @@ class Ratings extends React.Component {
       }
     };
     // chequear que haya internet
-    let res = await graphRequest(request);
-    res = res.data.data.getClientRatings;
+    let res = await graphRequest(request, "getClientRatings");
     if (res !== null) {
       let ratings = await this.getRatings(res, user);
       ratings = ratings.filter(rating => {
@@ -56,8 +55,7 @@ class Ratings extends React.Component {
             id: rating.toId
           }
         };
-        driver = await graphRequest(req);
-        driver = driver.data.data.getDriverById;
+        driver = await graphRequest(req, "getDriverById");
         if (driver != null) {
           rating.to.name = driver.driverName;
           rating.to.photo = driver.photo;
@@ -77,8 +75,7 @@ class Ratings extends React.Component {
             id: rating.fromId
           }
         };
-        driver = await graphRequest(req);
-        driver = driver.data.data.getDriverById;
+        driver = await graphRequest(req, "getDriverById");
         if (driver != null) {
           rating.from.name = driver.driverName;
           rating.from.photo = driver.photo;

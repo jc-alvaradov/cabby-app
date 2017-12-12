@@ -55,8 +55,7 @@ class Login extends Component {
       }
     };
     // chequear que haya internet
-    let clientExists = await graphRequest(query);
-    clientExists = clientExists.data.data.getClient;
+    let clientExists = await graphRequest(query, "getClient");
     if (clientExists != null) {
       // el cliente ya existe en la bd, lo cargamos en la app
       this.saveData(JSON.stringify(clientExists)).then(() => {

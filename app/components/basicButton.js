@@ -41,6 +41,10 @@ class Button extends React.Component {
         style = styles.inline;
         textColor = styles.inlineText;
         break;
+      case "finishedLong": 
+        style = styles.finishedLong;
+        textColor = styles.text;
+        break;
       default:
         style = styles.default;
         textColor = styles.text;
@@ -92,11 +96,20 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: 300,
     height: 50,
-    borderRadius: 5,
     backgroundColor: "#1ca68a",
     marginTop: 10,
-    marginBottom: 5
+    marginBottom: 10,
+    borderRadius: 4,
   },
+  finishedLong: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: 300,
+    height: 50,   
+    borderBottomLeftRadius: 4,
+    borderBottomRightRadius: 4,
+    backgroundColor: "#1ca68a",
+  }, 
   text: {
     color: "white",
     fontSize: 18

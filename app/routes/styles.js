@@ -1,4 +1,5 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
+const { width, height } = Dimensions.get('window');
 
 const Styles = StyleSheet.create({
   confirmationContainer: {
@@ -158,10 +159,7 @@ const Styles = StyleSheet.create({
     justifyContent: "space-between",
     width: 300,
     minHeight: 80,
-    borderBottomLeftRadius: 4,
-    borderBottomRightRadius: 4,
-    borderTopLeftRadius: 4,
-    borderTopRightRadius: 4,
+    borderRadius: 4,
     elevation: 3,
     shadowColor: "#000000",
     shadowOffset: {
@@ -174,27 +172,31 @@ const Styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     alignItems: "flex-start",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    borderRadius: 4
   },
   estimation: {
+    backgroundColor: "transparent",
     fontSize: 16,
     paddingLeft: 10,
-    paddingTop: 14
+    paddingTop: 14,
+    borderRadius: 4
   },
   price: {
+    borderRadius: 4,
     fontWeight: "bold",
     fontSize: 20,
     paddingRight: 14,
     paddingTop: 13
   },
-  pinContainer: {
+  mapContainer: {
     position: "absolute",
     left: 0,
     right: 0,
     top: 0,
     bottom: 0
   },
-  mapContainer: {
+  pinContainer: {
     position: "absolute",
     left: 0,
     right: 0,
@@ -209,7 +211,6 @@ const Styles = StyleSheet.create({
     bottom: 0,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 70
   },
   pickupView: {
     backgroundColor: "#1ca68a",
@@ -244,7 +245,6 @@ const Styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-end",
     alignItems: "center",
-    marginBottom: 30
   },
   backBtn: {
     width: 300,

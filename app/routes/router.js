@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View, NetInfo } from "react-native";
+import { Text, View } from "react-native";
 import { NavigationActions } from "react-navigation";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";

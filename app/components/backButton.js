@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
     marginBottom: 8
   },
   icon: {
+    backgroundColor: "transparent",
     marginTop: 12,
     marginLeft: 10,
     color: "#444444",
